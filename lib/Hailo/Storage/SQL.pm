@@ -1,7 +1,7 @@
 package Hailo::Storage::SQL;
 
 use Moose;
-use MooseX::Types::Moose qw<HashRef Int Str>;
+use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
 use DBI;
 use List::Util qw<shuffle>;
 use Data::Section qw(-setup);
@@ -14,7 +14,8 @@ use namespace::clean -except => [ qw(meta
 
 our $VERSION = '0.01';
 
-with 'Hailo::Role::Storage';
+with qw(Hailo::Role::Generic
+        Hailo::Role::Storage);
 
 has dbh => (
     isa        => 'DBI::db',
@@ -22,7 +23,27 @@ has dbh => (
     lazy_build => 1,
 );
 
+has dbd => (
+    isa           => Str,
+    is            => 'ro',
+    documentation => "The DBD::* driver we're using",
+);
+
 sub _build_dbh {
+    my ($self) = @_;
+    my $dbd_options = $self->dbi_options;
+
+    return DBI->connect($self->dbi_options);
+}
+
+has dbi_options => (
+    isa => ArrayRef,
+    is => 'ro',
+    auto_deref => 1,
+    lazy_build => 1,
+);
+
+sub _build_dbi_options {
     my ($self) = @_;
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
@@ -35,24 +56,26 @@ sub _build_dbh {
         $dbd_options,
     );
 
-    return DBI->connect(@options);
+    return \@options;
 }
-
-has sth => (
-    isa        => HashRef,
-    is         => 'ro',
-    lazy_build => 1,
-);
-
-has dbd => (
-    isa => Str,
-    is  => 'ro',
-);
 
 has dbd_options => (
     isa => HashRef,
     is => 'ro',
     default => sub { +{} },
+);
+
+has _engaged => (
+    isa           => Bool,
+    is            => 'rw',
+    default       => 0,
+    documentation => "Have we done setup work to get this database going?",
+);
+
+has sth => (
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
 );
 
 # our statement handlers
@@ -122,7 +145,7 @@ sub _sth_sections {
     return \%sections;
 }
 
-sub BUILD {
+sub _engage {
     my ($self) = @_;
 
     if ($self->_exists_db) {
@@ -158,8 +181,16 @@ sub stop_training {
 }
 
 sub start_learning {
+    my ($self) = @_;
+
+    if (not $self->_engaged()) {
+        # Engage!
+        $self->_engage();
+        $self->_engaged(1);
+    }
+
     # start a transaction
-    shift->dbh->begin_work;
+    $self->dbh->begin_work;
     return;
 }
 

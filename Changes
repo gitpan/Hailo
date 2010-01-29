@@ -1,2 +1,12 @@
+0.02 Fri Jan 29 03:54:32 GMT 2010
+    - Fix typo in NAME in Hailo::Tokenizer::Words which caused the POD
+      not to be displayed on search.cpan.org
+    - Present options in --help output in reverse sort order
+    - Add facility to pass arguments to storage/engine/tokenizer from
+      the command line or via Hailo->new(). Make Hailo::Storage::Pg
+      use this facility for its database connection arguments.
+    - Fix spelling error in Hailo's POD
+    - --reply on the command line didn't work
+
 0.01 Fri Jan 29 00:39:54 GMT 2010
     - First CPAN release

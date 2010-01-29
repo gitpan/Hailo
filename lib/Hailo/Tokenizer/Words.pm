@@ -6,7 +6,8 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
-with 'Hailo::Role::Tokenizer';
+with qw(Hailo::Role::Generic
+        Hailo::Role::Tokenizer);
 
 my $APOSTROPHE    = qr/['’]/;
 my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
@@ -75,7 +76,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Tokenizer::Word - A word tokenizer for L<Hailo|Hailo>
+Hailo::Tokenizer::Words - A word tokenizer for L<Hailo|Hailo>
 
 =head1 DESCRIPTION
 

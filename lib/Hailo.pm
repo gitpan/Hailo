@@ -1,7 +1,7 @@
 package Hailo;
 
 use Moose;
-use MooseX::Types::Moose qw/Int Str Bool/;
+use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
@@ -10,7 +10,7 @@ use namespace::clean -except => [ qw(meta
                                      gettimeofday
                                      tv_interval) ];
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -138,6 +138,33 @@ has tokenizer_class => (
     default       => "Words",
 );
 
+# Object arguments
+has engine_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the Engine class",
+    isa           => HashRef,
+    coerce        => 1,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
+has storage_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the Storage class",
+    isa           => HashRef,
+    coerce        => 1,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
+has tokenizer_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the Tokenizer class",
+    isa           => HashRef,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
 # Working objects
 has _engine_obj => (
     traits      => [qw(NoGetopt)],
@@ -163,14 +190,17 @@ has _tokenizer_obj => (
     init_arg    => undef,
 );
 
-with qw(MooseX::Getopt);
+with qw(MooseX::Getopt::Dashes);
 
 sub _getopt_full_usage {
     my ($self, $usage) = @_;
-    my $options = do {
+    my ($use, $options) = do {
         my $out = $usage->text;
-        $out  =~ s/\n+$//s;
-        $out;
+
+        # The default getopt order sucks, use reverse sort order
+        chomp(my @out = split /^/, $out);
+        my $opt = join "\n", sort { $b cmp $a } @out[1 .. $#out];
+        ($out[0], $opt);
     };
     my $synopsis = do {
         require Pod::Usage;
@@ -190,6 +220,7 @@ sub _getopt_full_usage {
     };
 
     print <<"USAGE";
+$use
 $options
 \tNote: All input/output and files are assumed to be UTF-8 encoded.
 $synopsis
@@ -210,6 +241,7 @@ sub _build__engine_obj {
     return $engine->new(
         storage   => $self->_storage_obj,
         tokenizer => $self->_tokenizer_obj,
+        arguments => $self->engine_args,
     );
 }
 
@@ -227,7 +259,8 @@ sub _build__storage_obj {
             : ()
         ),
         token_separator => $self->token_separator,
-        order => $self->order,
+        order           => $self->order,
+        arguments       => $self->storage_args,
     );
 
     return $obj;
@@ -242,7 +275,9 @@ sub _build__tokenizer_obj {
     eval "require $tokenizer";
     die $@ if $@;
 
-    return $tokenizer->new();
+    return $tokenizer->new(
+        arguments => $self->tokenizer_args
+    );
 }
 
 sub run {
@@ -262,7 +297,7 @@ sub run {
     }
 
     if (defined $self->reply_str) {
-        my $answer = $self->engine->reply($self->reply_str);
+        my $answer = $self->_engine_obj->reply($self->reply_str);
         die "I don't know enough to answer you yet.\n" if !defined $answer;
         print "$answer\n";
     }
@@ -387,13 +422,14 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 Hailo is a fast and lightweight markov engine intended to replace
 L<AI::MegaHAL>. It has a lightweight L<Moose>-based core with
 pluggable L<storage|Hailo::Role::Storage>,
-L<tokenizer|Hailo::Role::Tokenizer>and L<engine|Hailo::Role::Engine>
+L<tokenizer|Hailo::Role::Tokenizer> and L<engine|Hailo::Role::Engine>
 backends.
 
 It's faster than MegaHAL and can handle huge brains easily with the
 default L<SQLite backend|Hailo::Storage::SQLite>. It can be used,
 amongst other things, to implement IRC chat bots with
-L<POE::Component::IRC>.
+L<POE::Component::IRC>. In fact, there exists a L<POE::Component::IRC>
+L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.
 
 =head2 Etymology
 
@@ -419,6 +455,19 @@ The storage backend to use. Default: 'SQLite'.
 =head2 C<tokenizer_class>
 
 The tokenizer to use. Default: 'Words';
+
+=head2 C<engine_class>
+
+The engine to use. Default: 'Default';
+
+=head2 C<storage_args>
+
+=head2 C<tokenizer_args>
+
+=head2 C<engine_args>
+
+A C<HashRef> of arguments storage/tokenizer/engine backends. See the
+documentation for the backends for what sort of arguments they accept.
 
 =head2 C<token_separator>
 

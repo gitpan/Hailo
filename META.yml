@@ -20,6 +20,7 @@ no_index:
   directory:
     - inc
     - t
+    - utils
     - xt
 recommends:
   DBD::Pg: 0
@@ -46,4 +47,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.01
+version: 0.02
