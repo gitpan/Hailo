@@ -25,6 +25,7 @@ no_index:
 recommends:
   DBD::Pg: 0
 requires:
+  Class::MOP: 0
   DBD::SQLite: 0
   Data::Section: 0.100270
   File::CountLines: 0
@@ -40,11 +41,11 @@ requires:
   Term::ProgressBar: 2.00
   Text::Trim: 0
   namespace::clean: 0
-  perl: 5.8.1
+  perl: 5.10.0
 resources:
   Ratings: http://cpanratings.perl.org/d/Hailo
   bugtracker: http://github.com/hinrik/hailo/issues
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.03
+version: 0.04

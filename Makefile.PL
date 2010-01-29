@@ -3,7 +3,7 @@ use warnings;
 use inc::Module::Install '0.92';
 
 name           ('Hailo');
-perl_version   ('5.008001');
+perl_version   ('5.010');
 author         ('Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>');
 abstract_from  ('lib/Hailo.pm');
 version_from   ('lib/Hailo.pm');
@@ -20,6 +20,7 @@ requires       ('Data::Section'              => '0.100270');
 requires       ('DBD::SQLite'                => '0');
 requires       ('File::CountLines'           => '0');
 requires       ('List::MoreUtils'            => '0');
+requires       ('Class::MOP'                 => '0');
 requires       ('Moose'                      => '0');
 requires       ('MooseX::Getopt'             => '0');
 requires       ('MooseX::Types::Path::Class' => '0');
