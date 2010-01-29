@@ -1,0 +1,93 @@
+NAME
+    Hailo - A pluggable Markov engine analogous to MegaHAL
+
+SYNOPSIS
+        use Hailo;
+
+        my $hailo = Hailo->new(
+            # Or Pg, or Perl ...
+            storage_class  => 'SQLite',
+            brain_resource => 'brain.db'
+        );
+
+        while (<>) {
+            $hailo->learn($_);
+            print $hailo->reply($_), "\n";
+        }
+
+DESCRIPTION
+    Hailo is a fast and lightweight markov engine intended to replace
+    AI::MegaHAL. It has a lightweight Moose-based core with pluggable
+    storage, tokenizerand engine backends.
+
+    It's faster than MegaHAL and can handle huge brains easily with the
+    default SQLite backend. It can be used, amongst other things, to
+    implement IRC chat bots with POE::Component::IRC.
+
+  Etymology
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and *failo*
+    <http://identi.ca/failo>
+
+ATTRIBUTES
+  "brain_resource"
+    The name of the resource (file name, database name) to use as storage.
+    There is no default.
+
+  "order"
+    The Markov order (chain length) you want to use for an empty brain. The
+    default is 5.
+
+  "storage_class"
+    The storage backend to use. Default: 'SQLite'.
+
+  "tokenizer_class"
+    The tokenizer to use. Default: 'Words';
+
+  "token_separator"
+    Storage backends may choose to store the tokens of an expression as a
+    single string. If so, they will be joined them together with a
+    separator. By default, this is "\t".
+
+METHODS
+  "new"
+    This is the constructor. It accept the attributes specified in
+    "ATTRIBUTES".
+
+  "run"
+    Run the application according to the command line arguments.
+
+  "learn"
+    Takes a line of UTF-8 encoded text as input and learns from it.
+
+  "train"
+    Takes a filename and calls "learn" on all its lines. Lines are expected
+    to be UTF-8 encoded.
+
+  "reply"
+    Takes a line of text and generates a reply (UTF-8 encoded) that might be
+    relevant.
+
+  "learn_reply"
+    Takes a line of text, learns from it, and generates a reply (UTF-8
+    encoded) that might be relevant.
+
+  "save"
+    Tells the underlying storage backend to save its state.
+
+CAVEATS
+    All occurences of "token_separator" will be stripped from your input
+    before it is processed, so make sure it's set to something that is
+    unlikely to appear in it.
+
+AUTHORS
+    Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
+
+    Ævar Arnfjörð Bjarmason <avar@cpan.org>
+
+LICENSE AND COPYRIGHT
+    Copyright 2010 Hinrik Örn Sigurðsson and Ævar Arnfjörð Bjarmason
+    <avar@cpan.org>
+
+    This program is free software, you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+

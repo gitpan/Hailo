@@ -1,0 +1,55 @@
+#!/usr/bin/env perl
+use Moose;
+use Encode qw(decode);
+use Hailo;
+use namespace::clean -except => 'meta';
+
+# Nothing to see here
+__PACKAGE__->meta->make_immutable;
+
+# use utf8 everywhere
+$_ = decode('utf8', $_) for @ARGV;
+binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
+
+# Set programname
+$0 = 'hailo';
+
+# Hailing frequencies open
+Hailo->new_with_options->run;
+
+=encoding utf8
+
+=head1 NAME
+
+hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
+
+=head1 SYNOPSIS
+
+Train in-memory from fortune files and reply:
+
+    for i in {1..1000}; do fortune >> /tmp/fortune.trn; done
+    hailo --brain ":memory:" --train /tmp/fortune.trn --reply "art"
+    # ==> He hath eaten me out of an art deeper than we ourselves.
+
+Create an on-disk brain for later use:
+
+    hailo --brain "hailo.brn" --train /tmp/fortune.trn
+    hailo --brain "hailo.brn" --reply "is"
+    # ==> Earth is ballasted with bones of millions of dollars.
+
+=head1 DESCRIPTION
+
+See the documentation for L<Hailo|Hailo> for more information.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

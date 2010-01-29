@@ -1,0 +1,49 @@
+---
+abstract: 'A pluggable Markov engine analogous to MegaHAL'
+author:
+  - 'Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>'
+build_requires:
+  Data::Random: 0
+  ExtUtils::MakeMaker: 6.42
+  Test::More: 0
+  Test::Script: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
+distribution_type: module
+generated_by: 'Module::Install version 0.91'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Hailo
+no_index:
+  directory:
+    - inc
+    - t
+    - xt
+recommends:
+  DBD::Pg: 0
+requires:
+  DBD::SQLite: 0
+  Data::Section: 0.100270
+  File::CountLines: 0
+  IO::Interactive: 0
+  List::MoreUtils: 0
+  Moose: 0
+  MooseX::Getopt: 0
+  MooseX::Types: 0
+  MooseX::Types::Moose: 0
+  MooseX::Types::Path::Class: 0
+  Pod::Usage: 0
+  Template: 0
+  Term::ProgressBar: 2.00
+  Text::Trim: 0
+  namespace::clean: 0
+  perl: 5.8.1
+resources:
+  Ratings: http://cpanratings.perl.org/d/Hailo
+  bugtracker: http://github.com/hinrik/hailo/issues
+  homepage: http://search.cpan.org/dist/Hailo
+  license: http://dev.perl.org/licenses/
+  repository: git://github.com/hinrik/hailo.git
+version: 0.01
