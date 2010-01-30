@@ -1,5 +1,7 @@
 package Hailo::Storage::SQLite;
+use 5.10.0;
 use Moose;
+use MooseX::StrictConstructor;
 
 our $VERSION = '0.01';
 
@@ -28,6 +30,8 @@ after stop_training => sub {
 
 sub _exists_db {
     my ($self) = @_;
+    my $brain = $self->brain;
+    return unless defined $self->brain;
     return -s $self->brain;
 }
 

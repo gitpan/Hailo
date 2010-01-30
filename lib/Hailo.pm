@@ -1,8 +1,10 @@
 package Hailo;
 
 use 5.010;
+use autodie qw(open close);
 use Class::MOP;
 use Moose;
+use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
@@ -12,7 +14,7 @@ use namespace::clean -except => [ qw(meta
                                      gettimeofday
                                      tv_interval) ];
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -207,7 +209,7 @@ sub _getopt_full_usage {
     my $synopsis = do {
         require Pod::Usage;
         my $out;
-        open my $fh, '>', \$out or die "Can't open in-memory filehandle";
+        open my $fh, '>', \$out;
         Pod::Usage::pod2usage(
             -sections => 'SYNOPSIS',
             -output   => $fh,
@@ -327,13 +329,13 @@ sub train {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
+    open my $fh, '<:encoding(utf8)', $filename;
     if ($self->print_progress) {
         $self->_train_progress($fh, $filename);
     } else {
         while (my $line = <$fh>) {
             chomp $line;
-            $self->_do_learn($line);
+            $self->_engine_obj->learn($line);
         }
     }
     close $fh;
@@ -444,7 +446,7 @@ L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.
 =head2 Etymology
 
 I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
-L<I<failo>|http://identi.ca/failo>
+L<failo|http://identi.ca/failo>.
 
 =head1 ATTRIBUTES
 

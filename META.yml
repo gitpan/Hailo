@@ -5,8 +5,10 @@ author:
 build_requires:
   Data::Random: 0
   ExtUtils::MakeMaker: 6.42
+  Test::Exception: 0.29
+  Test::Exit: 0.03
   Test::More: 0
-  Test::Script: 0
+  Test::Output: 0.16
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
@@ -33,6 +35,7 @@ requires:
   List::MoreUtils: 0
   Moose: 0
   MooseX::Getopt: 0
+  MooseX::StrictConstructor: 0.08
   MooseX::Types: 0
   MooseX::Types::Moose: 0
   MooseX::Types::Path::Class: 0
@@ -40,6 +43,7 @@ requires:
   Template: 0
   Term::ProgressBar: 2.00
   Text::Trim: 0
+  autodie: 0
   namespace::clean: 0
   perl: 5.10.0
 resources:
@@ -48,4 +52,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.04
+version: 0.05

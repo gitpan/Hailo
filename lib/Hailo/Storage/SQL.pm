@@ -1,6 +1,7 @@
 package Hailo::Storage::SQL;
-
+use 5.10.0;
 use Moose;
+use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
 use DBI;
 use List::Util qw<shuffle>;
@@ -47,7 +48,7 @@ sub _build_dbi_options {
     my ($self) = @_;
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
-    my $db = $self->brain;
+    my $db = $self->brain // '';
 
     my @options = (
         "dbi:$dbd:dbname=$db",
