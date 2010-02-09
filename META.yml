@@ -31,10 +31,13 @@ requires:
   DBD::SQLite: 0
   Data::Section: 0.100270
   File::CountLines: 0
+  File::Spec::Functions: 0
+  FindBin: 0
   IO::Interactive: 0
   List::MoreUtils: 0
   Moose: 0
   MooseX::Getopt: 0
+  MooseX::Getopt::Dashes: 0
   MooseX::StrictConstructor: 0.08
   MooseX::Types: 0
   MooseX::Types::Moose: 0
@@ -42,6 +45,7 @@ requires:
   Pod::Usage: 0
   Template: 0
   Term::ProgressBar: 2.00
+  Term::ReadLine::Gnu: 0
   Text::Trim: 0
   autodie: 0
   namespace::clean: 0
@@ -52,4 +56,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.06
+version: 0.07

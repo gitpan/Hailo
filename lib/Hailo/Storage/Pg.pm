@@ -2,8 +2,9 @@ package Hailo::Storage::Pg;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
+use namespace::clean -except => 'meta';
 
-our $VERSION = '0.01';
+our $VERSION = '0.07';
 
 extends 'Hailo::Storage::SQL';
 
@@ -42,7 +43,6 @@ sub _build_dbi_options {
 
 sub _exists_db {
     my ($self) = @_;
-
     $self->sth->{exists_db}->execute();
     return int $self->sth->{exists_db}->fetchrow_array;
 }
@@ -50,7 +50,6 @@ sub _exists_db {
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
 sub _add_expr {
     my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
-
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
@@ -60,7 +59,6 @@ sub _add_expr {
 
 sub _add_token {
     my ($self, $token) = @_;
-
     $self->sth->{add_token}->execute($token);
     return $self->sth->{add_token}->fetchrow_array;
 }
@@ -134,36 +132,36 @@ it under the same terms as Perl itself.
 __DATA__
 __[ table_token ]__
 CREATE TABLE token (
-    token_id SERIAL UNIQUE,
-    text     TEXT NOT NULL
+    id   SERIAL UNIQUE,
+    text TEXT NOT NULL UNIQUE
 );
 __[ table_expr ]__
 CREATE TABLE expr (
-    expr_id   SERIAL UNIQUE,
+    id        SERIAL UNIQUE,
     can_start BOOL,
     can_end   BOOL,
 [% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
-    expr_text TEXT NOT NULL UNIQUE
+    text TEXT NOT NULL UNIQUE
 );
 __[ table_next_token ]__
 CREATE TABLE next_token (
-    pos_token_id SERIAL UNIQUE,
-    expr_id      INTEGER NOT NULL REFERENCES  expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id),
-    count        INTEGER NOT NULL
+    id       SERIAL UNIQUE,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
 );
 __[ table_prev_token ]__
 CREATE TABLE prev_token (
-    pos_token_id SERIAL UNIQUE,
-    expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id),
-    count        INTEGER NOT NULL
+    id       SERIAL UNIQUE,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
 );
 __[ query_add_token ]__
-INSERT INTO token (text) VALUES (?) RETURNING token_id;
+INSERT INTO token (text) VALUES (?) RETURNING id;
 __[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], can_start, can_end, expr_text) VALUES ([% ids %], ?, ?, ?) RETURNING expr_id;
+INSERT INTO expr ([% columns %], can_start, can_end, text) VALUES ([% ids %], ?, ?, ?) RETURNING id;
 __[ query_exists_db ]__
 SELECT count(*) FROM information_schema.columns WHERE table_name ='info';

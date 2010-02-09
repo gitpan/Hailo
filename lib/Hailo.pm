@@ -9,12 +9,11 @@ use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
-use namespace::clean -except => [ qw(meta
-                                     count_lines
-                                     gettimeofday
-                                     tv_interval) ];
+use FindBin qw($Bin $Script);
+use File::Spec::Functions qw(catfile);
+use namespace::clean -except => 'meta';
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -142,6 +141,16 @@ has tokenizer_class => (
     default       => "Words",
 );
 
+has ui_class => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "u",
+    cmd_flag      => "ui",
+    documentation => "Use UI CLASS",
+    isa           => Str,
+    is            => "ro",
+    default       => "ReadLine",
+);
+
 # Object arguments
 has engine_args => (
     traits        => [qw(Getopt)],
@@ -164,6 +173,14 @@ has storage_args => (
 has tokenizer_args => (
     traits        => [qw(Getopt)],
     documentation => "Arguments for the Tokenizer class",
+    isa           => HashRef,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
+has ui_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the UI class",
     isa           => HashRef,
     is            => "ro",
     default       => sub { +{} },
@@ -194,6 +211,14 @@ has _tokenizer_obj => (
     init_arg    => undef,
 );
 
+has _ui_obj => (
+    traits      => [qw(NoGetopt)],
+    does        => 'Hailo::Role::UI',
+    lazy_build  => 1,
+    is          => 'ro',
+    init_arg    => undef,
+);
+
 with qw(MooseX::Getopt::Dashes);
 
 sub _getopt_full_usage {
@@ -210,7 +235,9 @@ sub _getopt_full_usage {
         require Pod::Usage;
         my $out;
         open my $fh, '>', \$out;
+
         Pod::Usage::pod2usage(
+            -input => catfile($Bin, $Script),
             -sections => 'SYNOPSIS',
             -output   => $fh,
             -exitval  => 'noexit',
@@ -235,7 +262,6 @@ USAGE
 
 sub _build__engine_obj {
     my ($self) = @_;
-
     my $obj = $self->_new_class(
         "Engine",
         $self->engine_class,
@@ -251,7 +277,6 @@ sub _build__engine_obj {
 
 sub _build__storage_obj {
     my ($self) = @_;
-
     my $obj = $self->_new_class(
         "Storage",
         $self->storage_class,
@@ -270,7 +295,6 @@ sub _build__storage_obj {
 
 sub _build__tokenizer_obj {
     my ($self) = @_;
-
     my $obj = $self->_new_class(
         "Tokenizer",
         $self->tokenizer_class,
@@ -282,9 +306,21 @@ sub _build__tokenizer_obj {
     return $obj;
 }
 
+sub _build__ui_obj {
+    my ($self) = @_;
+    my $obj = $self->_new_class(
+        "UI",
+        $self->ui_class,
+        {
+            arguments => $self->ui_args,
+        },
+    );
+
+    return $obj;
+}
+
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
-
     my $pkg = "Hailo::${type}::${class}";
     eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
@@ -297,7 +333,17 @@ sub run {
 
     if ($self->print_version) {
         print "hailo $VERSION\n";
-        exit;
+        return;
+    }
+
+    if (is_interactive() and
+        defined $self->brain_resource and
+        not defined $self->train_file and
+        not defined $self->learn_str and
+        not defined $self->learn_reply_str and
+        not defined $self->reply_str) {
+
+        $self->_ui_obj->run($self);
     }
 
     $self->train($self->train_file) if defined $self->train_file;
@@ -310,8 +356,7 @@ sub run {
 
     if (defined $self->reply_str) {
         my $answer = $self->_engine_obj->reply($self->reply_str);
-        die "I don't know enough to answer you yet.\n" if !defined $answer;
-        say $answer;
+        say $answer // "I don't know enough to answer you yet.";
     }
 
     $self->save() if defined $self->brain_resource;
@@ -351,9 +396,8 @@ before _train_progress => sub {
     return;
 };
 
-sub _train_progress {
+sub _train_progress{ 
     my ($self, $fh, $filename) = @_;
-
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
         name => "training from $filename",
@@ -472,14 +516,21 @@ The tokenizer to use. Default: 'Words';
 
 The engine to use. Default: 'Default';
 
+=head2 C<engine_class>
+
+The UI to use. Default: 'ReadLine';
+
 =head2 C<storage_args>
 
 =head2 C<tokenizer_args>
 
 =head2 C<engine_args>
 
-A C<HashRef> of arguments storage/tokenizer/engine backends. See the
-documentation for the backends for what sort of arguments they accept.
+=head2 C<ui_args>
+
+A C<HashRef> of arguments storage/tokenizer/engine/ui backends. See
+the documentation for the backends for what sort of arguments they
+accept.
 
 =head2 C<token_separator>
 
@@ -526,6 +577,10 @@ Tells the underlying storage backend to save its state.
 All occurences of L<C<token_separator>|/token_separator> will be stripped
 from your input before it is processed, so make sure it's set to something
 that is unlikely to appear in it.
+
+=head1 SUPPORT
+
+You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 =head1 AUTHORS
 

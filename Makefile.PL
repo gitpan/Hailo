@@ -15,6 +15,9 @@ githubmeta     ();
 bugtracker     ('http://github.com/hinrik/hailo/issues');
 resources      (Ratings => 'http://cpanratings.perl.org/d/Hailo');
 
+requires       ('Term::ReadLine::Gnu'           => '0');
+requires       ('FindBin'                       => '0');
+requires       ('File::Spec::Functions'         => '0');
 requires       ('autodie'                       => '0');
 requires       ('Pod::Usage'                    => '0');
 requires       ('Data::Section'                 => '0.100270');
@@ -24,6 +27,7 @@ requires       ('List::MoreUtils'               => '0');
 requires       ('Class::MOP'                    => '0');
 requires       ('Moose'                         => '0');
 requires       ('MooseX::Getopt'                => '0');
+requires       ('MooseX::Getopt::Dashes'        => '0');
 requires       ('MooseX::Types::Path::Class'    => '0');
 requires       ('MooseX::Types'                 => '0');
 requires       ('MooseX::Types::Moose'          => '0');
@@ -48,6 +52,7 @@ author_requires('Perl::Critic'        => '1.098');
 author_requires('Test::Perl::Critic'  => '0');
 author_requires('Test::Pod'           => '1.41');
 author_requires('Test::Pod::Coverage' => '1.08');
-author_tests   ('xt');
+author_requires('Test::Script'        => '0');
+author_tests   ('xt') unless $ENV{USER} eq "avar";
 
 WriteAll();

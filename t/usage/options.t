@@ -7,12 +7,14 @@ use Test::Output;
 use Test::Exit;
 use Hailo;
 
-$SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/for database handle being DESTROY/ };
+$SIG{__WARN__} = sub {
+    print STDERR @_ if $_[0] !~ m/(?:^Issuing rollback|for database handle being DESTROY)/
+};
 
 # --version
 stdout_like(
     sub {
-        exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
+        never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
     },
     qr/^hailo [0-9.]+$/,
     "Hailo prints its version",

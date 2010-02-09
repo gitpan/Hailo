@@ -7,6 +7,8 @@ use List::Util qw(min shuffle);
 use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
 
+our $VERSION = '0.07';
+
 with qw(Hailo::Role::Generic
         Hailo::Role::Engine);
 
@@ -41,51 +43,44 @@ sub reply {
     $input = $self->_clean_input($input);
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = shuffle grep { $storage->token_exists($_) }
-                             $toke->find_key_tokens(@tokens);
+                             $toke->find_key_tokens(\@tokens);
     return if !@key_tokens;
     my $key_token = shift @key_tokens;
-
-    my ($can_start, $can_end, @middle_expr) = $storage->random_expr($key_token);
-    my @reply = @middle_expr;
-    my @expr = @middle_expr;
-
+    my @reply = $storage->random_expr($key_token);
     my $repeat_limit = $self->_repeat_limit;
 
     # construct the end of the reply
-    my $i = 0; while (!$can_end) {
+    my $i = 0;
+    while (1) {
         if (($i % $order) == 0 and
             (($i >= $repeat_limit and uniq(@reply) <= $order) ||
              ($i >= $repeat_limit * 3))) {
             last;
         }
-        my $next_tokens = $storage->next_tokens(\@expr);
+        my $next_tokens = $storage->next_tokens([@reply[-$order..-1]]);
         my $next_token = $self->_pos_token($next_tokens, \@key_tokens);
+        last if !defined $next_token;
         push @reply, $next_token;
-        @expr = (@expr[1 .. $order-1], $next_token);
-        (undef, $can_end) = $storage->expr_can(@expr);
     } continue {
         $i++;
     }
-
-    @expr = @middle_expr;
 
     # construct the beginning of the reply
-    $i = 0; while (!$can_start) {
+    $i = 0; while (1) {
         if (($i % $order) == 0 and
             (($i >= $repeat_limit and uniq(@reply) <= $order) ||
              ($i >= $repeat_limit * 3))) {
             last;
         }
-        my $prev_tokens = $storage->prev_tokens(\@expr);
+        my $prev_tokens = $storage->prev_tokens([@reply[0..$order-1]]);
         my $prev_token = $self->_pos_token($prev_tokens, \@key_tokens);
+        last if !defined $prev_token;
         unshift @reply, $prev_token;
-        @expr = ($prev_token, @expr[0 .. $order-2]);
-        ($can_start, undef) = $storage->expr_can(@expr);
     } continue {
         $i++;
     }
 
-    return $toke->make_output(@reply);
+    return $toke->make_output(\@reply);
 }
 
 sub learn {
@@ -107,13 +102,13 @@ sub learn {
         $prev_token = $tokens[$i-1] if $i > 0;
 
         # store the current expression
-        $storage->add_expr(
+        $storage->add_expr( {
             tokens     => \@expr,
             next_token => $next_token,
             prev_token => $prev_token,
             can_start  => ($i == 0 ? 1 : undef),
             can_end    => ($i == @tokens-$order ? 1 : undef),
-        );
+        } );
     }
 
     return;

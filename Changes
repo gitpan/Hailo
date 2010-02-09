@@ -1,3 +1,17 @@
+0.07 Tue Feb  9 15:23:44 GMT 2010
+    - Note: The storage backends for this release have been changed in such
+      a way that it is incompatible with brains created by older releases
+    - Add missing dependencies on Test::Script/MX::Getopt::Dashes
+    - The Words tokenizer now compresses whitespace when tokenizing as
+      well as whitespace-trimming the output it produces
+    - Make start/end expressions only start/end sentences most of the time
+      instead of all the time
+    - Issue #13: `hailo -b brain' will launch an interactive ReadLine
+      terminal
+    - Don't exit() on print_version=> in run(), just return()
+    - Add $VERSION to all .pm files
+    - Use namespace::clean everywhere
+
 0.06 Sat Jan 30 19:21:28 GMT 2010
     - Construct SQL's dbd_options with lazy_build, not default. This
       makes it easy to add additional options in the individual

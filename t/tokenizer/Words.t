@@ -13,7 +13,7 @@ subtest make_tokens => sub {
         my ($str, $tokens) = @_;
 
         is_deeply(
-            [ Hailo::Tokenizer::Words::make_tokens(undef, $str) ],
+            [ Hailo::Tokenizer::Words::make_tokens(Hailo::Tokenizer::Words->new, $str) ],
             $tokens,
             "make_tokens: <<$str>> ==> " . (join ' ', map { qq[<<$_>>] } @$tokens) . ""
         );
@@ -47,7 +47,7 @@ subtest make_output => sub {
                 'bar', '"', ',', ' ', 'e.g', '.', ' ', 'bla', ' ', '.',
                 '.', '.', ' ', 'yes',
             ],
-            ' " Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
+            '" Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
         ],
         [
             "someone: how're you?",
@@ -97,6 +97,15 @@ subtest make_output => sub {
             ],
             "On example.com? Yes.",
         ],
+        [
+            "sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
+            [
+                'sá', ' ', "'", "'", 'karlkyns', "'", "'", ' ', 'aðili', ' ',
+                'í', ' ', '[', '[', 'hjónaband', ']', ']', 'i', ' ',
+                'tveggja', ' ', 'lesbía', '?',
+            ],
+            "Sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
@@ -104,7 +113,7 @@ subtest make_output => sub {
     for my $test (@tokens) {
         my $tokens = [$toke->make_tokens($test->[0])];
         is_deeply($tokens, $test->[1], 'Tokens are correct');
-        my $output = $toke->make_output(@$tokens);
+        my $output = $toke->make_output($tokens);
         is_deeply($output, $test->[2], 'Output is correct');
     }
 

@@ -3,9 +3,10 @@ use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use List::MoreUtils qw<uniq>;
+use Text::Trim;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.01';
+our $VERSION = '0.07';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
@@ -31,6 +32,9 @@ sub make_tokens {
     my ($self, $line) = @_;
     my (@tokens) = $line =~ /($TOKEN)/gs;
 
+    # compress whitespace
+    s/ +/ / for @tokens;
+
     # lower-case tokens except those which are ALL UPPERCASE
     @tokens = map { $_ ne uc($_) ? lc($_) : $_ } @tokens;
     return @tokens;
@@ -38,16 +42,15 @@ sub make_tokens {
 
 # return a list of key tokens
 sub find_key_tokens {
-    my $self = shift;
-    
+    my ($self, $tokens) = @_;
     # remove duplicates and return the interesting ones
-    return grep { /$INTERESTING/ } uniq(@_);
+    return grep { /$INTERESTING/ } uniq(@$tokens);
 }
 
 # tokens -> output
 sub make_output {
-    my $self = shift;
-    my $string = join '', @_;
+    my ($self, $reply) = @_;
+    my $string = join '', @$reply;
 
     # capitalize the first word
     $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
@@ -64,11 +67,10 @@ sub make_output {
     # end paragraphs with a period when it makes sense
     $string =~ s/ $WORD\K$/./;
 
-    # capitalize the word 'I' between word boundaries
-    # except after an apostrophe
-    $string =~ s{(?<!$APOSTROPHE)\bi\b}{I}g;
+    # capitalize the word 'I'
+    $string =~ s{(?<= )\bi\b}{I}g;
 
-    return $string;
+    return trim($string);
 }
 
 __PACKAGE__->meta->make_immutable;
