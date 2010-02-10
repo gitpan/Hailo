@@ -13,7 +13,7 @@ use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -396,7 +396,7 @@ before _train_progress => sub {
     return;
 };
 
-sub _train_progress{ 
+sub _train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
@@ -409,18 +409,18 @@ sub _train_progress{
     my $next_update = 0;
     my $start_time = [gettimeofday()];
 
-    while (my $line = <$fh>) {
+    my $i = 1; while (my $line = <$fh>) {
         chomp $line;
         $self->_engine_obj->learn($line);
-        if ($. >= $next_update) {
+        if ($i >= $next_update) {
             $next_update = $progress->update($.);
 
             # The default Term::ProgressBar estimate for next updates
             # is way too concervative. With a ~200k line file we only
             # update every ~2k lines which is 10 seconds or so.
-            $next_update = (($next_update-$.) / 10) + $.;
+            $next_update = (($next_update-$i) / 10) + $i;
         }
-    }
+    } continue { $i++ }
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
@@ -507,6 +507,18 @@ The default is 5.
 =head2 C<storage_class>
 
 The storage backend to use. Default: 'SQLite'.
+
+This gives you an idea of approximately how the backends compare in
+speed:
+
+               s/iter PostgreSQL      MySQL     SQLite       Perl
+    PostgreSQL   5.86         --        -2%       -71%       -96%
+    MySQL        5.72         2%         --       -70%       -96%
+    SQLite       1.70       245%       236%         --       -85%
+    Perl        0.250      2243%      2187%       580%         --
+
+To run your own test try running F<utils/hailo-benchmark> in the Hailo
+distribution.
 
 =head2 C<tokenizer_class>
 

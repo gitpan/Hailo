@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 extends 'Hailo::Storage::SQL';
 
@@ -49,9 +49,9 @@ sub _exists_db {
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
 sub _add_expr {
-    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
+    my ($self, $token_ids, $expr_text) = @_;
     # add the expression
-    $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
+    $self->sth->{add_expr}->execute(@$token_ids, $expr_text);
 
     # get the new expr id
     return $self->sth->{add_expr}->fetchrow_array;
@@ -130,38 +130,5 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ table_token ]__
-CREATE TABLE token (
-    id   SERIAL UNIQUE,
-    text TEXT NOT NULL UNIQUE
-);
-__[ table_expr ]__
-CREATE TABLE expr (
-    id        SERIAL UNIQUE,
-    can_start BOOL,
-    can_end   BOOL,
-[% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
-[% END %]
-    text TEXT NOT NULL UNIQUE
-);
-__[ table_next_token ]__
-CREATE TABLE next_token (
-    id       SERIAL UNIQUE,
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
-__[ table_prev_token ]__
-CREATE TABLE prev_token (
-    id       SERIAL UNIQUE,
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
-__[ query_add_token ]__
-INSERT INTO token (text) VALUES (?) RETURNING id;
-__[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], can_start, can_end, text) VALUES ([% ids %], ?, ?, ?) RETURNING id;
 __[ query_exists_db ]__
 SELECT count(*) FROM information_schema.columns WHERE table_name ='info';

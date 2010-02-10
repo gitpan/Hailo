@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 extends 'Hailo::Storage::SQL';
 
@@ -70,17 +70,7 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ table_expr ]__
-CREATE TABLE expr (
-    id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    can_start INTEGER,
-    can_end   INTEGER,
-[% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
-[% END %]
-    text TEXT NOT NULL UNIQUE
-);
-__[ query_last_expr_rowid ]_
+__[ query_last_expr_rowid ]__
 SELECT last_insert_rowid();
 __[ query_last_token_rowid ]__
 SELECT last_insert_rowid();
