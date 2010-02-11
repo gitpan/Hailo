@@ -11,9 +11,14 @@ use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
-use namespace::clean -except => 'meta';
+use Module::Pluggable (
+    search_path => [ map { "Hailo::$_" } qw(Engine Storage Tokenizer UI) ],
+    except      => qr[Mixin],
+);
+use List::Util qw(first);
+use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -219,7 +224,8 @@ has _ui_obj => (
     init_arg    => undef,
 );
 
-with qw(MooseX::Getopt::Dashes);
+with qw(MooseX::Getopt::Dashes
+        Hailo::Role::Log);
 
 sub _getopt_full_usage {
     my ($self, $usage) = @_;
@@ -321,7 +327,16 @@ sub _build__ui_obj {
 
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
-    my $pkg = "Hailo::${type}::${class}";
+
+    # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
+    my $pkg = first { / $type : .* : $class /ix } $self->plugins;
+
+    unless ($pkg) {
+        local $" = ', ';
+        my @plugins = grep { /$type/ } $self->plugins;
+        die "Couldn't find a class name matching '$class' in plugins '@plugins'";
+    }
+
     eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
 
@@ -424,7 +439,7 @@ sub _train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    print "Imported in $elapsed seconds\n";
+    $self->meh->info("Imported in $elapsed seconds");
 
     return;
 }
@@ -482,7 +497,7 @@ L<tokenizer|Hailo::Role::Tokenizer> and L<engine|Hailo::Role::Engine>
 backends.
 
 It's faster than MegaHAL and can handle huge brains easily with the
-default L<SQLite backend|Hailo::Storage::SQLite>. It can be used,
+default L<SQLite backend|Hailo::Storage::DBD::SQLite>. It can be used,
 amongst other things, to implement IRC chat bots with
 L<POE::Component::IRC>. In fact, there exists a L<POE::Component::IRC>
 L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.
@@ -511,11 +526,15 @@ The storage backend to use. Default: 'SQLite'.
 This gives you an idea of approximately how the backends compare in
 speed:
 
-               s/iter PostgreSQL      MySQL     SQLite       Perl
-    PostgreSQL   5.86         --        -2%       -71%       -96%
-    MySQL        5.72         2%         --       -70%       -96%
-    SQLite       1.70       245%       236%         --       -85%
-    Perl        0.250      2243%      2187%       580%         --
+                    s/iter CHI::File CHI::BerkeleyDB PostgreSQL MySQL CHI::Memory SQLite Perl Perl::Flat
+    CHI::File         15.1        --            -51%       -72%  -75%        -82%   -91% -95%       -95%
+    CHI::BerkeleyDB   7.43      103%              --       -42%  -49%        -64%   -81% -90%       -91%
+    PostgreSQL        4.30      252%             73%         --  -11%        -37%   -67% -83%       -84%
+    MySQL             3.83      295%             94%        12%    --        -29%   -63% -81%       -82%
+    CHI::Memory       2.70      460%            176%        59%   42%          --   -48% -73%       -75%
+    SQLite            1.41      972%            427%       205%  171%         91%     -- -48%       -52%
+    Perl             0.735     1957%            911%       485%  420%        267%    92%   --        -7%
+    Perl::Flat       0.683     2114%            988%       529%  460%        295%   106%   8%         --
 
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.

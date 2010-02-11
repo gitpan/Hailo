@@ -1,12 +1,12 @@
-package Hailo::Storage::SQLite;
+package Hailo::Storage::DBD::SQLite;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
-extends 'Hailo::Storage::SQL';
+extends 'Hailo::Storage::Mixin::DBD';
 
 has '+dbd' => (
     default => 'SQLite',
@@ -20,12 +20,16 @@ override _build_dbd_options => sub {
 };
 
 before start_training => sub {
-    shift->dbh->do('PRAGMA synchronous=OFF;');
+    my $dbh = shift->dbh;
+    $dbh->do('PRAGMA synchronous=OFF;');
+    $dbh->do('PRAGMA journal_mode=OFF;');
     return;
 };
 
 after stop_training => sub {
-    shift->dbh->do('PRAGMA synchronous=ON;');
+    my $dbh = shift->dbh;
+    $dbh->do('PRAGMA journal_mode=DELETE;');
+    $dbh->do('PRAGMA synchronous=ON;');
     return;
 };
 
@@ -33,6 +37,7 @@ sub _exists_db {
     my ($self) = @_;
     my $brain = $self->brain;
     return unless defined $self->brain;
+    return if $self->brain eq ':memory:';
     return -s $self->brain;
 }
 
@@ -42,7 +47,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::SQLite - A storage backend for L<Hailo|Hailo> using
+Hailo::Storage::DBD::SQLite - A storage backend for L<Hailo|Hailo> using
 L<DBD::SQLite|DBD::SQLite>
 
 =head1 DESCRIPTION

@@ -25,19 +25,28 @@ no_index:
     - utils
     - xt
 recommends:
+  CHI: 0.34
+  CHI::Driver::BerkeleyDB: 0
+  CHI::Driver::File: 0
+  CHI::Driver::Memory: 0
   DBD::Pg: 0
+  DBD::mysql: 0
 requires:
   Class::MOP: 0
   DBD::SQLite: 0
   Data::Section: 0.100270
+  Digest::MD4: 0
   File::CountLines: 0
   File::Spec::Functions: 0
   FindBin: 0
   IO::Interactive: 0
   List::MoreUtils: 0
+  Log::Log4perl: 0
+  Module::Pluggable: 0
   Moose: 0
   MooseX::Getopt: 0
   MooseX::Getopt::Dashes: 0
+  MooseX::Role::Strict: 0.03
   MooseX::StrictConstructor: 0.08
   MooseX::Types: 0
   MooseX::Types::Moose: 0
@@ -56,4 +65,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.08
+version: 0.09

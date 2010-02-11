@@ -1,4 +1,4 @@
-package Hailo::Storage::SQL;
+package Hailo::Storage::Mixin::DBD;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
@@ -13,10 +13,11 @@ use namespace::clean -except => [ qw(meta
                                      merged_section_data
                                      merged_section_data_names) ];
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
+        Hailo::Role::Storage
+        Hailo::Role::Log);
 
 has dbh => (
     isa        => 'DBI::db',
@@ -228,6 +229,9 @@ sub _create_db {
     my @statements = $self->_get_create_db_sql;
 
     for (@statements) {
+        if ($self->meh->is_trace()) {
+            #$self->meh->trace( sprintf "Creating database table for '%s': %s", $self->dbd, $_ );
+        }
         $self->dbh->do($_);
     }
 
@@ -427,17 +431,17 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::SQL - A skeleton SQL backend meant to be subclassed
+Hailo::Storage::Mixin::DBD - A mixin class for L<Hailo> DBD L<storage|Hailo::Role::Storage> backends
 
 =head1 AUTHOR
 
-Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
-
 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason and Hinrik E<Ouml>rn SigurE<eth>sson
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.

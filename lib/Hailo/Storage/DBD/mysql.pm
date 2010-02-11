@@ -1,12 +1,12 @@
-package Hailo::Storage::mysql;
+package Hailo::Storage::DBD::mysql;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
-extends 'Hailo::Storage::SQL';
+extends 'Hailo::Storage::Mixin::DBD';
 
 has '+dbd' => (
     default => 'mysql',
@@ -52,7 +52,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::mysql - A storage backend for L<Hailo|Hailo> using
+Hailo::Storage::DBD::mysql - A storage backend for L<Hailo|Hailo> using
 L<DBD::mysql|DBD::mysql>
 
 =head1 SYNOPSIS

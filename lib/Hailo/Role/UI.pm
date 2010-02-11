@@ -1,9 +1,9 @@
 package Hailo::Role::UI;
 use 5.10.0;
-use Moose::Role;
+use MooseX::Role::Strict;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 requires 'run';
 

@@ -1,11 +1,11 @@
-package Hailo::Tokenizer::Characters;
+package Hailo::Tokenizer::Chars;
 use 5.10.0;
 use Moose;
 use List::MoreUtils qw<uniq>;
 use Text::Trim;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
@@ -34,7 +34,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Tokenizer::Characters - A character tokenizer for L<Hailo|Hailo>
+Hailo::Tokenizer::Chars - A character tokenizer for L<Hailo|Hailo>
 
 =head1 DESCRIPTION
 
