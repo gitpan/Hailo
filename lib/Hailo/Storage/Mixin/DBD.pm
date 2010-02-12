@@ -14,7 +14,7 @@ use namespace::clean -except => [ qw(meta
                                      merged_section_data
                                      merged_section_data_names) ];
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Storage
@@ -89,9 +89,8 @@ has sth => (
 );
 
 has _boundary_token_id => (
-    isa     => Int,
-    is      => 'rw',
-    default => 1,
+    isa => Int,
+    is  => 'rw',
 );
 
 # our statement handlers
@@ -166,6 +165,7 @@ sub _sth_sections {
 
 sub _engage {
     my ($self) = @_;
+
     if ($self->_exists_db) {
         $self->sth->{get_order}->execute();
         my $order = $self->sth->{get_order}->fetchrow_array();
@@ -185,7 +185,6 @@ sub _engage {
         $self->sth->{last_token_rowid}->execute();
         my $id = $self->sth->{last_token_rowid}->fetchrow_array();
         $self->_boundary_token_id($id);
-
     }
 
     $self->_engaged(1);
@@ -195,6 +194,7 @@ sub _engage {
 
 sub start_training {
     my ($self) = @_;
+    $self->_engage() if !$self->_engaged;
     $self->start_learning();
     return;
 }
@@ -207,7 +207,7 @@ sub stop_training {
 
 sub start_learning {
     my ($self) = @_;
-    $self->_engage() if !$self->_engaged();
+    $self->_engage() if !$self->_engaged;
 
     # start a transaction
     $self->dbh->begin_work;
@@ -259,8 +259,10 @@ sub make_reply {
     my ($self, $key_tokens) = @_;
     my $order = $self->order;
 
+    $self->_engage() if !$self->_engaged;
     my @key_ids = map { $self->_token_id($_) } @$key_tokens;
     my $key_token_id = shift @key_ids;
+
     my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
     my $repeat_limit = $self->repeat_limit;
     my $expr_id = $orig_expr_id;
@@ -478,6 +480,14 @@ __PACKAGE__->meta->make_immutable;
 
 Hailo::Storage::Mixin::DBD - A mixin class for L<Hailo> DBD
 L<storage|Hailo::Role::Storage> backends
+
+=head1 METHODS
+
+The following methods must to be implemented by subclasses:
+
+=head2 C<_exists_db>
+
+Should return a true value if the database has already been created.
 
 =head1 AUTHOR
 

@@ -5,7 +5,7 @@ use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 has _memory_area => (
     isa        => HashRef,
@@ -195,7 +195,8 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Mixin::Hash - A mixin class for L<storage|Hailo::Role::Storage> classes using a C<HashRef>
+Hailo::Storage::Mixin::Hash - A mixin class for
+L<storage|Hailo::Role::Storage> classes using a C<HashRef>
 
 =head1 DESCRIPTION
 

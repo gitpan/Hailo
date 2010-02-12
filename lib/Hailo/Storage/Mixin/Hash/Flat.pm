@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 extends 'Hailo::Storage::Mixin::Hash';
 
@@ -158,7 +158,8 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Mixin::Hash::Flat - A mixin class for L<storage|Hailo::Role::Storage> classes using a flat C<HashRef>
+Hailo::Storage::Mixin::Hash::Flat - A mixin class for
+L<storage|Hailo::Role::Storage> classes using a flat C<HashRef>
 
 =head1 DESCRIPTION
 
@@ -178,4 +179,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-

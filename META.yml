@@ -31,14 +31,12 @@ recommends:
   CHI::Driver::Memory: 0
   DBD::Pg: 0
   DBD::mysql: 0
+  Digest::MD4: 0
 requires:
   Class::MOP: 0
   DBD::SQLite: 0
   Data::Section: 0.100270
-  Digest::MD4: 0
   File::CountLines: 0
-  File::Spec::Functions: 0
-  FindBin: 0
   IO::Interactive: 0
   List::MoreUtils: 0
   Log::Log4perl: 0
@@ -51,7 +49,6 @@ requires:
   MooseX::Types: 0
   MooseX::Types::Moose: 0
   MooseX::Types::Path::Class: 0
-  Pod::Usage: 0
   Template: 0
   Term::ProgressBar: 2.00
   Term::ReadLine::Gnu: 0
@@ -65,4 +62,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.10
+version: 0.11

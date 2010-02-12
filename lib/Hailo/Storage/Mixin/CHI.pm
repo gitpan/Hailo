@@ -7,7 +7,7 @@ use CHI;
 use Digest::MD4 qw(md4_hex);
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 extends qw(Hailo::Storage::Mixin::Hash::Flat);
 
@@ -113,7 +113,8 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Mixin::CHI - A mixin class for L<Hailo> L<storage|Hailo::Role::Storage> backends using L<CHI>
+Hailo::Storage::Mixin::CHI - A mixin class for L<Hailo>
+L<storage|Hailo::Role::Storage> backends using L<CHI>
 
 =head1 AUTHOR
 
@@ -127,4 +128,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-

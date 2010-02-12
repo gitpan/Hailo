@@ -6,7 +6,7 @@ use MooseX::Types::Moose qw<HashRef>;
 use Storable;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 has _memory => (
     isa        => HashRef,
@@ -37,7 +37,8 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Mixin::Storable - A mixin class for L<storage|Hailo::Role::Storage> providing L<Storable> storage
+Hailo::Storage::Mixin::Storable - A mixin class for
+L<storage|Hailo::Role::Storage> providing L<Storable> storage
 
 =head1 DESCRIPTION
 
@@ -55,4 +56,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-

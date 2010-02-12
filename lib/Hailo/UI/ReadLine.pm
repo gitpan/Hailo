@@ -6,7 +6,7 @@ use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::UI);
@@ -57,12 +57,6 @@ command-line with only a C<--brain> argument:
 
 Presents a ReadLine interface using L<Term::ReadLine>, the
 L<Term::ReadLine::Gnu> frontend will be used.
-
-=head1 METHODS
-
-=head2 C<run>
-
-Run the UI.
 
 =head1 AUTHOR
 

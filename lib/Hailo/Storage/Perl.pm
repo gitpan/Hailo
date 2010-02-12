@@ -6,7 +6,7 @@ use MooseX::Types::Moose qw<HashRef Int Str>;
 use Storable;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 extends qw(Hailo::Storage::Mixin::Hash
            Hailo::Storage::Mixin::Storable);
@@ -41,4 +41,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
