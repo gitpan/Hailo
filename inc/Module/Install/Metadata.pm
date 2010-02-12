@@ -6,7 +6,7 @@ use Module::Install::Base ();
 
 use vars qw{$VERSION @ISA $ISCORE};
 BEGIN {
-	$VERSION = '0.92';
+	$VERSION = '0.91';
 	@ISA     = 'Module::Install::Base';
 	$ISCORE  = 1;
 }
@@ -230,8 +230,6 @@ sub all_from {
 		die("The path '$file' does not exist, or is not a file");
 	}
 
-    $self->{values}{all_from} = $file;
-
 	# Some methods pull from POD instead of code.
 	# If there is a matching .pod, use that instead
 	my $pod = $file;
@@ -387,10 +385,11 @@ sub name_from {
 	}
 }
 
-sub _extract_perl_version {
+sub perl_version_from {
+	my $self = shift;
 	if (
-		$_[0] =~ m/
-		^\s*
+		Module::Install::_read($_[0]) =~ m/
+		^
 		(?:use|require) \s*
 		v?
 		([\d_\.]+)
@@ -399,16 +398,6 @@ sub _extract_perl_version {
 	) {
 		my $perl_version = $1;
 		$perl_version =~ s{_}{}g;
-		return $perl_version;
-	} else {
-		return;
-	}
-}
-
-sub perl_version_from {
-	my $self = shift;
-	my $perl_version=_extract_perl_version(Module::Install::_read($_[0]));
-	if ($perl_version) {
 		$self->perl_version($perl_version);
 	} else {
 		warn "Cannot determine perl version info from $_[0]\n";
@@ -436,12 +425,13 @@ sub author_from {
 	}
 }
 
-sub _extract_license {
+sub license_from {
+	my $self = shift;
 	if (
-		$_[0] =~ m/
+		Module::Install::_read($_[0]) =~ m/
 		(
 			=head \d \s+
-			(?:licen[cs]e|licensing|copyrights?|legal)\b
+			(?:licen[cs]e|licensing|copyright|legal)\b
 			.*?
 		)
 		(=head\\d.*|=cut.*|)
@@ -449,8 +439,7 @@ sub _extract_license {
 	/ixms ) {
 		my $license_text = $1;
 		my @phrases      = (
-			'under the same (?:terms|license) as (?:perl|the perl programming language)' => 'perl', 1,
-			'under the terms of (?:perl|the perl programming language) itself' => 'perl', 1,
+			'under the same (?:terms|license) as (?:perl|the perl programming language) itself' => 'perl', 1,
 			'GNU general public license'         => 'gpl',         1,
 			'GNU public license'                 => 'gpl',         1,
 			'GNU lesser general public license'  => 'lgpl',        1,
@@ -467,32 +456,20 @@ sub _extract_license {
 			'proprietary'                        => 'proprietary', 0,
 		);
 		while ( my ($pattern, $license, $osi) = splice(@phrases, 0, 3) ) {
-			$pattern =~ s#\s+#\\s+#gs;
+			$pattern =~ s{\s+}{\\s+}g;
 			if ( $license_text =~ /\b$pattern\b/i ) {
-			        return $license;
+				$self->license($license);
+				return 1;
 			}
 		}
-	} else {
-	        return;
 	}
-}
 
-sub license_from {
-	my $self = shift;
-	if (my $license=_extract_license(Module::Install::_read($_[0]))) {
-		$self->license($license);
-	} else {
-		warn "Cannot determine license info from $_[0]\n";
-		return 'unknown';
-	}
+	warn "Cannot determine license info from $_[0]\n";
+	return 'unknown';
 }
 
 sub _extract_bugtracker {
-	my @links   = $_[0] =~ m#L<(
-	 \Qhttp://rt.cpan.org/\E[^>]+|
-	 \Qhttp://github.com/\E[\w_]+/[\w_]+/issues|
-	 \Qhttp://code.google.com/p/\E[\w_\-]+/issues/list
-	 )>#gx;
+	my @links   = $_[0] =~ m#L<(\Qhttp://rt.cpan.org/\E[^>]+)>#g;
 	my %links;
 	@links{@links}=();
 	@links=keys %links;
@@ -508,7 +485,7 @@ sub bugtracker_from {
 		return 0;
 	}
 	if ( @links > 1 ) {
-		warn "Found more than one bugtracker link in $_[0]\n";
+		warn "Found more than on rt.cpan.org link in $_[0]\n";
 		return 0;
 	}
 

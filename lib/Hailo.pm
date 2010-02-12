@@ -5,20 +5,20 @@ use autodie qw(open close);
 use Class::MOP;
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw/Int Str Bool HashRef/;
+use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
-    search_path => [ map { "Hailo::$_" } qw(Engine Storage Tokenizer UI) ],
+    search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => qr[Mixin],
 );
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -82,7 +82,7 @@ has reply_str => (
     cmd_aliases   => "r",
     cmd_flag      => "reply",
     documentation => "Reply to STRING",
-    isa           => Str,
+    isa           => Maybe[Str],
     is            => "ro",
 );
 
@@ -103,27 +103,6 @@ has brain_resource => (
     documentation => "Load/save brain to/from FILE",
     isa           => Str,
     is            => "ro",
-);
-
-has token_separator => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'P',
-    cmd_flag      => 'separator',
-    documentation => "String used when joining an expression into a string",
-    isa           => Str,
-    is            => 'rw',
-    default       => "\t",
-);
-
-# Working classes
-has engine_class => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "E",
-    cmd_flag      => "engine",
-    documentation => "Use engine CLASS",
-    isa           => Str,
-    is            => "ro",
-    default       => "Default",
 );
 
 has storage_class => (
@@ -157,15 +136,6 @@ has ui_class => (
 );
 
 # Object arguments
-has engine_args => (
-    traits        => [qw(Getopt)],
-    documentation => "Arguments for the Engine class",
-    isa           => HashRef,
-    coerce        => 1,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
 has storage_args => (
     traits        => [qw(Getopt)],
     documentation => "Arguments for the Storage class",
@@ -191,15 +161,17 @@ has ui_args => (
     default       => sub { +{} },
 );
 
-# Working objects
-has _engine_obj => (
-    traits      => [qw(NoGetopt)],
-    does        => 'Hailo::Role::Engine',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
+has token_separator => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'P',
+    cmd_flag      => 'separator',
+    documentation => "String used when joining an expression into a string",
+    isa           => Str,
+    is            => 'rw',
+    default       => "\t",
 );
 
+# Working objects
 has _storage_obj => (
     traits      => [qw(NoGetopt)],
     does        => 'Hailo::Role::Storage',
@@ -266,21 +238,6 @@ USAGE
     exit 1;
 }
 
-sub _build__engine_obj {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Engine",
-        $self->engine_class,
-        {
-            storage   => $self->_storage_obj,
-            tokenizer => $self->_tokenizer_obj,
-            arguments => $self->engine_args,
-        },
-    );
-
-    return $obj;
-}
-
 sub _build__storage_obj {
     my ($self) = @_;
     my $obj = $self->_new_class(
@@ -329,7 +286,8 @@ sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
     # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
-    my $pkg = first { / $type : .* : $class /ix } $self->plugins;
+    my $pkg = first { / $type : .* : $class /ix }
+              sort { length $a <=> length $b } $self->plugins;
 
     unless ($pkg) {
         local $" = ', ';
@@ -370,7 +328,7 @@ sub run {
     }
 
     if (defined $self->reply_str) {
-        my $answer = $self->_engine_obj->reply($self->reply_str);
+        my $answer = $self->reply($self->reply_str);
         say $answer // "I don't know enough to answer you yet.";
     }
 
@@ -395,7 +353,7 @@ sub train {
     } else {
         while (my $line = <$fh>) {
             chomp $line;
-            $self->_engine_obj->learn($line);
+            $self->_learn_one($line);
         }
     }
     close $fh;
@@ -426,7 +384,7 @@ sub _train_progress {
 
     my $i = 1; while (my $line = <$fh>) {
         chomp $line;
-        $self->_engine_obj->learn($line);
+        $self->_learn_one($line);
         if ($i >= $next_update) {
             $next_update = $progress->update($.);
 
@@ -444,25 +402,59 @@ sub _train_progress {
     return;
 }
 
+sub _clean_input {
+    my ($self, $input) = @_;
+    my $separator = quotemeta $self->_storage_obj->token_separator;
+    $input =~ s/$separator//g;
+    return $input;
+}
+
 sub learn {
     my ($self, $input) = @_;
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
-    $self->_engine_obj->learn($input);
+    $self->_learn_one($input);
     $storage->stop_learning();
     return;
 }
 
-sub reply {
+sub _learn_one {
     my ($self, $input) = @_;
-    return $self->_engine_obj->reply($input);
+    my $storage = $self->_storage_obj;
+    my $order   = $storage->order;
+
+    $input = $self->_clean_input($input);
+    my @tokens = $self->_tokenizer_obj->make_tokens($input);
+
+    # only learn from inputs which are long enough
+    return if @tokens < $order;
+
+    $storage->learn_tokens(\@tokens);
+    return;
 }
 
 sub learn_reply {
     my ($self, $input) = @_;
     $self->learn($input);
-    return $self->_engine_obj->reply($input);
+    return $self->reply($input);
+}
+
+sub reply {
+    my ($self, $input) = @_;
+    my $storage = $self->_storage_obj;
+    my $toke    = $self->_tokenizer_obj;
+
+    my @key_tokens;
+    if (defined $input) {
+        $input = $self->_clean_input($input);
+        my @tokens = $toke->make_tokens($input);
+        @key_tokens = $toke->find_key_tokens(\@tokens);
+    }
+
+    my $reply = $storage->make_reply(\@key_tokens);
+    return if !defined $reply;
+    return $toke->make_output($reply);
 }
 
 __PACKAGE__->meta->make_immutable;
