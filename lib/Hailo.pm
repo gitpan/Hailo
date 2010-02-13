@@ -25,7 +25,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -454,10 +454,11 @@ sub _clean_input {
 
 sub learn {
     my ($self, $input) = @_;
+    my $inputs = ref $input eq 'ARRAY' ? $input : [$input];
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
-    $self->_learn_one($input);
+    $self->_learn_one($_) for @$inputs;
     $storage->stop_learning();
     return;
 }
@@ -522,7 +523,7 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 
  while (<>) {
      $hailo->learn($_);
-     print $hailo->reply($_), "\n";
+     say $hailo->reply($_);
  }
 
 =head1 DESCRIPTION
@@ -615,13 +616,14 @@ Run the application according to the command line arguments.
 
 =head2 C<learn>
 
-Takes a string argument and learns from it.
+Takes a string or an array reference of strings, and learns from them.
 
 =head2 C<train>
 
-Takes a filename, filehandle or array referenceand calls L<C<learn>|/learn>
-on all its lines. If a filename is passed, the file is assumed to be UTF-8
-encoded.
+Takes a filename, filehandle or array reference and learns from all its
+lines. If a filename is passed, the file is assumed to be UTF-8 encoded.
+Unlike L<C<learn>|/learn>, this method sacrifices some safety (disables
+the database journal, fsyncs, etc) for speed while learning.
 
 =head2 C<reply>
 
@@ -645,6 +647,12 @@ that is unlikely to appear in it.
 =head1 SUPPORT
 
 You can join the IRC channel I<#hailo> on FreeNode if you have questions.
+
+=head1 SEE ALSO
+
+L<Hailo: A Perl rewrite of
+MegaHAL|http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
+- A blog posting about the motivation behind Hailo
 
 =head1 AUTHORS
 

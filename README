@@ -14,7 +14,7 @@ SYNOPSIS
 
      while (<>) {
          $hailo->learn($_);
-         print $hailo->reply($_), "\n";
+         say $hailo->reply($_);
      }
 
 DESCRIPTION
@@ -89,12 +89,13 @@ METHODS
     Run the application according to the command line arguments.
 
   "learn"
-    Takes a string argument and learns from it.
+    Takes a string or an array reference of strings, and learns from them.
 
   "train"
-    Takes a filename, filehandle or array referenceand calls "learn" on all
-    its lines. If a filename is passed, the file is assumed to be UTF-8
-    encoded.
+    Takes a filename, filehandle or array reference and learns from all its
+    lines. If a filename is passed, the file is assumed to be UTF-8 encoded.
+    Unlike "learn", this method sacrifices some safety (disables the
+    database journal, fsyncs, etc) for speed while learning.
 
   "reply"
     Takes an optional line of text and generates a reply that might be
@@ -114,6 +115,12 @@ CAVEATS
 
 SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.
+
+SEE ALSO
+    Hailo: A Perl rewrite of MegaHAL
+    <http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-per
+    l-rewrite-of-megahal.html> - A blog posting about the motivation behind
+    Hailo
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com

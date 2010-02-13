@@ -8,10 +8,12 @@ use File::Spec::Functions qw(catdir catfile);
 use Data::Random qw(:all);
 use File::Slurp qw(slurp);
 use List::Util qw(shuffle min);
+use File::Temp qw(tempfile tempdir);
+use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::Words;
 
 sub simple_storages {
-    return qw(Perl DBD::SQLite)
+    return qw(Perl Perl::Flat DBD::SQLite)
 }
 
 sub flat_storages {
@@ -26,16 +28,63 @@ sub chain_storages {
     return qw(Perl Perl::Flat);
 }
 
-has tempdir => (
+sub all_tests {
+    return qw(test_starcraft test_congress test_congress_unknown test_babble test_badger test_megahal);
+}
+
+sub all_tests_known { return grep { $_ !~ /unknown/ } all_tests() }
+
+has brief => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 0,
+);
+
+has in_memory => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 1,
+);
+
+has tmpdir => (
     is => 'ro',
     isa => 'Str',
+    lazy_build => 1,
 );
+
+sub _build_tmpdir {
+    my ($self) = @_;
+    my $storage = $self->storage;
+
+    $storage =~ s/[^A-Za-z0-9]/-/g;
+
+    # Dir to store our brains
+    my $dir = tempdir( "hailo-test-$storage-XXXXX", CLEANUP => 1, TMPDIR => 1 );
+
+    return $dir;
+}
 
 has brain_resource => (
     is => 'ro',
     isa => 'Str',
-    default => '',
 );
+
+has tmpfile => (
+    is => 'ro',
+    lazy_build => 1,
+);
+
+sub _build_tmpfile {
+    my ($self) = @_;
+
+    # Dir to store our brains
+    my $dir = $self->tmpdir;
+
+    my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
+    $fh->autoflush(1);
+
+    return [$fh, $filename];
+}
 
 has hailo => (
     is => 'ro',
@@ -53,10 +102,16 @@ sub _build_hailo {
     return $hailo;
 }
 
+sub brain {
+    my ($self) = @_;
+
+    return $self->brain_resource // $self->tmpfile->[1];
+}
+
 sub spawn_storage {
     my ($self) = @_;
     my $storage = $self->storage;
-    my $brainrs = $self->brain_resource;
+    my $brainrs = $self->brain;
     my $ok = 1;
 
     my %classes = (
@@ -69,7 +124,7 @@ sub spawn_storage {
 
     if (exists $classes{$storage}) {
         eval { Class::MOP::load_class($classes{$storage}) };
-        return;
+        return if $@;
     }
 
     given ($storage) {
@@ -77,13 +132,16 @@ sub spawn_storage {
             # It doesn't use the file to store data obviously, it's just a convenient random token.
             if (system "createdb '$brainrs' >/dev/null 2>&1") {
                 $ok = 0;
+            } else {
+                # Kill Pg notices
+                $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
             }
         }
         when (/mysql/) {
             if (system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
                 $ok = 0;
             } else {
-                system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
+                $self->_nuke_mysql();
             }
         }
     }
@@ -91,18 +149,30 @@ sub spawn_storage {
     return $ok;
 }
 
+sub _nuke_mysql {
+    system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
+}
+
 sub unspawn_storage {
     my ($self) = @_;
     my $storage = $self->storage;
-    my $brainrs = $self->brain_resource;
+    my $brainrs = $self->brain;
+
+    my $nuke_db = sub {
+        $_->finish for values %{ $self->hailo->_storage_obj->sth };
+        $self->hailo->_storage_obj->dbh->disconnect;
+    };
 
     given ($storage) {
         when (/Pg/) {
+            $nuke_db->();
             system "dropdb '$brainrs'";
         }
         when (/SQLite/) {
-            $_->finish for values %{ $self->hailo->_storage_obj->sth };
-            $self->hailo->_storage_obj->dbh->disconnect;
+            $nuke_db->();
+        }
+        when (/mysql/) {
+            $self->_nuke_mysql();
         }
     }
 }
@@ -116,18 +186,18 @@ sub _connect_opts {
     given ($storage) {
         when (/SQLite/) {
             %opts = (
-                brain_resource => ($self->brain_resource || ':memory:')
-            ),
+                brain_resource => ($self->in_memory  ? ':memory:' : $self->brain)
+            );
         }
         when (/Perl/) {
             %opts = (
-                brain_resource => $self->brain_resource,
+                brain_resource => $self->brain,
             ),
         }
         when (/Pg/) {
             %opts = (
                 storage_args => {
-                    dbname => $self->brain_resource
+                    dbname => $self->brain
                 },
             );
         }
@@ -144,7 +214,7 @@ sub _connect_opts {
         when (/CHI::(?:BerkeleyDB|File)/) {
             %opts = (
                 storage_args => {
-                    root_dir => $self->tempdir,
+                    root_dir => $self->tmpdir,
                 },
             );
         }
@@ -171,11 +241,11 @@ sub train_megahal_trn {
 }
 
 sub train_file {
-    my ($self) = @_;
+    my ($self, $file) = @_;
     my $hailo = $self->hailo;
 
-    my $fh = $self->test_fh("badger.trn");
-    $hailo->train($fh);
+    my $f = $self->test_file($file);
+    $hailo->train($f);
 }
 
 sub train_a_few_words {
@@ -184,7 +254,7 @@ sub train_a_few_words {
 
     # Get some training material
     my $size = 10;
-    my @random_words = rand_words( size => $size );
+    my @random_words = rand_chars( set => 'all', min => 10, max => 15 );
 
     # Learn from it
     eval {
@@ -222,11 +292,13 @@ sub test_badger {
     my ($self) = @_;
     my $hailo = $self->hailo;
     my $storage = $self->storage;
+    my $brief = $self->brief;
 
-    my $fh = $self->test_fh("badger.trn");
-    $hailo->train($fh);
+    $self->train_filename("badger.trn");
 
-    for (1 .. 50) {
+    my $tests = $brief ? 5 : 50;
+
+    for (1 .. $tests) {
         for (1 .. 5) {
             my $reply = $hailo->reply("badger");
             like($reply,
@@ -240,20 +312,35 @@ sub test_badger {
     return;
 }
 
+sub train_filename {
+    my ($self, $filename, $lines) = @_;
+    my $hailo   = $self->hailo;
+    my $storage = $self->storage;
+    my $file    = $self->test_file($filename);
+    my $fh      = $self->test_fh($filename);
+    my $lns     = $lines // count_lines($file);
+
+    for my $l (1 .. $lns) {
+        chomp(my $_ = <$fh>);
+        pass("$storage: Training line $l/$filename: $_");
+        $hailo->learn($_);
+    }
+}
 sub test_megahal {
     my ($self, $lines) = @_;
-    my $hailo = $self->hailo;
+    my $hailo   = $self->hailo;
     my $storage = $self->storage;
+    my $file    = $self->test_file("megahal.trn");
+    my $lns     = $lines // count_lines($file);
+    $lns        = ($self->brief) ? 30 : $lns;
 
-    my $fh = $self->test_fh("megahal.trn");
-    $hailo->train($fh);
 
-    my @words = $self->some_words("megahal.trn", $lines, 50);
-
+    $self->train_filename("megahal.trn", $lns);
+    my @words = $self->some_words("megahal.trn", $lns * 0.1);
 
     for (@words) {
         my $reply = $hailo->reply($_);
-        ok(defined $reply, "$storage: Got a reply");
+        ok(defined $reply, "$storage: Got a reply to $_");
     }
 
     return;
@@ -263,7 +350,7 @@ sub test_chaining {
     my ($self) = @_;
     my $hailo = $self->hailo;
     my $storage = $self->storage;
-    my $brainrs = $self->brain_resource;
+    my $brainrs = $self->brain;
 
     my $prev_brain;
     for my $i (1 .. 10) {
@@ -277,16 +364,62 @@ sub test_chaining {
             is_deeply($prev_brain, $this_brain, "$storage: Our previous $storage brain matches the new one, try $i");
         }
 
-        my ($err, $words) = $test->train_a_few_words();
-
-        # Hailo replies
-        cmp_ok(length($test->hailo->reply($words->[5])) * 2, '>', length($words->[5]), "$storage: Hailo knows how to babble, try $i");
+        $self->test_babble;
 
         # Save this brain for the next iteration
         $prev_brain = $test->hailo->_storage_obj->_memory;
 
         $test->hailo->save();
     }
+}
+
+sub test_babble {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+    for (1 .. 10) {
+        my ($err, $words) = $self->train_a_few_words();
+
+        my $input = $words->[5];
+        my $reply = $hailo->reply($input);
+        # Hailo replies
+        cmp_ok(length($reply) * 2, '>', length($input), "$storage: Hailo knows how to babble, said '$reply' given '$input'");
+    }
+}
+
+sub test_starcraft {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+
+  SKIP: {
+    skip "$storage: We have to implement a method for clearing brains, or construct a new brain for each test", 4;
+
+    $self->train_filename("starcraft.trn");
+
+    ok(defined $hailo->reply("Gogogo"), "$storage: Got a random reply");
+    ok(defined $hailo->reply("Naturally"), "$storage: Got a random reply");
+    ok(defined $hailo->reply("Slamming"), "$storage: Got a random reply");
+
+    my %reply;
+    for (1 .. 500) {
+        $reply{ $hailo->reply("that") } = 1;
+    }
+
+    is_deeply(
+        \%reply,
+        {
+            "Ah, fusion, eh? I'll have to remember that." => 1,
+            "I copy that." => 1,
+            "I hear that." => 1,
+            "I really have to remember that." => 1,
+            "Oh, is that it?" => 1,
+        },
+        "$storage: Make sure we get every possible reply"
+    );
+  }
 }
 
 sub test_all_plan {
@@ -298,21 +431,20 @@ sub test_all_plan {
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if (defined $restriction && $restriction eq 'known') {
-        plan(tests => 602);
+        plan(tests => 951);
         $self->test_known;
     }
     else {
-        plan(tests => 603);
+        plan(tests => 952);
         $self->test_all;
     }
-    $self->unspawn_storage();
   }
 }
 
 sub test_known {
     my ($self) = @_;
 
-    for (qw(test_congress test_badger test_megahal)) {
+    for (all_tests_known()) {
         $self->$_;
     }
 
@@ -322,7 +454,7 @@ sub test_known {
 sub test_all {
     my ($self) = @_;
 
-    for (qw(test_congress test_congress_unknown test_badger test_megahal)) {
+    for (all_tests()) {
         $self->$_;
     }
 
@@ -340,7 +472,7 @@ sub some_words {
     my @trn_words = map { $words->make_tokens($_) } @small_trn;
     my @words = shuffle($words->find_key_tokens(\@trn_words));
 
-    @words = @words[0 .. 50];
+    @words = @words[0 .. $lines];
 
     return @words;
 }
@@ -363,6 +495,14 @@ sub test_file {
     my $path = catfile($hailo_test, 'Test', $file);
 
     return $path;
+}
+
+sub DEMOLISH {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+    $self->unspawn_storage();
 }
 
 __PACKAGE__->meta->make_immutable;
