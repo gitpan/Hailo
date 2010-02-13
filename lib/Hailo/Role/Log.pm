@@ -1,10 +1,10 @@
 package Hailo::Role::Log;
-use 5.10.0;
+use 5.010;
 use MooseX::Role::Strict;
 use Log::Log4perl;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 # Adapted from http://stackoverflow.com/questions/2232430/possible-to-get-log4perl-to-report-actually-line-number-of-log-event/2232473
 

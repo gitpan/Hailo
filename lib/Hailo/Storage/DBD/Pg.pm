@@ -1,10 +1,10 @@
 package Hailo::Storage::DBD::Pg;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 extends 'Hailo::Storage::Mixin::DBD';
 
@@ -51,7 +51,7 @@ sub _exists_db {
 sub _add_expr {
     my ($self, $token_ids, $expr_text) = @_;
     # add the expression
-    $self->sth->{add_expr}->execute(@$token_ids, $expr_text);
+    $self->sth->{add_expr}->execute(@$token_ids);
 
     # get the new expr id
     return $self->sth->{add_expr}->fetchrow_array;

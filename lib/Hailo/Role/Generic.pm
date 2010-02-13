@@ -1,10 +1,10 @@
 package Hailo::Role::Generic;
-use 5.10.0;
+use 5.010;
 use MooseX::Role::Strict;
 use MooseX::Types::Moose qw/HashRef/;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 has arguments => (
     isa           => HashRef,
@@ -25,8 +25,8 @@ Hailo::Role::Generic - A role used by all other L<Hailo|Hailo> roles
 
 =head2 C<arguments>
 
-A C<HashRef> of arguments passed to us from L<Hailo>'s
-L<storage|Hailo/storage_args>, L<engine|Hailo/engine_args> or
+A C<HashRef> of arguments passed to us from L<Hailo|Hailo>'s
+L<storage|Hailo/storage_args>, or
 L<tokenizer|Hailo/tokenizer_args> arguments.
 
 =head1 AUTHOR

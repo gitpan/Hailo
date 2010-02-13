@@ -1,11 +1,11 @@
 package Hailo::Role::Storage;
-use 5.10.0;
+use 5.010;
 use MooseX::Role::Strict;
 use MooseX::Types::Moose qw<Str Int>;
 use List::Util qw<min>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 has brain => (
     isa => Str,

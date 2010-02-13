@@ -1,6 +1,6 @@
 package Hailo;
 
-use 5.10.0;
+use 5.010;
 use autodie qw(open close);
 use Class::MOP;
 use Moose;
@@ -13,12 +13,19 @@ use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
-    except      => qr[Mixin],
+    except      => [
+        qr[Mixin],
+
+        # If an old version of Hailo is already istalled these modules
+        # may be lying around. Ignore them manually; and make sure to
+        # update this list if we move things around again.
+        map( { qq[Hailo::Storage::$_] } qw(SQL SQLite Pg mysql)),
+    ],
 );
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -61,7 +68,7 @@ has learn_str => (
 has learn_reply_str => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "L",
-    cmd_flag      => "learn_reply",
+    cmd_flag      => "learn-reply",
     documentation => "Learn from STRING and reply to it",
     isa           => Str,
     is            => "ro",
@@ -301,6 +308,23 @@ sub _new_class {
     return $pkg->new(%$args);
 }
 
+# Check validity of options
+before run => sub {
+    my ($self) = @_;
+
+    if (defined $self->reply_str and
+        not defined $self->brain_resource and
+        not defined $self->train_file and
+        not defined $self->learn_str and
+        not defined $self->learn_reply_str) {
+        # TODO: Make this spew out the --help reply just like hailo
+        # with invalid options does usually
+        die "A bare reply_str without a brain doesn't work";
+    }
+
+    return;
+};
+
 sub run {
     my ($self) = @_;
 
@@ -343,20 +367,39 @@ sub save {
 }
 
 sub train {
-    my ($self, $filename) = @_;
+    my ($self, $input) = @_;
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    open my $fh, '<:encoding(utf8)', $filename;
+    my $got_filename = (ref $input eq '' || ref $input eq 'Path::Class::File');
+
+    my $fh;
+    if (ref $input eq 'GLOB') {
+        $fh = $input;
+    }
+    elsif ($got_filename) {
+        open $fh, '<:encoding(utf8)', $input;
+    }
+
     if ($self->print_progress) {
-        $self->_train_progress($fh, $filename);
-    } else {
+        if (!$got_filename) {
+            die "Can't train with progress unless argument is a filename\n";
+        }
+        $self->_train_progress($fh, $input);
+    }
+    elsif (ref $input eq 'ARRAY') {
+        for my $line (@$input) {
+            $self->_learn_one($line);
+        }
+    }
+    else {
         while (my $line = <$fh>) {
             chomp $line;
             $self->_learn_one($line);
         }
     }
-    close $fh;
+
+    close $fh if $got_filename;
     $storage->stop_training();
     return;
 }
@@ -523,15 +566,15 @@ The storage backend to use. Default: 'SQLite'.
 This gives you an idea of approximately how the backends compare in
 speed:
 
-                 s/iter CHI::File CHI::BerkeleyDB PostgreSQL MySQL CHI::Memory SQLite Perl Perl::Flat
- CHI::File         15.1        --            -51%       -72%  -75%        -82%   -91% -95%       -95%
- CHI::BerkeleyDB   7.43      103%              --       -42%  -49%        -64%   -81% -90%       -91%
- PostgreSQL        4.30      252%             73%         --  -11%        -37%   -67% -83%       -84%
- MySQL             3.83      295%             94%        12%    --        -29%   -63% -81%       -82%
- CHI::Memory       2.70      460%            176%        59%   42%          --   -48% -73%       -75%
- SQLite            1.41      972%            427%       205%  171%         91%     -- -48%       -52%
- Perl             0.735     1957%            911%       485%  420%        267%    92%   --        -7%
- Perl::Flat       0.683     2114%            988%       529%  460%        295%   106%   8%         --
+                   Rate CHI::File PostgreSQL CHI::BerkeleyDB MySQL CHI::Memory SQLite Perl::Flat Perl
+ CHI::File       1.08/s        --       -53%            -63%  -70%        -71%   -78%       -89% -93%
+ PostgreSQL      2.28/s      112%         --            -21%  -35%        -38%   -53%       -76% -86%
+ CHI::BerkeleyDB 2.90/s      169%        27%              --  -18%        -21%   -40%       -70% -82%
+ MySQL           3.53/s      228%        55%             22%    --         -4%   -27%       -63% -78%
+ CHI::Memory     3.68/s      242%        61%             27%    4%          --   -24%       -62% -78%
+ SQLite          4.81/s      347%       111%             66%   36%         31%     --       -50% -71%
+ Perl::Flat      9.62/s      793%       321%            232%  172%        162%   100%         -- -41%
+ Perl            16.4/s     1423%       618%            466%  364%        346%   241%        70%   --
 
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.
@@ -550,9 +593,8 @@ The UI to use. Default: 'ReadLine';
 
 =head2 C<ui_args>
 
-A C<HashRef> of arguments storage/tokenizer/engine/ui backends. See
-the documentation for the backends for what sort of arguments they
-accept.
+A C<HashRef> of arguments storage/tokenizer/ui backends. See the
+documentation for the backends for what sort of arguments they accept.
 
 =head2 C<token_separator>
 
@@ -573,12 +615,13 @@ Run the application according to the command line arguments.
 
 =head2 C<learn>
 
-Takes a line of UTF-8 encoded text as input and learns from it.
+Takes a string argument and learns from it.
 
 =head2 C<train>
 
-Takes a filename and calls L<C<learn>|/learn> on all its lines. The file is
-assumed to be UTF-8 encoded.
+Takes a filename, filehandle or array referenceand calls L<C<learn>|/learn>
+on all its lines. If a filename is passed, the file is assumed to be UTF-8
+encoded.
 
 =head2 C<reply>
 
@@ -586,8 +629,8 @@ Takes an optional line of text and generates a reply that might be relevant.
 
 =head2 C<learn_reply>
 
-Takes a line of text, learns from it, and generates a reply that might be
-relevant.
+Takes a string argument, learns from it, and generates a reply that might
+be relevant.
 
 =head2 C<save>
 

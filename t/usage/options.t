@@ -1,7 +1,7 @@
-use 5.10.0;
+use 5.010;
 use strict;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 34;
+use Test::More tests => 36;
 use Test::Exception;
 use Test::Output;
 use Test::Exit;
@@ -23,7 +23,7 @@ stdout_like(
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";
 # Valid train file
-lives_ok { Hailo->new( train_file => __FILE__, print_progress => 0 )->run }  "Calling Hailo with an invalid training file";
+lives_ok { Hailo->new( train_file => __FILE__, print_progress => 0 )->run }  "Calling Hailo with a valid training file";
 
 # learn_str
 lives_ok { Hailo->new( learn_str => "foo" )->run } "Hailo can learn from a string";
@@ -38,6 +38,18 @@ is( sub {
     "Hello there good sirs.",
     "Hailo learns / replies",
 );
+
+# reply
+dies_ok {
+    my $hailo = Hailo->new( reply_str => "foo ")->run
+} "reply_str with no other options should fail";
+
+# reply with empty brain
+{
+    my $hailo = Hailo->new;
+    my $reply = $hailo->reply("foo");
+    is($reply, undef, "If hailo doesn't know anything he should return undef, and not spew warnings");
+}
 
 # learn_reply_str
 is( sub {

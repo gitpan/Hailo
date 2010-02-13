@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+my $test = $ARGV[0] || 't/usage/options.t';
+die <<EOF
+# Copy-paste this for great success. You can supply another test than
+# t/usage/options.t as \$ARGV[0]
+
+rm -rf /tmp/hailo; mkdir -p /tmp/hailo/t
+cp -Rvp $test /tmp/hailo/t/
+cp utils/bisect-hailo /tmp/hailo/
+git bisect start
+git bisect bad
+git bisect good 0.09
+git bisect run prove -Ilib /tmp/hailo/t
+EOF

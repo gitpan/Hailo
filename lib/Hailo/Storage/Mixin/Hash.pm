@@ -1,11 +1,12 @@
 package Hailo::Storage::Mixin::Hash;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
+use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 has _memory_area => (
     isa        => HashRef,
@@ -72,6 +73,7 @@ sub make_reply {
 
     my @keys = grep { $self->_token_exists($_) } @$key_tokens;
     my @reply = $self->_random_expr(shift @keys);
+    return if !@reply;
     my $repeat_limit = $self->repeat_limit;
 
     my $i = 0;

@@ -1,11 +1,11 @@
 package Hailo::Tokenizer::Chars;
-use 5.10.0;
+use 5.010;
 use Moose;
 use List::MoreUtils qw<uniq>;
 use Text::Trim;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);

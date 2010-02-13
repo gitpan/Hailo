@@ -1,12 +1,12 @@
 package Hailo::Storage::Mixin::Storable;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
 use Storable;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 has _memory => (
     isa        => HashRef,

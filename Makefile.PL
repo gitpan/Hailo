@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use 5.010;
 use inc::Module::Install '0.92';
 
 name           ('Hailo');
@@ -27,6 +28,7 @@ requires       ('Module::Pluggable'             => '0');
 requires       ('Moose'                         => '0');
 requires       ('MooseX::Getopt'                => '0');
 requires       ('MooseX::Getopt::Dashes'        => '0');
+requires       ('Getopt::Long::Descriptive'     => '0');
 requires       ('MooseX::Role::Strict'          => '0.03');
 requires       ('MooseX::StrictConstructor'     => '0.08');
 requires       ('MooseX::Types::Path::Class'    => '0');

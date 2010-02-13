@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use 5.10.0;
+use 5.010;
 use autodie qw(open close);
 use Hailo;
 use Benchmark qw(:all);
@@ -26,15 +26,15 @@ my @DATA = map { chomp; $_ } split /^/, join '', <DATA>;
 @DATA = @DATA[0 .. min(scalar(@DATA), $lines)];
 my $words = Hailo::Tokenizer::Words->new;
 my @DATA_words = map { $words->make_tokens($_) } @DATA;
-my @words = shuffle(@DATA_words);
+my @words = shuffle($words->find_key_tokens(\@DATA_words));
 @words = @words[0 .. 50];
 
 # Generate a training file
 my ($tfh, $tfilename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
+$tfh->autoflush(1);
 
 for (1 .. $times) {
     for (@DATA) {
-        my $line = $_;
         say $tfh $_;
     }
 }

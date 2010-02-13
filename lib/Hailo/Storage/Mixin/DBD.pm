@@ -1,5 +1,5 @@
 package Hailo::Storage::Mixin::DBD;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
@@ -14,7 +14,7 @@ use namespace::clean -except => [ qw(meta
                                      merged_section_data
                                      merged_section_data_names) ];
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Storage
@@ -195,6 +195,10 @@ sub _engage {
 sub start_training {
     my ($self) = @_;
     $self->_engage() if !$self->_engaged;
+    my $st = $self->dbd eq 'mysql'
+        ? "ALTER TABLE next_token DROP INDEX next_token_token_id;"
+        : "DROP INDEX next_token_token_id;";
+    $self->dbh->do($st);
     $self->start_learning();
     return;
 }
@@ -202,6 +206,7 @@ sub start_training {
 sub stop_training {
     my ($self) = @_;
     $self->stop_learning();
+    $self->dbh->do('CREATE INDEX next_token_token_id ON next_token (token_id);');
     return;
 }
 
@@ -261,9 +266,11 @@ sub make_reply {
 
     $self->_engage() if !$self->_engaged;
     my @key_ids = map { $self->_token_id($_) } @$key_tokens;
+    @key_ids = $self->_find_rare_tokens(\@key_ids);
     my $key_token_id = shift @key_ids;
 
     my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
+    return if !defined $orig_expr_id; # we don't know anything yet
     my $repeat_limit = $self->repeat_limit;
     my $expr_id = $orig_expr_id;
 
@@ -326,7 +333,7 @@ sub learn_tokens {
     }
 
     for my $i (0 .. @$tokens - $order) {
-        my @expr = map { $token_ids{ $tokens->[$_] } } ($i .. $i+$order-1);
+        my @expr = map { $token_ids{ $tokens->[$_] } } $i .. $i+$order-1;
         my $expr_id = $self->_expr_id(\@expr);
         $expr_id = $self->_add_expr(\@expr) if !defined $expr_id;
 
@@ -349,6 +356,21 @@ sub learn_tokens {
     }
 
     return;
+}
+
+# sort token ids based on how rare they are
+sub _find_rare_tokens {
+    my ($self, $token_ids) = @_;
+
+    my %rare;
+    for my $id (@$token_ids) {
+        $self->sth->{token_count}->execute($id);
+        my $count = $self->sth->{token_count}->fetchall_arrayref;
+        $rare{$id} = scalar @$count;
+    }
+
+    my @ids = sort { $rare{$a} <=> $rare{$b} } keys %rare;
+    return @ids;
 }
 
 sub _inc_link {
@@ -559,6 +581,7 @@ CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
 CREATE INDEX expr_token_ids on expr ([% columns %]);
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
+CREATE INDEX next_token_token_id ON next_token (token_id);
 __[ query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
 __[ query_set_order ]__
@@ -573,7 +596,11 @@ SELECT * FROM expr WHERE [% column %] = ?
   ORDER BY [% IF dbd == 'mysql' %] RAND() [% ELSE %] RANDOM() [% END %] LIMIT 1;
 __[ query_random_expr ]__
 SELECT * from expr
-  WHERE id >= (abs([% IF dbd == 'mysql' %] RAND() [% ELSE %] RANDOM() [% END %]) % (SELECT max(id) FROM expr))
+[% SWITCH dbd %]
+[% CASE 'Pg'    %]WHERE id >= (random()*C+1)::int
+[% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
+[% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
+[% END %]
   LIMIT 1;
 __[ query_token_id ]__
 SELECT id FROM token WHERE text = ?;
@@ -595,3 +622,5 @@ __[ query_(next_token|prev_token)_get ]__
 SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
 __[ query_(add_expr) ]__
 INSERT INTO expr ([% columns %]) VALUES ([% ids %])[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ query_token_count ]__
+SELECT count FROM next_token WHERE token_id = ?;

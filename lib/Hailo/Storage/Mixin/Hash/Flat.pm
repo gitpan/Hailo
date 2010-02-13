@@ -1,10 +1,10 @@
 package Hailo::Storage::Mixin::Hash::Flat;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 extends 'Hailo::Storage::Mixin::Hash';
 
@@ -105,6 +105,7 @@ sub _token_exists {
 
 sub _random_expr {
     my ($self, $token) = @_;
+    return if !defined $token; # flat backends don't support this
     my $token_k = "token-$token";
     my $token_v = $self->_get($token_k);
     my $token_num = int rand $token_v;

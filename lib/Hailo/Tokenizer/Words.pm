@@ -1,12 +1,12 @@
 package Hailo::Tokenizer::Words;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use List::MoreUtils qw<uniq>;
 use Text::Trim;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
@@ -43,7 +43,8 @@ sub make_tokens {
 # return a list of key tokens
 sub find_key_tokens {
     my ($self, $tokens) = @_;
-    # remove duplicates and return the interesting ones
+
+    # remove duplicates and uninteresting ones
     return grep { /$INTERESTING/ } uniq(@$tokens);
 }
 
