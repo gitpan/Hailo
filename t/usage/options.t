@@ -1,24 +1,40 @@
 use 5.010;
 use strict;
+use warnings;
 use List::MoreUtils qw(uniq);
 use Test::More tests => 36;
 use Test::Exception;
 use Test::Output;
-use Test::Exit;
 use Hailo;
 
 $SIG{__WARN__} = sub {
     print STDERR @_ if $_[0] !~ m/(?:^Issuing rollback|for database handle being DESTROY)/
 };
 
-# --version
-stdout_like(
-    sub {
-        never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
-    },
-    qr/^hailo [0-9.]+$/,
-    "Hailo prints its version",
-);
+my $has_test_exit = sub {
+    local $@;
+    eval {
+        require Test::Exit;
+        Test::Exit->import;
+    };
+    return 1 unless $@;
+    return;
+}->();
+
+if ($has_test_exit) {
+    # --version
+    stdout_like(
+        sub {
+            never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
+        },
+        qr/^hailo [0-9.]+$/,
+        "Hailo prints its version",
+    );
+} else {
+  SKIP: {
+    skip "We don't have Test::Exit, skipping never_exits_ok() test", 2;
+  }
+}
 
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";
@@ -32,7 +48,7 @@ lives_ok { Hailo->new( learn_str => "foo" )->run } "Hailo can learn from a strin
 is( sub {
         my $hailo = Hailo->new;
         $hailo->learn("hello there good sirs");
-        $hailo->reply("hello it's fun") for 1 .. 100;
+        #$hailo->reply("hello it's fun") for 1 .. 100;
         return join '', uniq(map { $hailo->reply("hello") } 1 .. 100);
     }->(),
     "Hello there good sirs.",

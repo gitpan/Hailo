@@ -3,9 +3,8 @@ use 5.010;
 use MooseX::Role::Strict;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
-requires 'find_key_tokens';
 requires 'make_tokens';
 requires 'make_output';
 
@@ -25,16 +24,11 @@ This is the constructor. It takes no arguments.
 
 =head2 C<make_tokens>
 
-Takes a line of input and returns a list of tokens.
+Takes a line of input and returns an array reference of tokens.
 
 =head2 C<make_output>
 
-Takes a list of tokens and returns a line of output.
-
-=head2 C<find_key_tokens>
-
-Takes a list of tokens and returns those which are deemed interesting enough
-to base a reply on.
+Takes an array reference of tokens and returns a line of output.
 
 =head1 AUTHOR
 

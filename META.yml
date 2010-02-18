@@ -3,16 +3,15 @@ abstract: 'A pluggable Markov engine analogous to MegaHAL'
 author:
   - 'Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>'
 build_requires:
-  Data::Random: 0
+  Data::Random: 0.05
   ExtUtils::MakeMaker: 6.42
   Test::Exception: 0.29
-  Test::Exit: 0.03
-  Test::More: 0
+  Test::More: 0.94
   Test::Output: 0.16
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.92'
+generated_by: 'Module::Install version 0.91'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -26,36 +25,35 @@ no_index:
     - xt
 recommends:
   CHI: 0.34
-  CHI::Driver::BerkeleyDB: 0
+  CHI::Driver::BerkeleyDB: 0.01
   CHI::Driver::File: 0
   CHI::Driver::Memory: 0
-  DBD::Pg: 0
-  DBD::mysql: 0
-  Digest::MD4: 0
+  DBD::Pg: 2.16.1
+  DBD::mysql: 4.013
+  Digest::MD4: 1.5
 requires:
-  Class::MOP: 0
-  DBD::SQLite: 0
+  Class::MOP: 0.98
+  DBD::SQLite: 1.29
   Data::Section: 0.100270
-  File::CountLines: 0
-  Getopt::Long::Descriptive: 0
-  IO::Interactive: 0
-  List::MoreUtils: 0
-  Log::Log4perl: 0
-  Module::Pluggable: 0
-  Moose: 0
-  MooseX::Getopt: 0
+  File::CountLines: 0.0.2
+  Getopt::Long::Descriptive: 0.083
+  IO::Interactive: 0.0.6
+  List::MoreUtils: 0.22
+  Log::Log4perl: 1.27
+  Module::Pluggable: 3.9
+  Moose: 0.94
+  MooseX::Getopt: 0.26
   MooseX::Getopt::Dashes: 0
   MooseX::Role::Strict: 0.03
   MooseX::StrictConstructor: 0.08
-  MooseX::Types: 0
-  MooseX::Types::Moose: 0
-  MooseX::Types::Path::Class: 0
-  Template: 0
+  MooseX::Types: 0.21
+  MooseX::Types::Moose: 0.21
+  MooseX::Types::Path::Class: 0.05
+  Template: 2.22
   Term::ProgressBar: 2.00
   Term::ReadLine::Gnu: 0
-  Text::Trim: 0
-  autodie: 0
-  namespace::clean: 0
+  autodie: 2.08
+  namespace::clean: 0.13
   perl: 5.10.0
 resources:
   Ratings: http://cpanratings.perl.org/d/Hailo
@@ -63,4 +61,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.14
+version: 0.15

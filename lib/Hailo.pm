@@ -25,7 +25,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -100,7 +100,7 @@ has order => (
     documentation => "Markov order",
     isa           => Int,
     is            => "ro",
-    default       => 5,
+    default       => 2,
 );
 
 has brain_resource => (
@@ -112,6 +112,16 @@ has brain_resource => (
     is            => "ro",
 );
 
+has print_stats => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "s",
+    cmd_flag      => "stats",
+    documentation => "Print statistics about the brain",
+    isa           => Bool,
+    is            => "ro",
+);
+
+# working classes
 has storage_class => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "S",
@@ -348,12 +358,17 @@ sub run {
 
     if (defined $self->learn_reply_str) {
         my $answer = $self->learn_reply($self->learn_reply_str);
-        say $answer;
+        say $answer // "I don't know enough to answer you yet.";
     }
 
     if (defined $self->reply_str) {
         my $answer = $self->reply($self->reply_str);
         say $answer // "I don't know enough to answer you yet.";
+    }
+
+    if ($self->print_stats) {
+        my ($tok, $ex) = $self->stats();
+        say "I know about $tok tokens and $ex expressions.";
     }
 
     $self->save() if defined $self->brain_resource;
@@ -382,9 +397,6 @@ sub train {
     }
 
     if ($self->print_progress) {
-        if (!$got_filename) {
-            die "Can't train with progress unless argument is a filename\n";
-        }
         $self->_train_progress($fh, $input);
     }
     elsif (ref $input eq 'ARRAY') {
@@ -469,12 +481,12 @@ sub _learn_one {
     my $order   = $storage->order;
 
     $input = $self->_clean_input($input);
-    my @tokens = $self->_tokenizer_obj->make_tokens($input);
+    my $tokens = $self->_tokenizer_obj->make_tokens($input);
 
     # only learn from inputs which are long enough
-    return if @tokens < $order;
+    return if @$tokens < $order;
 
-    $storage->learn_tokens(\@tokens);
+    $storage->learn_tokens($tokens);
     return;
 }
 
@@ -489,16 +501,26 @@ sub reply {
     my $storage = $self->_storage_obj;
     my $toke    = $self->_tokenizer_obj;
 
-    my @key_tokens;
+    my $reply;
     if (defined $input) {
         $input = $self->_clean_input($input);
-        my @tokens = $toke->make_tokens($input);
-        @key_tokens = $toke->find_key_tokens(\@tokens);
+        my $tokens = $toke->make_tokens($input);
+        $reply = $storage->make_reply($tokens);
+    }
+    else {
+        $reply = $storage->make_reply();
     }
 
-    my $reply = $storage->make_reply(\@key_tokens);
     return if !defined $reply;
     return $toke->make_output($reply);
+}
+
+sub stats {
+    my ($self) = @_;
+    my $storage = $self->_storage_obj;
+    my $tokens = $storage->token_total();
+    my $exprs = $storage->expr_total();
+    return $tokens, $exprs;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -533,9 +555,9 @@ L<AI::MegaHAL|AI::MegaHAL>. It has a lightweight L<Moose|Moose>-based core
 with pluggable L<storage|Hailo::Role::Storage> and
 L<tokenizer|Hailo::Role::Tokenizer> backends.
 
-It is similar to MegaHAL in functionality, the main difference being (with
-the default storage/tokenizer backends) better scalability, drastically less
-memory usage, and an improved tokenizer.
+It is similar to MegaHAL in functionality, the main differences (with the
+default backends) being better scalability, drastically less memory usage,
+an improved tokenizer, and tidier output.
 
 With this distribution, you can create, modify, and query Hailo brains. To
 use Hailo in event-driven POE applications, you can use the
@@ -594,7 +616,7 @@ The UI to use. Default: 'ReadLine';
 
 =head2 C<ui_args>
 
-A C<HashRef> of arguments storage/tokenizer/ui backends. See the
+A C<HashRef> of arguments for storage/tokenizer/ui backends. See the
 documentation for the backends for what sort of arguments they accept.
 
 =head2 C<token_separator>
@@ -637,6 +659,11 @@ be relevant.
 =head2 C<save>
 
 Tells the underlying storage backend to save its state.
+
+=head2 C<stats>
+
+Takes no arguments. Returns the number of known tokens as well as the number
+of known expressions.
 
 =head1 CAVEATS
 

@@ -22,9 +22,9 @@ DESCRIPTION
     AI::MegaHAL. It has a lightweight Moose-based core with pluggable
     storage and tokenizer backends.
 
-    It is similar to MegaHAL in functionality, the main difference being
-    (with the default storage/tokenizer backends) better scalability,
-    drastically less memory usage, and an improved tokenizer.
+    It is similar to MegaHAL in functionality, the main differences (with
+    the default backends) being better scalability, drastically less memory
+    usage, an improved tokenizer, and tidier output.
 
     With this distribution, you can create, modify, and query Hailo brains.
     To use Hailo in event-driven POE applications, you can use the
@@ -72,7 +72,7 @@ ATTRIBUTES
   "storage_args"
   "tokenizer_args"
   "ui_args"
-    A "HashRef" of arguments storage/tokenizer/ui backends. See the
+    A "HashRef" of arguments for storage/tokenizer/ui backends. See the
     documentation for the backends for what sort of arguments they accept.
 
   "token_separator"
@@ -107,6 +107,10 @@ METHODS
 
   "save"
     Tells the underlying storage backend to save its state.
+
+  "stats"
+    Takes no arguments. Returns the number of known tokens as well as the
+    number of known expressions.
 
 CAVEATS
     All occurences of "token_separator" will be stripped from your input

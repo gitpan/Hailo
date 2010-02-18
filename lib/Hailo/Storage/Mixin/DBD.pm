@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
 use DBI;
-use List::Util qw<shuffle>;
+use List::Util qw<first shuffle>;
 use List::MoreUtils qw<uniq>;
 use Data::Section qw(-setup);
 use Template;
@@ -14,7 +14,7 @@ use namespace::clean -except => [ qw(meta
                                      merged_section_data
                                      merged_section_data_names) ];
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Storage
@@ -96,12 +96,18 @@ has _boundary_token_id => (
 # our statement handlers
 sub _build_sth {
     my ($self) = @_;
-    my $sections = $self->_sth_sections();
+    my ($sections, $prefix) = $self->_sth_sections_static();
+    return $self->_prepare_sth($sections, $prefix);
+}
+
+sub _prepare_sth {
+    my ($self, $sections, $prefix) = @_;
+
     my %state;
     while (my ($name, $options) = each %$sections) {
         my $section = $options->{section} // $name;
         my %options = %{ $options->{options} // {} };
-        my $template = $self->section_data("query_$section");
+        my $template = $self->section_data("$prefix$section");
         my $sql;
         Template->new->process(
             $template,
@@ -119,13 +125,14 @@ sub _build_sth {
     return \%state;
 }
 
-sub _sth_sections {
+sub _sth_sections_static {
     my ($self) = @_;
     my %sections;
+    my $prefix = 'static_query_';
 
     # () sections are magical
-    my @plain_sections = grep { /^query_/ and not /\(.*?\)/ } $self->section_data_names;
-    s[^query_][] for @plain_sections;
+    my @plain_sections = grep { /^$prefix/ and not /\(.*?\)/ } $self->section_data_names;
+    s[^$prefix][] for @plain_sections;
 
     $sections{$_} = undef for @plain_sections;
 
@@ -137,6 +144,20 @@ sub _sth_sections {
             };
         }
     }
+
+    return \%sections, $prefix;;
+}
+
+sub _sth_sections_dynamic {
+    my ($self) = @_;
+    my %sections;
+    my $prefix = 'dynamic_query_';
+
+    # () sections are magical
+    my @plain_sections = grep { /^$prefix/ and not /\(.*?\)/ } $self->section_data_names;
+    s[^$prefix][] for @plain_sections;
+
+    $sections{$_} = undef for @plain_sections;
 
     for my $order (0 .. $self->order-1) {
         $sections{"expr_by_token${order}_id"} = {
@@ -157,7 +178,7 @@ sub _sth_sections {
         }
     }
 
-    return \%sections;
+    return \%sections, $prefix;
 }
 
 sub _engage {
@@ -168,7 +189,7 @@ sub _engage {
         my $order = $self->sth->{get_order}->fetchrow_array();
         $self->order($order);
 
-        $self->sth->{token_id}->execute('');
+        $self->sth->{token_id}->execute(0, '');
         my $id = $self->sth->{token_id}->fetchrow_array;
         $self->_boundary_token_id($id);
     }
@@ -178,10 +199,17 @@ sub _engage {
         my $order = $self->order;
         $self->sth->{set_order}->execute($order);
 
-        $self->sth->{add_token}->execute('');
+        $self->sth->{add_token}->execute(0, '');
         $self->sth->{last_token_rowid}->execute();
         my $id = $self->sth->{last_token_rowid}->fetchrow_array();
         $self->_boundary_token_id($id);
+    }
+
+    # prepare SQL statements which depend on the Markov order
+    my ($sections, $prefix) = $self->_sth_sections_dynamic();
+    my $sth = $self->_prepare_sth($sections, $prefix);
+    while (my ($query, $st) = each %$sth) {
+        $self->sth->{$query} = $st;
     }
 
     $self->_engaged(1);
@@ -257,17 +285,61 @@ sub _get_create_db_sql {
     return ($sql =~ /\s*(.*?);/gs);
 }
 
+# return the number of tokens we know about
+sub token_total {
+    my ($self) = @_;
+    $self->_engage() if !$self->_engaged;
+    $self->sth->{token_total}->execute();
+    return $self->sth->{token_total}->fetchrow_array - 1;
+}
+
+# return the number of expressions we know about
+sub expr_total {
+    my ($self) = @_;
+    $self->_engage() if !$self->_engaged;
+    $self->sth->{expr_total}->execute();
+    return $self->sth->{expr_total}->fetchrow_array // 0;
+}
+
+## no critic (Subroutines::ProhibitExcessComplexity)
 sub make_reply {
-    my ($self, $key_tokens) = @_;
+    my $self = shift;
+    my $tokens = shift // [];
+    $self->_engage() if !$self->_engaged;
     my $order = $self->order;
 
-    $self->_engage() if !$self->_engaged;
-    my @key_ids = map { $self->_token_id($_) } @$key_tokens;
-    @key_ids = $self->_find_rare_tokens(\@key_ids);
-    my $key_token_id = shift @key_ids;
+    # we will favor these tokens when making the reply
+    my @key_ids;
 
-    my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
-    return if !defined $orig_expr_id; # we don't know anything yet
+    my %token_cache;
+    for my $token_info (@$tokens) {
+        my $text = $token_info->[1];
+        my $info = $self->_token_similar($text);
+        next if !defined $info;
+        my ($id, $spacing) = @$info;
+        next if !defined $id;
+        push @key_ids, $id;
+        next if exists $token_cache{$id};
+        $token_cache{$id} = [$spacing, $text];
+    }
+
+    # toss all but a third of the tokens away
+    @key_ids = do {
+        my $i = 0;
+        grep { $i++ % 2 == 0 } shuffle(@key_ids);
+    };
+
+    # sort the rest by rareness
+    @key_ids = $self->_sort_rare_tokens(\@key_ids);
+
+    # get the middle expression
+    my $seed_token_id = shift @key_ids;
+    my ($orig_expr_id, @token_ids) = $self->_random_expr($seed_token_id);
+    return if !defined $orig_expr_id; # we don't know any expressions yet
+
+    # remove key tokens we're already using
+    @key_ids = grep { my $used = $_; !first { $_ == $used } @token_ids } @key_ids;
+
     my $repeat_limit = $self->repeat_limit;
     my $expr_id = $orig_expr_id;
 
@@ -305,14 +377,14 @@ sub make_reply {
         $i++;
     }
 
-    # translate token ids to token text
-    my (%ids, @reply);
+    # translate token ids to token spacing/text
+    my @reply;
     for my $id (@token_ids) {
-        if (!exists $ids{$id}) {
-            $self->sth->{token_text}->execute($id);
-            $ids{$id} = $self->sth->{token_text}->fetchrow_array;
+        if (!exists $token_cache{$id}) {
+            $self->sth->{token_info}->execute($id);
+            $token_cache{$id} = [$self->sth->{token_info}->fetchrow_array];
         }
-        push @reply, $ids{$id};
+        push @reply, $token_cache{$id};
     }
     return \@reply;
 }
@@ -320,33 +392,33 @@ sub make_reply {
 sub learn_tokens {
     my ($self, $tokens) = @_;
     my $order = $self->order;
-
-    # a cache of token ids
-    my %token_ids;
+    my %token_cache;
 
     for my $token (@$tokens) {
-        next if exists $token_ids{$token};
-        $token_ids{$token} = $self->_token_id_add($token);
+        my $key = join '', @$token;
+        next if exists $token_cache{$key};
+        $token_cache{$key} = $self->_token_id_add($token);
     }
 
+    # process every expression of length $order
     for my $i (0 .. @$tokens - $order) {
-        my @expr = map { $token_ids{ $tokens->[$_] } } $i .. $i+$order-1;
+        my @expr = map { $token_cache{ join('', @{ $tokens->[$_] }) } } $i .. $i+$order-1;
         my $expr_id = $self->_expr_id(\@expr);
         $expr_id = $self->_add_expr(\@expr) if !defined $expr_id;
 
-        # add next token for this expression, if any
+        # add link to next token for this expression, if any
         if ($i < @$tokens - $order) {
-            my $next_id = $token_ids{ $tokens->[$i+$order] };
+            my $next_id = $token_cache{ join('', @{ $tokens->[$i+$order] }) };
             $self->_inc_link('next_token', $expr_id, $next_id);
         }
 
-        # add previous token for this expression, if any
+        # add link to previous token for this expression, if any
         if ($i > 0) {
-            my $prev_id = $token_ids{ $tokens->[$i-1] };
+            my $prev_id = $token_cache{ join('', @{ $tokens->[$i-1] }) };
             $self->_inc_link('prev_token', $expr_id, $prev_id);
         }
 
-        # add boundary tokens if appropriate
+        # add links to boundary token if appropriate
         my $b = $self->_boundary_token_id;
         $self->_inc_link('prev_token', $expr_id, $b) if $i == 0;
         $self->_inc_link('next_token', $expr_id, $b) if $i == @$tokens-$order;
@@ -356,17 +428,18 @@ sub learn_tokens {
 }
 
 # sort token ids based on how rare they are
-sub _find_rare_tokens {
+sub _sort_rare_tokens {
     my ($self, $token_ids) = @_;
+    return if !@$token_ids;
 
     my %rare;
     for my $id (@$token_ids) {
+        next if exists $rare{$id};
         $self->sth->{token_count}->execute($id);
-        my $count = $self->sth->{token_count}->fetchall_arrayref;
-        $rare{$id} = scalar @$count;
+        $rare{$id} = $self->sth->{token_count}->fetchrow_array // 0;
     }
 
-    my @ids = sort { $rare{$a} <=> $rare{$b} } keys %rare;
+    my @ids = sort { $rare{$a} <=> $rare{$b} } @$token_ids;
     return @ids;
 }
 
@@ -406,33 +479,34 @@ sub _expr_id {
 
 # return token id if the token exists
 sub _token_id {
-    my ($self, $token) = @_;
+    my ($self, $token_info) = @_;
 
-    $self->sth->{token_id}->execute($token);
+    $self->sth->{token_id}->execute(@$token_info);
     my $token_id = $self->sth->{token_id}->fetchrow_array();
+
     return if !defined $token_id;
     return $token_id;
 }
 
-# add token and/or return its id
+# get token id (adding the token if it doesn't exist)
 sub _token_id_add {
-    my ($self, $token) = @_;
-    my $token_id;
+    my ($self, $token_info) = @_;
 
-    $self->sth->{token_id}->execute($token);
-    $token_id = $self->sth->{token_id}->fetchrow_array();
-
-    if (!defined $token_id) {
-        $token_id = $self->_add_token($token);
-    }
-
+    my $token_id = $self->_token_id($token_info);
+    $token_id = $self->_add_token($token_info) if !defined $token_id;
     return $token_id;
+}
+
+sub _token_similar {
+    my ($self, $token_text) = @_;
+    $self->sth->{token_similar}->execute($token_text);
+    return $self->sth->{token_similar}->fetchrow_arrayref;
 }
 
 # add a new token and return its id
 sub _add_token {
-    my ($self, $token) = @_;
-    $self->sth->{add_token}->execute($token);
+    my ($self, $token_info) = @_;
+    $self->sth->{add_token}->execute(@$token_info);
     $self->sth->{last_token_rowid}->execute();
     return $self->sth->{last_token_rowid}->fetchrow_array;
 }
@@ -442,11 +516,11 @@ sub _random_expr {
     my ($self, $token_id) = @_;
     my $dbh = $self->dbh;
 
-    my $return;
+    my $expr;
 
     if (!defined $token_id) {
-        $self->sth->{"random_expr"}->execute();
-        $return = @{ $self->sth->{"random_expr"}->fetchall_arrayref() }[0];
+        $self->sth->{random_expr}->execute();
+        $expr = $self->sth->{random_expr}->fetchrow_arrayref();
     }
     else {
         # try the positions in a random order
@@ -455,13 +529,13 @@ sub _random_expr {
 
             # get a random expression which includes the token at this position
             $self->sth->{"expr_by_$column"}->execute($token_id);
-            $return = @{ $self->sth->{"expr_by_$column"}->fetchall_arrayref() }[0];
-            last if defined $return;
+            $expr = $self->sth->{"expr_by_$column"}->fetchrow_arrayref();
+            last if defined $expr;
         }
     }
 
-    # return the expression id first, then the token ids
-    return $return->[-1], @{ $return }[0..$#{$return}-1];
+    return if !defined $expr;
+    return @$expr;
 }
 
 sub _pos_token {
@@ -527,45 +601,51 @@ it under the same terms as Perl itself.
 __DATA__
 __[ table_info ]__
 CREATE TABLE info (
-    attribute [% SWITCH dbd %][% CASE 'mysql' %]TEXT NOT NULL,
-                              [% CASE DEFAULT %]TEXT NOT NULL UNIQUE PRIMARY KEY,
-                              [% END %]
-    text TEXT NOT NULL
+    attribute [% SWITCH dbd %]
+                  [% CASE 'mysql' %]TEXT NOT NULL,
+                  [% CASE DEFAULT %]TEXT NOT NULL PRIMARY KEY,
+              [% END %]
+    text      TEXT NOT NULL
 );
 __[ table_token ]__
 CREATE TABLE token (
-    id   [% SWITCH dbd %][% CASE 'Pg'    %]SERIAL UNIQUE,
-                         [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
-                         [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
-                         [% END %]
+    id   [% SWITCH dbd %]
+            [% CASE 'Pg'    %]SERIAL UNIQUE,
+            [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+            [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
+         [% END %]
+    spacing INTEGER NOT NULL,
     text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL
 );
 __[ table_expr ]__
 CREATE TABLE expr (
+    id  [% SWITCH dbd %]
+            [% CASE 'Pg'    %]SERIAL UNIQUE
+            [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT
+            [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT
+        [% END %],
 [% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (id)[% UNLESS loop.last %],[% END %]
 [% END %]
-    id        [% SWITCH dbd %][% CASE 'Pg'    %]SERIAL UNIQUE
-                              [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT
-                              [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT
-                              [% END %]
 );
 __[ table_next_token ]__
 CREATE TABLE next_token (
-    id       [% SWITCH dbd %][% CASE 'Pg'    %]SERIAL UNIQUE,
-                             [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
-                             [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
-                             [% END %]
+    id       [% SWITCH dbd %]
+                 [% CASE 'Pg'    %]SERIAL UNIQUE,
+                 [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                 [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
+             [% END %]
     expr_id  INTEGER NOT NULL REFERENCES expr (id),
     token_id INTEGER NOT NULL REFERENCES token (id),
     count    INTEGER NOT NULL
 );
 __[ table_prev_token ]__
 CREATE TABLE prev_token (
-    id       [% SWITCH dbd %][% CASE 'Pg'    %]SERIAL UNIQUE,
-                             [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
-                             [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
-                             [% END %]
+    id       [% SWITCH dbd %]
+                 [% CASE 'Pg'    %]SERIAL UNIQUE,
+                 [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                 [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
+             [% END %]
     expr_id  INTEGER NOT NULL REFERENCES expr (id),
     token_id INTEGER NOT NULL REFERENCES token (id),
     count    INTEGER NOT NULL
@@ -573,52 +653,64 @@ CREATE TABLE prev_token (
 __[ table_indexes ]__
 CREATE INDEX token_text on token (text);
 [% FOREACH i IN orders %]
-CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
+    CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
 [% END %]
 CREATE INDEX expr_token_ids on expr ([% columns %]);
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
 CREATE INDEX next_token_token_id ON next_token (token_id);
-__[ query_get_order ]__
+__[ static_query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
-__[ query_set_order ]__
+__[ static_query_set_order ]__
 INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
-__[ query_expr_id ]__
+__[ static_query_token_total ]__
+SELECT COUNT(id) FROM token;
+__[ static_query_expr_total ]__
+SELECT COUNT(id) FROM expr;
+__[ static_query_random_expr ]__
+SELECT * from expr
+[% SWITCH dbd %]
+    [% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
+    [% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
+    [% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
+[% END %]
+  LIMIT 1;
+__[ static_query_token_id ]__
+SELECT id FROM token WHERE spacing = ? AND text = ?;
+__[ static_query_token_info ]__
+SELECT spacing, text FROM token WHERE id = ?;
+__[ static_query_token_similar ]__
+SELECT id, spacing FROM token WHERE text = ?
+[% SWITCH dbd %]
+    [% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
+    [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
+[% END %]
+__[ static_query_add_token ]__
+INSERT INTO token (spacing, text) VALUES (?, ?)[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ static_query_last_expr_rowid ]_
+SELECT id FROM expr ORDER BY id DESC LIMIT 1;
+__[ static_query_last_token_rowid ]__
+SELECT id FROM token ORDER BY id DESC LIMIT 1;
+__[ static_query_(next_token|prev_token)_count ]__
+SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
+__[ static_query_(next_token|prev_token)_inc ]__
+UPDATE [% table %] SET count = ? WHERE expr_id = ? AND token_id = ?
+__[ static_query_(next_token|prev_token)_add ]__
+INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
+__[ static_query_(next_token|prev_token)_get ]__
+SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
+__[ static_query_token_count ]__
+SELECT COUNT(count) FROM next_token WHERE token_id = ?;
+__[ dynamic_query_(add_expr) ]__
+INSERT INTO expr ([% columns %]) VALUES ([% ids %])[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ dynamic_query_expr_by_token(NUM)_id ]__
+SELECT * FROM expr WHERE [% column %] = ?
+[% SWITCH dbd %]
+    [% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
+    [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
+[% END %]
+__[ dynamic_query_expr_id ]__
 SELECT id FROM expr WHERE
 [% FOREACH i IN orders %]
     token[% i %]_id = ? [% UNLESS loop.last %] AND [% END %]
 [% END %]
-__[ query_expr_by_token(NUM)_id ]__
-SELECT * FROM expr WHERE [% column %] = ?
-[% SWITCH dbd %][% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
-                [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
-                [% END %]
-__[ query_random_expr ]__
-SELECT * from expr
-[% SWITCH dbd %][% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
-                [% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
-                [% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
-                [% END %]
-  LIMIT 1;
-__[ query_token_id ]__
-SELECT id FROM token WHERE text = ?;
-__[ query_token_text ]__
-SELECT text FROM token WHERE id = ?;
-__[ query_add_token ]__
-INSERT INTO token (text) VALUES (?)[% IF dbd == 'Pg' %] RETURNING id[% END %];
-__[ query_last_expr_rowid ]_
-SELECT id FROM expr ORDER BY id DESC LIMIT 1;
-__[ query_last_token_rowid ]__
-SELECT id FROM token ORDER BY id DESC LIMIT 1;
-__[ query_(next_token|prev_token)_count ]__
-SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
-__[ query_(next_token|prev_token)_inc ]__
-UPDATE [% table %] SET count = ? WHERE expr_id = ? AND token_id = ?
-__[ query_(next_token|prev_token)_add ]__
-INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
-__[ query_(next_token|prev_token)_get ]__
-SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
-__[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %]) VALUES ([% ids %])[% IF dbd == 'Pg' %] RETURNING id[% END %];
-__[ query_token_count ]__
-SELECT count FROM next_token WHERE token_id = ?;

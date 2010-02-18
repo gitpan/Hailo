@@ -1,11 +1,9 @@
 package Hailo::Tokenizer::Chars;
 use 5.010;
 use Moose;
-use List::MoreUtils qw<uniq>;
-use Text::Trim;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
@@ -13,19 +11,22 @@ with qw(Hailo::Role::Generic
 # output -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
-    return split //, $line;
-}
-
-# return a list of key tokens
-sub find_key_tokens {
-    my ($self, $tokens) = @_;
-    return uniq(@$tokens);
+    my @chars = split //, $line;
+    my @tokens = map { [0, $_] } @chars;
+    return \@tokens;
 }
 
 # tokens -> output
 sub make_output {
-    my ($self, $reply) = @_;
-    return trim join '', @$reply;
+    my ($self, $tokens) = @_;
+    return trim(join '', map { $_->[1] } @$tokens);
+}
+
+sub trim {
+    my $txt = shift;
+    $txt =~ s/^\s+//;
+    $txt =~ s/\s+$//;
+    return $txt;
 }
 
 __PACKAGE__->meta->make_immutable;

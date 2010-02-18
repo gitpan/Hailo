@@ -6,7 +6,7 @@ use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::UI);
@@ -24,13 +24,12 @@ sub run {
     my $name = ref $hailo;
     my $term = Term::ReadLine->new($name);
 
+    my ($tok, $ex) = $hailo->stats();
+    say "I know about $tok tokens and $ex expressions.";
+
     while (defined (my $line = $term->readline(lc($name) . '> '))) {
-        if ($line =~ /^\s*$/s) {
-            say "Provide some input to $name";
-        } else {
-            my $answer = $hailo->reply($line);
-            say $answer // "I don't know enough to answer you yet.";
-        }
+        my $answer = $hailo->learn_reply($line);
+        say $answer // "I don't know enough to answer you yet.";
     }
 
     return;

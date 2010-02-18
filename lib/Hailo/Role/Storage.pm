@@ -5,7 +5,7 @@ use MooseX::Types::Moose qw<Str Int>;
 use List::Util qw<min>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 has brain => (
     isa => Str,
@@ -72,12 +72,20 @@ Saves the current state.
 
 =head2 C<learn_tokens>
 
-Learns from a sequence of tokens. Takes an array ref of strings.
+Learns from a sequence of tokens. Takes an array reference of strings.
 
 =head2 C<make_reply>
 
-Takes an array reference of tokens and returns a reply (arrayref of tokens)
-that might be relevant.
+Takes an (optional) array reference of tokens and returns a reply (arrayref
+of tokens) that might be relevant.
+
+=head2 C<token_total>
+
+Takes no arguments. Returns the number of tokens the brain knows.
+
+=head2 C<expr_total>
+
+Takes no arguments. Returns the number of expressions the brain knows.
 
 =head2 C<start_learning>
 
