@@ -2,11 +2,12 @@ package Hailo::UI::ReadLine;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
+use Encode 'decode';
 use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::UI);
@@ -24,10 +25,8 @@ sub run {
     my $name = ref $hailo;
     my $term = Term::ReadLine->new($name);
 
-    my ($tok, $ex) = $hailo->stats();
-    say "I know about $tok tokens and $ex expressions.";
-
     while (defined (my $line = $term->readline(lc($name) . '> '))) {
+        $line = decode('utf8', $line);
         my $answer = $hailo->learn_reply($line);
         say $answer // "I don't know enough to answer you yet.";
     }

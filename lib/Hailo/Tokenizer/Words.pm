@@ -1,29 +1,32 @@
 package Hailo::Tokenizer::Words;
 use 5.010;
+use utf8;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
 
 # tokenization
-my $APOSTROPHE    = qr/['’]/;
-my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
-my $WORD          = qr/$DOTTED_WORD(?:$APOSTROPHE$DOTTED_WORD)*/;
+my $DECIMAL    = qr/[.,]/;
+my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
+my $APOSTROPHE = qr/['’]/;
+my $APOST_WORD = qr/\w+(?:$APOSTROPHE\w+)*/;
+my $WORD       = qr/$NUMBER|$APOST_WORD/;
 
 # capitalization
-my $OPEN_QUOTE    = qr/['"‘“„«»「『‹‚]/;
-my $CLOSE_QUOTE   = qr/['"’“”«»」』›‘]/;
-my $TERMINATOR    = qr/(?:[?!‽]+|(?<!\.)\.)/;
-my $ADDRESS       = qr/:/;
-my $BOUNDARY      = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
+my $OPEN_QUOTE  = qr/['"‘“„«»「『‹‚]/;
+my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
+my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
+my $ADDRESS     = qr/:/;
+my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
-my $DOTTED_STRICT = qr/\w+(?:\.(?:\d+|\w{2,}))?/;
+my $DOTTED_STRICT = qr/\w+(?:$DECIMAL(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
@@ -81,22 +84,22 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
+    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)(?=$TERMINATOR|$ADDRESS | )/\u$1/;
 
     # capitalize the second word
     $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($WORD)/\u$1/;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/ $WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
+    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
     $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($WORD)/\u$1/g;
     $reply =~ s/\x1B//g;
 
     # end paragraphs with a period when it makes sense
     $reply =~ s/ $WORD\K$/./;
 
-    # capitalize the word "i'm"
-    $reply =~ s{\bi'm\b}{I'm}g;
+    # capitalize the words "i'm" and "i've"
+    $reply =~ s{\bi'(m|ve)\b}{I'$1}g;
 
     return $reply;
 }

@@ -1,3 +1,17 @@
+0.16 Mon Feb 22 17:08:46 GMT 2010
+    - Don't seed a reply with a token which is too rare
+    - Make the Word tokenizer split "example.com" into 3 tokens, while still
+      keeping "3.14" as one token. Also accept ',' as a decimal point.
+    - Various improvements to capitalization in the Word tokenizer
+    - Don't run the ReadLine UI if --stats is supplied
+    - Allow keeping the entire SQLite database in memory while running
+    - Make that the default behavior to reduce IO
+    - Declare undeclared File::Slurp dependency
+    - Declare undeclared Test::Script dependency
+    - Fixed utf8 problems with ReadLine UI
+    - Optimize the SQL schema bit, which shaves about 10% off the size of
+      the DB and cuts more than half of the time needed to generate a reply
+
 0.15 Thu Feb 18 23:55:19 GMT 2010
     - Allow specifying SQLite's cache size with --storage-args
     - Reduce likelhood of returning a reply which is identical to the input

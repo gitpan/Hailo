@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 extends 'Hailo::Storage::Mixin::DBD';
 
@@ -19,10 +19,39 @@ override _build_dbd_options => sub {
     };
 };
 
+around _build_dbi_options => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    my $return;
+    if (defined $self->brain && $self->brain ne ':memory:'
+        && (!defined $self->arguments->{in_memory}
+        || $self->arguments->{in_memory})) {
+        my $file = $self->brain;
+        $self->brain(':memory:');
+        $return = $self->$orig(@_);
+        $self->brain($file);
+    }
+    else {
+        $return = $self->$orig(@_);
+    }
+
+    return $return;
+};
+
 before _engage => sub {
     my ($self) = @_;
+    
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
+
+    if (defined $self->brain && $self->brain ne ':memory:'
+        && $self->_exists_db
+        && (!defined $self->arguments->{in_memory}
+        || $self->arguments->{in_memory})) {
+        $self->dbh->sqlite_backup_from_file($self->brain);
+    }
+
     return;
 };
 
@@ -48,6 +77,19 @@ sub _exists_db {
     return -s $self->brain;
 }
 
+override save => sub {
+    my ($self, $filename) = @_;
+    my $file = $filename // $self->brain;
+
+    return if !$self->_engaged;
+    if (defined $file && $file ne ':memory:'
+        && (!defined $self->arguments->{in_memory}
+        || $self->arguments->{in_memory})) {
+        $self->dbh->sqlite_backup_to_file($file);
+    }
+    return;
+};
+
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
@@ -61,7 +103,7 @@ L<DBD::SQLite|DBD::SQLite>
 
 As a module:
 
-my $hailo = Hailo->new(
+ my $hailo = Hailo->new(
      train_file    => 'hailo.trn',
      storage_class => 'SQLite',
      storage_args  => {
@@ -80,12 +122,6 @@ See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
 This backend maintains information in an SQLite database. It is the default
 storage backend.
 
-For some example numbers, I have a 2nd-order database built from a ~210k line
-(7.4MB) IRC channel log file. With the default L<cache_size/storage_args>,
-it took my laptop (Core 2 Duo 2.53 GHz, Intel X25-M hard drive) 8 minutes and
-20 seconds (~420 lines/sec) to create the 102MB database. Furthermore, it
-could generate about 90 replies per second from it.
-
 =head1 ATTRIBUTES
 
 =head2 C<storage_args>
@@ -96,6 +132,12 @@ B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
 documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
 information. Setting this value higher than the default can be beneficial,
 especially when disk IO is slow on your machine.
+
+B<'in_memory'>, when set to a true value, Hailo behaves much like MegaHAL.
+The entire database will be kept in memory, and only written out to disk
+when the C<save|Hailo/save> method is called and/or when the L<Hailo|Hailo>
+object gets destroyed (unless you disabled L<save_on_exit|Hailo/save_on_exit>).
+This is turned on by default.
 
 =head1 AUTHOR
 
@@ -118,3 +160,11 @@ __[ static_query_last_expr_rowid ]__
 SELECT last_insert_rowid();
 __[ static_query_last_token_rowid ]__
 SELECT last_insert_rowid();
+__[ static_query_token_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'token';
+__[ static_query_expr_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'expr';
+__[ static_query_prev_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'prev_token';
+__[ static_query_next_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'next_token';

@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 extends 'Hailo::Storage::Mixin::DBD';
 
@@ -49,7 +49,7 @@ sub _exists_db {
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
 sub _add_expr {
-    my ($self, $token_ids, $expr_text) = @_;
+    my ($self, $token_ids) = @_;
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids);
 

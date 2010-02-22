@@ -25,7 +25,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -44,6 +44,16 @@ has print_version => (
     documentation => 'Print version and exit',
     isa           => Bool,
     is            => 'ro',
+);
+
+has save_on_exit => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'a',
+    cmd_flag      => 'autosave',
+    documentation => 'Save the brain on exit (on by default)',
+    isa           => Bool,
+    is            => 'ro',
+    default       => 1,
 );
 
 has print_progress => (
@@ -348,7 +358,8 @@ sub run {
         not defined $self->train_file and
         not defined $self->learn_str and
         not defined $self->learn_reply_str and
-        not defined $self->reply_str) {
+        not defined $self->reply_str and
+        not defined $self->print_stats) {
 
         $self->_ui_obj->run($self);
     }
@@ -367,17 +378,21 @@ sub run {
     }
 
     if ($self->print_stats) {
-        my ($tok, $ex) = $self->stats();
-        say "I know about $tok tokens and $ex expressions.";
+        my ($tok, $ex, $prev, $next) = $self->stats();
+        my $order = $self->_storage_obj->order;
+        say "Tokens: $tok";
+        say "Expression length: $order tokens";
+        say "Expressions: $ex";
+        say "Links to preceding tokens: $prev";
+        say "Links to following tokens: $next";
     }
 
-    $self->save() if defined $self->brain_resource;
     return;
 }
 
 sub save {
-    my ($self) = @_;
-    $self->_storage_obj->save();
+    my $self = shift;
+    $self->_storage_obj->save(@_);
     return;
 }
 
@@ -518,9 +533,13 @@ sub reply {
 sub stats {
     my ($self) = @_;
     my $storage = $self->_storage_obj;
-    my $tokens = $storage->token_total();
-    my $exprs = $storage->expr_total();
-    return $tokens, $exprs;
+    return $storage->totals();
+}
+
+sub DEMOLISH {
+    my ($self) = @_;
+    $self->save if $self->save_on_exit;
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -577,6 +596,11 @@ L<failo|http://identi.ca/failo>.
 The name of the resource (file name, database name) to use as storage.
 There is no default.
 
+=head2 C<save_on_exit>
+
+A boolean value indicating whether Hailo should save its state before its
+object gets destroyed. Defaults to true.
+
 =head2 C<order>
 
 The Markov order (chain length) you want to use for an empty brain.
@@ -588,16 +612,11 @@ The storage backend to use. Default: 'SQLite'.
 
 This gives you an idea of approximately how the backends compare in
 speed:
-
-                   Rate CHI::File PostgreSQL CHI::BerkeleyDB MySQL CHI::Memory SQLite Perl::Flat Perl
- CHI::File       1.08/s        --       -53%            -63%  -70%        -71%   -78%       -89% -93%
- PostgreSQL      2.28/s      112%         --            -21%  -35%        -38%   -53%       -76% -86%
- CHI::BerkeleyDB 2.90/s      169%        27%              --  -18%        -21%   -40%       -70% -82%
- MySQL           3.53/s      228%        55%             22%    --         -4%   -27%       -63% -78%
- CHI::Memory     3.68/s      242%        61%             27%    4%          --   -24%       -62% -78%
- SQLite          4.81/s      347%       111%             66%   36%         31%     --       -50% -71%
- Perl::Flat      9.62/s      793%       321%            232%  172%        162%   100%         -- -41%
- Perl            16.4/s     1423%       618%            466%  364%        346%   241%        70%   --
+                      Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
+ DBD::Pg            1.96/s      --       -20%             -40%               -56%
+ DBD::mysql         2.46/s     25%         --             -25%               -45%
+ DBD::SQLite/file   3.29/s     67%        34%               --               -27%
+ DBD::SQLite/memory 4.50/s    129%        83%              37%                 --
 
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.
@@ -658,12 +677,13 @@ be relevant.
 
 =head2 C<save>
 
-Tells the underlying storage backend to save its state.
+Tells the underlying storage backend to save its state. To override the
+filename you can provide one as an argument.
 
 =head2 C<stats>
 
-Takes no arguments. Returns the number of known tokens as well as the number
-of known expressions.
+Takes no arguments. Returns the number of tokens, expressions, previous
+token links and next token links.
 
 =head1 CAVEATS
 
@@ -677,8 +697,8 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 =head1 SEE ALSO
 
-L<Hailo: A Perl rewrite of
-MegaHAL|http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
+L<Hailo: A Perl rewrite of MegaHAL|
+http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
 - A blog posting about the motivation behind Hailo
 
 =head1 AUTHORS
