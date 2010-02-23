@@ -12,7 +12,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.91'
+generated_by: 'Module::Install version 0.93'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -25,13 +25,8 @@ no_index:
     - utils
     - xt
 recommends:
-  CHI: 0.34
-  CHI::Driver::BerkeleyDB: 0.01
-  CHI::Driver::File: 0
-  CHI::Driver::Memory: 0
   DBD::Pg: 2.16.1
   DBD::mysql: 4.013
-  Digest::MD4: 1.5
 requires:
   Class::MOP: 0.98
   DBD::SQLite: 1.29
@@ -41,7 +36,6 @@ requires:
   Getopt::Long::Descriptive: 0.083
   IO::Interactive: 0.0.6
   List::MoreUtils: 0.22
-  Log::Log4perl: 1.27
   Module::Pluggable: 3.9
   Moose: 0.94
   MooseX::Getopt: 0.26
@@ -50,7 +44,6 @@ requires:
   MooseX::StrictConstructor: 0.08
   MooseX::Types: 0.21
   MooseX::Types::Moose: 0.21
-  MooseX::Types::Path::Class: 0.05
   Template: 2.22
   Term::ProgressBar: 2.00
   Term::ReadLine::Gnu: 0
@@ -63,4 +56,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.16
+version: 0.17

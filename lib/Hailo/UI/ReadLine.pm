@@ -7,9 +7,9 @@ use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
-with qw(Hailo::Role::Generic
+with qw(Hailo::Role::Arguments
         Hailo::Role::UI);
 
 # Use Gnu readline
@@ -30,6 +30,7 @@ sub run {
         my $answer = $hailo->learn_reply($line);
         say $answer // "I don't know enough to answer you yet.";
     }
+    print "\n";
 
     return;
 }

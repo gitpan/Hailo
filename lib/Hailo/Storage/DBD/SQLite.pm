@@ -4,14 +4,11 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
-extends 'Hailo::Storage::Mixin::DBD';
+extends 'Hailo::Storage::DBD';
 
-has '+dbd' => (
-    default => 'SQLite',
-);
-
+override _build_dbd         => sub { 'SQLite' };
 override _build_dbd_options => sub {
     return {
         %{ super() },
@@ -24,9 +21,7 @@ around _build_dbi_options => sub {
     my $self = shift;
 
     my $return;
-    if (defined $self->brain && $self->brain ne ':memory:'
-        && (!defined $self->arguments->{in_memory}
-        || $self->arguments->{in_memory})) {
+    if ($self->_backup_memory_to_disk) {
         my $file = $self->brain;
         $self->brain(':memory:');
         $return = $self->$orig(@_);
@@ -39,16 +34,25 @@ around _build_dbi_options => sub {
     return $return;
 };
 
+# Are we running in a mixed mode where we run in memory but
+# restore/backup to disk?
+sub _backup_memory_to_disk {
+    my ($self) = @_;
+
+    return (defined $self->brain
+            and $self->brain ne ':memory:'
+            and (not defined $self->arguments->{in_memory}
+            or $self->arguments->{in_memory}));
+}
+
+
 before _engage => sub {
     my ($self) = @_;
     
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
 
-    if (defined $self->brain && $self->brain ne ':memory:'
-        && $self->_exists_db
-        && (!defined $self->arguments->{in_memory}
-        || $self->arguments->{in_memory})) {
+    if ($self->_exists_db and $self->_backup_memory_to_disk) {
         $self->dbh->sqlite_backup_from_file($self->brain);
     }
 
@@ -81,10 +85,8 @@ override save => sub {
     my ($self, $filename) = @_;
     my $file = $filename // $self->brain;
 
-    return if !$self->_engaged;
-    if (defined $file && $file ne ':memory:'
-        && (!defined $self->arguments->{in_memory}
-        || $self->arguments->{in_memory})) {
+    return unless $self->_engaged;
+    if ($self->_backup_memory_to_disk) {
         $self->dbh->sqlite_backup_to_file($file);
     }
     return;
@@ -106,14 +108,11 @@ As a module:
  my $hailo = Hailo->new(
      train_file    => 'hailo.trn',
      storage_class => 'SQLite',
-     storage_args  => {
-         cache_size > 102400, # 100MB page cache
-     },
  );
 
 From the command line:
 
- hailo --train hailo.trn --storage SQLite --storage-args cache_size=102400
+ hailo --train hailo.trn --storage SQLite
 
 See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
 
@@ -128,16 +127,17 @@ storage backend.
 
 This is a hash reference which can have the following keys:
 
-B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
-documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
-information. Setting this value higher than the default can be beneficial,
-especially when disk IO is slow on your machine.
-
 B<'in_memory'>, when set to a true value, Hailo behaves much like MegaHAL.
 The entire database will be kept in memory, and only written out to disk
 when the C<save|Hailo/save> method is called and/or when the L<Hailo|Hailo>
 object gets destroyed (unless you disabled L<save_on_exit|Hailo/save_on_exit>).
 This is turned on by default.
+
+B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
+documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
+information. Setting this value higher than the default can be beneficial,
+especially when disk IO is slow on your machine. Obviously, you shouldn't
+bother with this option if B<'in_memory'> is enabled.
 
 =head1 AUTHOR
 

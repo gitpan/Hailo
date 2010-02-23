@@ -5,17 +5,11 @@ use autodie qw(open close);
 use Class::MOP;
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
-use MooseX::Types::Path::Class qw(File);
-use Time::HiRes qw(gettimeofday tv_interval);
-use IO::Interactive qw(is_interactive);
-use FindBin qw($Bin $Script);
-use File::Spec::Functions qw(catfile);
+use MooseX::Types::Moose qw/Int Str Bool HashRef/;
+use MooseX::Getopt;
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
-        qr[Mixin],
-
         # If an old version of Hailo is already istalled these modules
         # may be lying around. Ignore them manually; and make sure to
         # update this list if we move things around again.
@@ -25,7 +19,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 has help => (
     traits        => [qw(Getopt)],
@@ -63,7 +57,7 @@ has print_progress => (
     documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
-    default       => sub { is_interactive() },
+    default       => sub { _is_interactive() }
 );
 
 has learn_str => (
@@ -89,8 +83,7 @@ has train_file => (
     cmd_aliases   => "t",
     cmd_flag      => "train",
     documentation => "Learn from all the lines in FILE",
-    isa           => File,
-    coerce        => 1,
+    isa           => Str,
     is            => "ro",
 );
 
@@ -188,16 +181,6 @@ has ui_args => (
     default       => sub { +{} },
 );
 
-has token_separator => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'P',
-    cmd_flag      => 'separator',
-    documentation => "String used when joining an expression into a string",
-    isa           => Str,
-    is            => 'rw',
-    default       => "\t",
-);
-
 # Working objects
 has _storage_obj => (
     traits      => [qw(NoGetopt)],
@@ -223,13 +206,22 @@ has _ui_obj => (
     init_arg    => undef,
 );
 
-with qw(MooseX::Getopt::Dashes
-        Hailo::Role::Log);
+with qw(MooseX::Getopt::Dashes);
 
+
+# --i--do-not-exist
+sub _getopt_spec_exception { goto &_getopt_full_usage }
+
+# --help
 sub _getopt_full_usage {
-    my ($self, $usage) = @_;
+    my ($self, $usage, $plain_str) = @_;
+
+    # If called from _getopt_spec_exception we get "Unknown option: foo"
+    my $warning = ref $usage eq 'ARRAY' ? $usage->[0] : undef;
+
     my ($use, $options) = do {
-        my $out = $usage->text;
+        # $plain_str under _getopt_spec_exception
+        my $out = $plain_str // $usage->text;
 
         # The default getopt order sucks, use reverse sort order
         chomp(my @out = split /^/, $out);
@@ -241,8 +233,11 @@ sub _getopt_full_usage {
         my $out;
         open my $fh, '>', \$out;
 
+        require FindBin;
+        require File::Spec;
+        
         Pod::Usage::pod2usage(
-            -input => catfile($Bin, $Script),
+            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
             -sections => 'SYNOPSIS',
             -output   => $fh,
             -exitval  => 'noexit',
@@ -255,15 +250,23 @@ sub _getopt_full_usage {
         $out;
     };
 
+    # Unknown option provided
+    print $warning if $warning;
+
     print <<"USAGE";
 $use
 $options
-\n\tNote: All input/output and files are assumed to be UTF-8 encoded.\n
-$synopsis\n
+\n\tNote: All input/output and files are assumed to be UTF-8 encoded.
 USAGE
+
+    # Don't spew the example output when something's wrong with the
+    # options. It won't all fit on small terminals
+    say "\n", $synopsis unless $warning;
 
     exit 1;
 }
+
+
 
 sub _build__storage_obj {
     my ($self) = @_;
@@ -274,7 +277,6 @@ sub _build__storage_obj {
             (defined $self->brain_resource
              ? (brain => $self->brain_resource)
              : ()),
-            token_separator => $self->token_separator,
             order           => $self->order,
             arguments       => $self->storage_args,
         }
@@ -332,14 +334,15 @@ sub _new_class {
 before run => sub {
     my ($self) = @_;
 
-    if (defined $self->reply_str and
-        not defined $self->brain_resource and
-        not defined $self->train_file and
-        not defined $self->learn_str and
-        not defined $self->learn_reply_str) {
+    if (not defined $self->brain_resource and
+        (defined $self->reply_str or
+         defined $self->train_file or
+         defined $self->learn_str or
+         defined $self->learn_reply_str)) {
         # TODO: Make this spew out the --help reply just like hailo
-        # with invalid options does usually
-        die "A bare reply_str without a brain doesn't work";
+        # with invalid options does usually, but only if run via
+        # ->new_with_options
+        die "You must specify a --brain";
     }
 
     return;
@@ -353,7 +356,7 @@ sub run {
         return;
     }
 
-    if (is_interactive() and
+    if (_is_interactive() and
         defined $self->brain_resource and
         not defined $self->train_file and
         not defined $self->learn_str and
@@ -401,7 +404,7 @@ sub train {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    my $got_filename = (ref $input eq '' || ref $input eq 'Path::Class::File');
+    my $got_filename = ref $input eq '';
 
     my $fh;
     if (ref $input eq 'GLOB') {
@@ -436,6 +439,8 @@ before _train_progress => sub {
     Term::ProgressBar->import(2.00);
     require File::CountLines;
     File::CountLines->import('count_lines');
+    require Time::HiRes;
+    Time::HiRes->import(qw(gettimeofday tv_interval));
     return;
 };
 
@@ -467,21 +472,21 @@ sub _train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    $self->meh->info("Imported in $elapsed seconds");
+    say "Imported in $elapsed seconds";
 
     return;
 }
 
-sub _clean_input {
-    my ($self, $input) = @_;
-    my $separator = quotemeta $self->_storage_obj->token_separator;
-    $input =~ s/$separator//g;
-    return $input;
-}
-
 sub learn {
     my ($self, $input) = @_;
-    my $inputs = ref $input eq 'ARRAY' ? $input : [$input];
+    my $inputs;
+    if (ref $input eq 'ARRAY') {
+        $inputs = $input;
+    } else {
+        die "Cannot learn from undef input" unless defined $input;
+        $inputs = [$input];
+    }
+
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
@@ -495,7 +500,6 @@ sub _learn_one {
     my $storage = $self->_storage_obj;
     my $order   = $storage->order;
 
-    $input = $self->_clean_input($input);
     my $tokens = $self->_tokenizer_obj->make_tokens($input);
 
     # only learn from inputs which are long enough
@@ -518,7 +522,6 @@ sub reply {
 
     my $reply;
     if (defined $input) {
-        $input = $self->_clean_input($input);
         my $tokens = $toke->make_tokens($input);
         $reply = $storage->make_reply($tokens);
     }
@@ -542,6 +545,11 @@ sub DEMOLISH {
     return;
 }
 
+sub _is_interactive {
+    require IO::Interactive;
+    return IO::Interactive::is_interactive();
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
@@ -552,20 +560,32 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 
 =head1 SYNOPSIS
 
- use strict;
- use warnings;
- use Hailo;
+This is the synopsis for using Hailo as a module. See L<hailo> for
+command-line invocation.
 
- my $hailo = Hailo->new(
-     # Or Pg, or Perl ...
-     storage_class  => 'SQLite',
-     brain_resource => 'brain.db'
- );
+    # Hailo requires Perl 5.10
+    use 5.010;
+    use strict;
+    use warnings;
+    use Hailo;
 
- while (<>) {
-     $hailo->learn($_);
-     say $hailo->reply($_);
- }
+    # Construct a new in-memory Hailo using the SQLite backend. See
+    # backend documentation for other options.
+    my $hailo = Hailo->new;
+
+    # Various ways to learn
+    my @train_this = qw< I like big butts and I can not lie >;
+    $hailo->learn(\@train_this);
+    $hailo->learn($_) for @train_this;
+
+    # Heavy-duty training interface. Backends may drop some safety
+    # features like journals or synchronous IO to train faster using
+    # this mode.
+    $hailo->learn("megahal.trn");
+    $hailo->learn($filehandle);
+
+    # Make the brain babble
+    say $hailo->reply("hello good sir.");
 
 =head1 DESCRIPTION
 
@@ -612,12 +632,13 @@ The storage backend to use. Default: 'SQLite'.
 
 This gives you an idea of approximately how the backends compare in
 speed:
-                      Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
- DBD::Pg            1.96/s      --       -20%             -40%               -56%
- DBD::mysql         2.46/s     25%         --             -25%               -45%
- DBD::SQLite/file   3.29/s     67%        34%               --               -27%
- DBD::SQLite/memory 4.50/s    129%        83%              37%                 --
 
+                         Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
+    DBD::Pg            2.22/s      --       -33%             -49%               -56%
+    DBD::mysql         3.33/s     50%         --             -23%               -33%
+    DBD::SQLite/file   4.35/s     96%        30%               --               -13%
+    DBD::SQLite/memory 5.00/s    125%        50%              15%                 --
+    
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.
 
@@ -637,12 +658,6 @@ The UI to use. Default: 'ReadLine';
 
 A C<HashRef> of arguments for storage/tokenizer/ui backends. See the
 documentation for the backends for what sort of arguments they accept.
-
-=head2 C<token_separator>
-
-Storage backends may choose to store the tokens of an expression as a single
-string. If so, they will be joined them together with a separator. By default,
-this is C<"\t">.
 
 =head1 METHODS
 
@@ -685,21 +700,28 @@ filename you can provide one as an argument.
 Takes no arguments. Returns the number of tokens, expressions, previous
 token links and next token links.
 
-=head1 CAVEATS
-
-All occurences of L<C<token_separator>|/token_separator> will be stripped
-from your input before it is processed, so make sure it's set to something
-that is unlikely to appear in it.
-
 =head1 SUPPORT
 
 You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 =head1 SEE ALSO
 
+L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
+
+L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
+
+L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
+
+=head1 LINKS
+
 L<Hailo: A Perl rewrite of MegaHAL|
 http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
 - A blog posting about the motivation behind Hailo
+
+=head1 BUGS
+
+Bugs, feature requests and other issues are tracked in L<Hailo's issue
+tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =head1 AUTHORS
 

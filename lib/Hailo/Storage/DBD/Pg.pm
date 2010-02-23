@@ -4,14 +4,11 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
-extends 'Hailo::Storage::Mixin::DBD';
+extends 'Hailo::Storage::DBD';
 
-has '+dbd' => (
-    default => 'Pg',
-);
-
+override _build_dbd         => sub { 'Pg' };
 override _build_dbd_options => sub {
     return {
         %{ super() },

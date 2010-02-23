@@ -13,21 +13,12 @@ use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::Words;
 use namespace::clean -except => 'meta';
 
-sub simple_storages {
-    #return qw(Perl Perl::Flat DBD::SQLite)
-    return qw(DBD::SQLite)
-}
-
-sub flat_storages {
-    return qw(Perl::Flat)
-}
-
 sub all_storages {
-    return qw(Perl Perl::Flat CHI::Memory CHI::File CHI::BerkeleyDB DBD::mysql DBD::SQLite DBD::Pg);
+    return qw(DBD::SQLite DBD::Pg DBD::mysql);
 }
 
-sub chain_storages {
-    return qw(Perl Perl::Flat);
+sub simple_storages {
+    return grep { /sqlite/i } all_storages();
 }
 
 sub all_tests {
@@ -119,9 +110,6 @@ sub spawn_storage {
     my %classes = (
         Pg                => 'DBD::Pg',
         mysql             => 'DBD::mysql',
-        'CHI::File'       => 'CHI::Driver::File',
-        'CHI::Memory'     => 'CHI::Driver::Memory',
-        'CHI::BerkeleyDB' => 'CHI::Driver::BerkeleyDB',
     );
 
     if (exists $classes{$storage}) {
@@ -140,19 +128,15 @@ sub spawn_storage {
             }
         }
         when (/mysql/) {
-            if (system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
-                $ok = 0;
-            } else {
-                $self->_nuke_mysql();
-            }
+            plan skip_all => "You must set MYSQL_ROOT_PASSWORD= to test MySQL" unless $ENV{MYSQL_ROOT_PASSWORD};
+            system qq[echo "CREATE DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            system qq[echo "GRANT ALL ON $brainrs.* TO hailo\@localhost IDENTIFIED BY 'hailo';;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            system qq[echo "FLUSH PRIVILEGES;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            $self->{_created_mysql} = 1;
         }
     }
 
     return $ok;
-}
-
-sub _nuke_mysql {
-    system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
 }
 
 sub unspawn_storage {
@@ -174,7 +158,9 @@ sub unspawn_storage {
             $nuke_db->();
         }
         when (/mysql/) {
-            $self->_nuke_mysql();
+            if ($self->{_created_mysql}) {
+                system qq[echo "DROP DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            }
         }
     }
 }
@@ -188,13 +174,11 @@ sub _connect_opts {
     given ($storage) {
         when (/SQLite/) {
             %opts = (
-                brain_resource => ($self->in_memory  ? ':memory:' : $self->brain)
+                brain_resource => ($self->in_memory  ? ':memory:' : $self->brain),
+                storage_args => {
+                    in_memory => 0,
+                },
             );
-        }
-        when (/Perl/) {
-            %opts = (
-                brain_resource => $self->brain,
-            ),
         }
         when (/Pg/) {
             %opts = (
@@ -206,17 +190,10 @@ sub _connect_opts {
         when (/mysql/) {
             %opts = (
                 storage_args => {
-                    database => 'hailo',
+                    database => $self->brain,
                     host => 'localhost',
-                    username => 'hailo',
-                    password => 'hailo',
-                },
-            );
-        }
-        when (/CHI::(?:BerkeleyDB|File)/) {
-            %opts = (
-                storage_args => {
-                    root_dir => $self->tmpdir,
+                    username => 'root',
+                    password => $ENV{MYSQL_ROOT_PASSWORD},
                 },
             );
         }
@@ -260,9 +237,15 @@ sub train_a_few_tokens {
     my @random_tokens = rand_chars( set => 'all', min => 10, max => 15 );
 
     # Learn from it
-    eval {
-        $hailo->learn("@random_tokens");
-    };
+    if ((int rand 2) == 1) {
+        eval {
+            $hailo->learn( \@random_tokens );
+        };
+    } else {
+        eval {
+            $hailo->learn( "@random_tokens" );
+        };
+    }
 
     return ($@, \@random_tokens);
 }
@@ -350,33 +333,6 @@ sub test_megahal {
     }
 
     return;
-}
-
-sub test_chaining {
-    my ($self) = @_;
-    my $hailo = $self->hailo;
-    my $storage = $self->storage;
-    my $brainrs = $self->brain;
-
-    my $prev_brain;
-    for my $i (1 .. 10) {
-        my $test = (ref $self)->new(
-            storage => $storage,
-            brain_resource => $brainrs,
-        );
-
-        if ($prev_brain) {
-            my $this_brain = $test->hailo->_storage_obj->_memory;
-            is_deeply($prev_brain, $this_brain, "$storage: Our previous $storage brain matches the new one, try $i");
-        }
-
-        $self->test_babble;
-
-        # Save this brain for the next iteration
-        $prev_brain = $test->hailo->_storage_obj->_memory;
-
-        $test->hailo->save();
-    }
 }
 
 sub test_babble {

@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 36;
+use Test::More tests => 39;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -36,13 +36,27 @@ if ($has_test_exit) {
   }
 }
 
+### Options
+
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";
+
 # Valid train file
-lives_ok { Hailo->new( train_file => __FILE__, print_progress => 0 )->run }  "Calling Hailo with a valid training file";
+lives_ok {
+    Hailo->new(
+        train_file     => __FILE__,
+        print_progress => 0,
+        brain_resource => ':memory:',
+    )->run
+}  "Calling Hailo with a valid training file";
 
 # learn_str
-lives_ok { Hailo->new( learn_str => "foo" )->run } "Hailo can learn from a string";
+lives_ok {
+    Hailo->new(
+        learn_str      => "foo",
+        brain_resource => ':memory:',
+    )->run
+} "Hailo can learn from a string";
 
 # learn/reply
 is( sub {
@@ -85,3 +99,21 @@ for (my $i = 1; $i <= 10e10; $i += $i * 2) {
 
 # new
 dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
+
+### Usage
+
+# train
+dies_ok {
+    my $h = Hailo->new;
+    $h->train(undef)
+} "train: undef input";
+
+dies_ok {
+    my $h = Hailo->new;
+    $h->train()
+} "train: undef input";
+
+lives_ok {
+    my $h = Hailo->new;
+    $h->train([])
+} "train: ARRAY input";

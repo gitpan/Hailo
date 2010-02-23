@@ -1,10 +1,10 @@
-package Hailo::Role::Generic;
+package Hailo::Role::Arguments;
 use 5.010;
 use MooseX::Role::Strict;
 use MooseX::Types::Moose qw/HashRef/;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 has arguments => (
     isa           => HashRef,
@@ -19,7 +19,7 @@ has arguments => (
 
 =head1 NAME
 
-Hailo::Role::Generic - A role used by all other L<Hailo|Hailo> roles
+Hailo::Role::Arguments - A role which adds an 'arguments' attribute
 
 =head1 ATTRIBUTES
 

@@ -5,7 +5,7 @@ use MooseX::Types::Moose qw<Str Int>;
 use List::Util qw<min>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 has brain => (
     isa => Str,
@@ -26,11 +26,6 @@ has repeat_limit => (
         my $order = $self->order;
         return min(($order * 10), 50);
     }
-);
-
-has token_separator => (
-    isa => Str,
-    is  => 'rw',
 );
 
 requires 'save';

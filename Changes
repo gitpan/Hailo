@@ -1,3 +1,36 @@
+0.17 Tue Feb 23 04:06:50 GMT 2010
+    - Remove all storage engines that weren't DBD::*. I.e. the Perl
+      backend and the flat Perl::Flat & CHI::* backends.
+
+      These backends were added to experiment with alternate backends,
+      but between them they had no redeeming quality aside from
+      increasing our number of backends & tests. The downside is that
+      we constantly had to deal with errors in these backends that
+      weren't present in our primary DBD::* targets.
+
+    - Remove Log::Log4perl. We weren't using it for anything except
+      printing one log line. Maybe we'll add it in the future with
+      proper support. See Issue #15.
+
+    - Hailo now uses less memory by lazy-loading various modules that
+      it previously loaded even if they were redundant.
+
+    - Issue #12: --not-a-valid-option now prints the same help output
+      --help would. MooseX::Getopt::Basic is evil and hard to override
+      so this is done with some hackery.
+
+    - Renamed Hailo::Storage::Mixin::DBD to Hailo::Storage::DBD, since
+      mixin is really a misnomer for this base class.
+
+    - Improved documentation including a new SYNOPSIS with examples.
+
+    - Error on training with an undef argument.
+
+    - t/storage/dbd-switch-order.t didn't clean up the tempfile it was
+      using.
+
+    - More capitalization improvements.
+
 0.16 Mon Feb 22 17:08:46 GMT 2010
     - Don't seed a reply with a token which is too rare
     - Make the Word tokenizer split "example.com" into 3 tokens, while still
