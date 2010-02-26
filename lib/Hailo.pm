@@ -19,7 +19,9 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
+
+with qw(MooseX::Getopt::Dashes);
 
 has help => (
     traits        => [qw(Getopt)],
@@ -82,7 +84,7 @@ has train_file => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "t",
     cmd_flag      => "train",
-    documentation => "Learn from all the lines in FILE",
+    documentation => "Learn from all the lines in FILE, use - for STDIN",
     isa           => Str,
     is            => "ro",
 );
@@ -206,68 +208,6 @@ has _ui_obj => (
     init_arg    => undef,
 );
 
-with qw(MooseX::Getopt::Dashes);
-
-
-# --i--do-not-exist
-sub _getopt_spec_exception { goto &_getopt_full_usage }
-
-# --help
-sub _getopt_full_usage {
-    my ($self, $usage, $plain_str) = @_;
-
-    # If called from _getopt_spec_exception we get "Unknown option: foo"
-    my $warning = ref $usage eq 'ARRAY' ? $usage->[0] : undef;
-
-    my ($use, $options) = do {
-        # $plain_str under _getopt_spec_exception
-        my $out = $plain_str // $usage->text;
-
-        # The default getopt order sucks, use reverse sort order
-        chomp(my @out = split /^/, $out);
-        my $opt = join "\n", sort { $b cmp $a } @out[1 .. $#out];
-        ($out[0], $opt);
-    };
-    my $synopsis = do {
-        require Pod::Usage;
-        my $out;
-        open my $fh, '>', \$out;
-
-        require FindBin;
-        require File::Spec;
-        
-        Pod::Usage::pod2usage(
-            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
-            -sections => 'SYNOPSIS',
-            -output   => $fh,
-            -exitval  => 'noexit',
-        );
-        close $fh;
-
-        $out =~ s/\n+$//s;
-        $out =~ s/^Usage:/examples:/;
-
-        $out;
-    };
-
-    # Unknown option provided
-    print $warning if $warning;
-
-    print <<"USAGE";
-$use
-$options
-\n\tNote: All input/output and files are assumed to be UTF-8 encoded.
-USAGE
-
-    # Don't spew the example output when something's wrong with the
-    # options. It won't all fit on small terminals
-    say "\n", $synopsis unless $warning;
-
-    exit 1;
-}
-
-
-
 sub _build__storage_obj {
     my ($self) = @_;
     my $obj = $self->_new_class(
@@ -334,7 +274,7 @@ sub _new_class {
 before run => sub {
     my ($self) = @_;
 
-    if (not defined $self->brain_resource and
+    if (not $self->_storage_obj->ready and
         (defined $self->reply_str or
          defined $self->train_file or
          defined $self->learn_str or
@@ -342,7 +282,7 @@ before run => sub {
         # TODO: Make this spew out the --help reply just like hailo
         # with invalid options does usually, but only if run via
         # ->new_with_options
-        die "You must specify a --brain";
+        die "To reply/train/learn you must specify options to initialize your storage backend";
     }
 
     return;
@@ -357,7 +297,7 @@ sub run {
     }
 
     if (_is_interactive() and
-        defined $self->brain_resource and
+        $self->_storage_obj->ready and
         not defined $self->train_file and
         not defined $self->learn_str and
         not defined $self->learn_reply_str and
@@ -409,8 +349,10 @@ sub train {
     my $fh;
     if (ref $input eq 'GLOB') {
         $fh = $input;
-    }
-    elsif ($got_filename) {
+    } elsif (defined $input and $input eq "-") {
+        die "You must provide STDIN along with --train=-" if _is_interactive(*STDIN);
+        $fh = *STDIN;
+    } elsif ($got_filename) {
         open $fh, '<:encoding(utf8)', $input;
     }
 
@@ -550,6 +492,63 @@ sub _is_interactive {
     return IO::Interactive::is_interactive();
 }
 
+# --i--do-not-exist
+sub _getopt_spec_exception { goto &_getopt_full_usage }
+
+# --help
+sub _getopt_full_usage {
+    my ($self, $usage, $plain_str) = @_;
+
+    # If called from _getopt_spec_exception we get "Unknown option: foo"
+    my $warning = ref $usage eq 'ARRAY' ? $usage->[0] : undef;
+
+    my ($use, $options) = do {
+        # $plain_str under _getopt_spec_exception
+        my $out = $plain_str // $usage->text;
+
+        # The default getopt order sucks, use reverse sort order
+        chomp(my @out = split /^/, $out);
+        my $opt = join "\n", sort { $b cmp $a } @out[1 .. $#out];
+        ($out[0], $opt);
+    };
+    my $synopsis = do {
+        require Pod::Usage;
+        my $out;
+        open my $fh, '>', \$out;
+
+        require FindBin;
+        require File::Spec;
+        
+        Pod::Usage::pod2usage(
+            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
+            -sections => 'SYNOPSIS',
+            -output   => $fh,
+            -exitval  => 'noexit',
+        );
+        close $fh;
+
+        $out =~ s/\n+$//s;
+        $out =~ s/^Usage:/examples:/;
+
+        $out;
+    };
+
+    # Unknown option provided
+    print $warning if $warning;
+
+    print <<"USAGE";
+$use
+$options
+\n\tNote: All input/output and files are assumed to be UTF-8 encoded.
+USAGE
+
+    # Don't spew the example output when something's wrong with the
+    # options. It won't all fit on small terminals
+    say "\n", $synopsis unless $warning;
+
+    exit 1;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
@@ -609,38 +608,73 @@ which implements an IRC chat bot.
 I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
 L<failo|http://identi.ca/failo>.
 
-=head1 ATTRIBUTES
+=head1 Backends
 
-=head2 C<brain_resource>
+Hailo supports pluggable L<storage|Hailo::Role::Storage> and
+L<tokenizer|Hailo::Role::Tokenizer> backends, it also supports a
+pluggable L<UI|Hailo::Role::UI> backend which is used by the L<hailo>
+command-line utility.
 
-The name of the resource (file name, database name) to use as storage.
-There is no default.
+=head2 Storage
 
-=head2 C<save_on_exit>
+Hailo can currently store its data in either a
+L<SQLite|Hailo::Storage::DBD::SQLite>,
+L<PostgreSQL|Hailo::Storage::DBD::Pg> or
+L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
+supported in earlier versions but they were removed as they had no
+redeeming quality.
 
-A boolean value indicating whether Hailo should save its state before its
-object gets destroyed. Defaults to true.
+SQLite is the primary target for Hailo. It's much faster than the
+other two and it's highly recommended that you use it. It's much
+faster and takes up less resources.
 
-=head2 C<order>
-
-The Markov order (chain length) you want to use for an empty brain.
-The default is 5.
-
-=head2 C<storage_class>
-
-The storage backend to use. Default: 'SQLite'.
-
-This gives you an idea of approximately how the backends compare in
-speed:
+This benchmark shows how the backends compare when training on the
+small testsuite dataset as reported by the F<utils/hailo-benchmark>
+utility (found in the distribution):
 
                          Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
     DBD::Pg            2.22/s      --       -33%             -49%               -56%
     DBD::mysql         3.33/s     50%         --             -23%               -33%
     DBD::SQLite/file   4.35/s     96%        30%               --               -13%
     DBD::SQLite/memory 5.00/s    125%        50%              15%                 --
-    
-To run your own test try running F<utils/hailo-benchmark> in the Hailo
-distribution.
+
+Under real-world workloads SQLite is much faster than these results
+indicate since the time it takes to train/reply is relative to the
+existing database size.
+
+=head2 Tokenizer
+
+By default Hailo will use L<the word
+tokenizer|Hailo::Tokenizer::Words> to split up input by whitespace,
+taking into account things like quotes, sentence terminators and more.
+
+There's also a L<the character
+tokenizer|Hailo::Tokenizer::Chars>. It's not generally useful for a
+conversation bot but can be used to e.g. generate new words given a
+list of existing words.
+
+=head1 ATTRIBUTES
+
+=head2 C<brain_resource>
+
+The name of the resource (file name, database name) to use as storage.
+There is no default. Whether this gets used at all depends on the
+storage backend, currently only SQLite uses it.
+
+=head2 C<save_on_exit>
+
+A boolean value indicating whether Hailo should save its state before
+its object gets destroyed. This defaults to true and will simply call
+L<save|/save> at C<DEMOLISH> time.
+
+=head2 C<order>
+
+The Markov order (chain length) you want to use for an empty brain.
+The default is 2.
+
+=head2 C<storage_class>
+
+The storage backend to use. Default: 'SQLite'.
 
 =head2 C<tokenizer_class>
 
@@ -666,13 +700,9 @@ documentation for the backends for what sort of arguments they accept.
 This is the constructor. It accepts the attributes specified in
 L</ATTRIBUTES>.
 
-=head2 C<run>
-
-Run the application according to the command line arguments.
-
 =head2 C<learn>
 
-Takes a string or an array reference of strings, and learns from them.
+Takes a string or an array reference of strings and learns from them.
 
 =head2 C<train>
 
@@ -687,13 +717,15 @@ Takes an optional line of text and generates a reply that might be relevant.
 
 =head2 C<learn_reply>
 
-Takes a string argument, learns from it, and generates a reply that might
-be relevant.
+Takes a string argument, learns from it, and generates a reply that
+might be relevant. This is equivalent to calling L<learn|/learn>
+followed by L<reply|/reply>.
 
 =head2 C<save>
 
-Tells the underlying storage backend to save its state. To override the
-filename you can provide one as an argument.
+Tells the underlying storage backend to L<save its
+state|Hailo::Role::Storage/"save">, any arguments to this method will
+be passed as-is to the backend.
 
 =head2 C<stats>
 
@@ -704,24 +736,51 @@ token links and next token links.
 
 You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
-=head1 SEE ALSO
-
-L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
-
-L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
-
-L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
-
-=head1 LINKS
-
-L<Hailo: A Perl rewrite of MegaHAL|
-http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
-- A blog posting about the motivation behind Hailo
-
 =head1 BUGS
 
 Bugs, feature requests and other issues are tracked in L<Hailo's issue
 tracker on Github|http://github.com/hinrik/hailo/issues>.
+
+=head1 PRIVATE METHODS
+
+=head2 C<run>
+
+Run Hailo in accordance with the the attributes that were passed to
+it, this method is called by the L<hailo> command-line utility and the
+Hailo test suite, it's behavior is subject to change.
+
+=head1 SEE ALSO
+
+=over
+
+=item *
+
+L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
+
+=item *
+
+L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
+
+=item *
+
+L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
+
+=item *
+
+L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
+
+=back
+
+=head1 LINKS
+
+=over
+
+=item *
+
+L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
+MegaHAL, A blog posting about the motivation behind Hailo
+
+=back
 
 =head1 AUTHORS
 

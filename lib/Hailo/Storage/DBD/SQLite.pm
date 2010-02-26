@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 extends 'Hailo::Storage::DBD';
 
@@ -41,16 +41,14 @@ sub _backup_memory_to_disk {
 
     return (defined $self->brain
             and $self->brain ne ':memory:'
-            and (not defined $self->arguments->{in_memory}
-            or $self->arguments->{in_memory}));
+            and $self->arguments->{in_memory});
 }
-
 
 before _engage => sub {
     my ($self) = @_;
-    
-    my $size = $self->arguments->{cache_size};
-    $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
+
+    # Set any user-defined pragmas
+    $self->_set_pragmas;
 
     if ($self->_exists_db and $self->_backup_memory_to_disk) {
         $self->dbh->sqlite_backup_from_file($self->brain);
@@ -79,6 +77,41 @@ sub _exists_db {
     return unless defined $self->brain;
     return if $self->brain eq ':memory:';
     return -s $self->brain;
+}
+
+sub ready {
+    my ($self) = @_;
+    my $brain = $self->brain;
+    return unless defined $self->brain;
+    return 1 if $self->brain eq ':memory:';
+    return 1;
+}
+
+sub _set_pragmas {
+    my ($self) = @_;
+
+    my %pragmas;
+    while (my ($k, $v) = each %{ $self->arguments }) {
+        if (my ($pragma) = $k =~ /^pragma_(.*)/) {
+            $pragmas{$pragma} = $v;
+        }
+    }
+
+    return if !%pragmas && $self->{in_memory};
+
+    # speedy defaults when DB is not kept in memory
+    if (!%pragmas) {
+        %pragmas = (
+            synchronous  => 'OFF',
+            journal_mode => 'OFF',
+        );
+    }
+
+    while (my ($k, $v) = each %pragmas) {
+        $self->dbh->do(qq[PRAGMA $k="$v";])
+    }
+
+    return;
 }
 
 override save => sub {
@@ -127,17 +160,42 @@ storage backend.
 
 This is a hash reference which can have the following keys:
 
-B<'in_memory'>, when set to a true value, Hailo behaves much like MegaHAL.
-The entire database will be kept in memory, and only written out to disk
-when the C<save|Hailo/save> method is called and/or when the L<Hailo|Hailo>
-object gets destroyed (unless you disabled L<save_on_exit|Hailo/save_on_exit>).
-This is turned on by default.
+=head3 C<pragma_*>
 
-B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
-documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
-information. Setting this value higher than the default can be beneficial,
-especially when disk IO is slow on your machine. Obviously, you shouldn't
-bother with this option if B<'in_memory'> is enabled.
+Any option starting with B<'pragma_'> will be considered to be an L<SQLite
+pragma|http://www.sqlite.org/pragma.html> which will be set when the
+after we connect to the database. An example of this would be
+
+ storage_args => {
+     pragma_cache_size  => 10000,
+     pragma_synchronous => 'OFF',
+ }
+
+Setting B<'pragma_cache_size'> in particular can be beneficial. It's the
+size of the page cache used by SQLite. See L<SQLite's
+documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for
+more information.
+
+Increasing it might speed up Hailo, especially when disk IO is slow on
+your machine. Obviously, you shouldn't bother with this option if
+L<B<'in_memory'>|/in_memory> is enabled.
+
+Setting B<'pragma_synchronous'> to B<'OFF'> or B<'pragma_journal_mode'>
+to B<'OFF'> will speed up operations at the expense of safety. Since Hailo
+is most likely not running as a mission-critical component this trade-off
+should be acceptable in most cases. If the database becomes corrupt
+it's easy to rebuild it by retraining from the input it was trained on
+to begin with. For performance reasons, these two are set to B<'OFF'>
+if no L<B<'pragma_*>|/pragma_*> parameters nor L<B<'in_memory'>|/in_memory>
+are set.
+
+=head3 C<in_memory>
+
+When set to a true value, Hailo behaves much like MegaHAL.  The entire
+database will be kept in memory, and only written out to disk when the
+L<C<save>|Hailo/save> method is called and/or when the Hailo object gets
+destroyed (unless you disabled
+L<C<save_on_exit>|Hailo/save_on_exit>). This is disabled by default.
 
 =head1 AUTHOR
 

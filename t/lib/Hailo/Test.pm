@@ -97,8 +97,19 @@ sub _build_hailo {
 
 sub brain {
     my ($self) = @_;
+    my $storage = $self->storage;
+    my $brainrs = $self->brain_resource;
 
-    return $self->brain_resource // $self->tmpfile->[1];
+    given ($storage) {
+        when (/mysql/) {
+            my $name = $self->tmpfile->[1];
+            $name =~ s[[^A-Za-z]][_]g;
+            return $name;
+        }
+        default {
+            return $self->brain_resource // $self->tmpfile->[1];
+        }
+    }
 }
 
 sub spawn_storage {
@@ -119,6 +130,8 @@ sub spawn_storage {
 
     given ($storage) {
         when (/Pg/) {
+            plan skip_all => "You must set TEST_POSTGRESQL= and have permission to createdb(1) to test PostgreSQL" unless $ENV{TEST_POSTGRESQL};
+
             # It doesn't use the file to store data obviously, it's just a convenient random token.
             if (system "createdb '$brainrs' >/dev/null 2>&1") {
                 $ok = 0;
@@ -128,7 +141,7 @@ sub spawn_storage {
             }
         }
         when (/mysql/) {
-            plan skip_all => "You must set MYSQL_ROOT_PASSWORD= to test MySQL" unless $ENV{MYSQL_ROOT_PASSWORD};
+            plan skip_all => "You must set TEST_MYSQL= and MYSQL_ROOT_PASSWORD= to test MySQL" unless $ENV{TEST_MYSQL} and $ENV{MYSQL_ROOT_PASSWORD};
             system qq[echo "CREATE DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
             system qq[echo "GRANT ALL ON $brainrs.* TO hailo\@localhost IDENTIFIED BY 'hailo';;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
             system qq[echo "FLUSH PRIVILEGES;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;

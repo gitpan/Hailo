@@ -2,9 +2,10 @@ package Hailo::Storage::DBD::mysql;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
+use List::MoreUtils qw< all >;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 extends 'Hailo::Storage::DBD';
 
@@ -41,6 +42,12 @@ sub _exists_db {
     my ($self) = @_;
     $self->sth->{exists_db}->execute();
     return defined $self->sth->{exists_db}->fetchrow_array;
+}
+
+sub ready {
+    my ($self) = @_;
+
+    return all { exists $self->arguments->{$_} } qw(database host username password);
 }
 
 __PACKAGE__->meta->make_immutable;
