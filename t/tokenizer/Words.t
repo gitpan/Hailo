@@ -131,6 +131,36 @@ subtest make_output => sub {
             [qw<hm ...>],
             'Hm...'
         ],
+        [
+            'anti-scientology demonstration in london? hella-cool',
+            [qw<anti - scientology demonstration in london ? hella - cool>],
+            'Anti-scientology demonstration in london? Hella-cool.'
+        ],
+        [
+            'This. compound-words are cool',
+            [qw<this . compound - words are cool>],
+            'This. Compound-words are cool.'
+        ],
+        [
+            'Foo. Compound-word',
+            [qw<foo .  compound - word>],
+            'Foo. Compound-word.'
+        ],
+        [
+            'one',
+            [qw<one>],
+            'One.'
+        ],
+        [
+            'cpanm is a true "religion"',
+            [qw<cpanm is a true " religion ">],
+            'Cpanm is a true "religion".'
+        ],
+        [
+            'cpanm is a true "anti-religion"',
+            [qw<cpanm is a true " anti - religion ">],
+            'Cpanm is a true "anti-religion".'
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
