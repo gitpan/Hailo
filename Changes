@@ -1,3 +1,20 @@
+0.20 Sun Feb 28 00:29:32 GMT 2010
+
+    - Use Mouse instead of Moose by default but depend on both of
+      them.
+
+      This saves about 8MB of resident memory bringing Hailo's memory
+      usage with SQLite from 28MB to 20MB. Startup time is also
+      reduced with the test suite running around 46% faster.
+
+    - Run tests with Moose and Mouse during `make test`
+
+    - Drop MouseX::Role::Strict / MooseX::Role::Strict. Spotted when
+      switching to Moose but mainly we just didn't care about using
+      it.
+
+    - Word tokenizer: Improve punctuation when words are split with '/'
+
 0.19 Sat Feb 27 04:23:03 GMT 2010
     - Move File::Slurp from 'requires' to 'test_requires'
 

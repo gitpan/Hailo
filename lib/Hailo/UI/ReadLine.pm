@@ -1,13 +1,17 @@
 package Hailo::UI::ReadLine;
 use 5.010;
-use Moose;
-use MooseX::StrictConstructor;
+use Any::Moose;
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 use Encode 'decode';
 use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::UI);

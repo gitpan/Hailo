@@ -1,8 +1,12 @@
 package Hailo::Storage::DBD;
 use 5.010;
-use Moose;
-use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
+use Any::Moose;
+use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 use DBI;
 use List::Util qw<first shuffle>;
 use List::MoreUtils qw<uniq>;
@@ -14,7 +18,7 @@ use namespace::clean -except => [ qw(meta
                                      merged_section_data
                                      merged_section_data_names) ];
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::Storage);

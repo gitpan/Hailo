@@ -1,9 +1,14 @@
 package Hailo::Tokenizer::Chars;
 use 5.010;
-use Moose;
+use Any::Moose;
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::Tokenizer);

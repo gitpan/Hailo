@@ -2,11 +2,14 @@ package Hailo;
 
 use 5.010;
 use autodie qw(open close);
-use Class::MOP;
-use Moose;
-use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw/Int Str Bool HashRef/;
-use MooseX::Getopt;
+use Any::Moose;
+use Any::Moose 'X::Getopt';
+use Any::Moose 'X::Types::'.any_moose() => [qw/Int Str Bool HashRef/];
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
@@ -19,9 +22,9 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
-with qw(MooseX::Getopt::Dashes);
+with any_moose('X::Getopt::Dashes');
 
 has help => (
     traits        => [qw(Getopt)],
@@ -264,7 +267,12 @@ sub _new_class {
         die "Couldn't find a class name matching '$class' in plugins '@plugins'";
     }
 
-    eval { Class::MOP::load_class($pkg) };
+    if (Any::Moose::moose_is_preferred()) {
+        require Class::MOP;
+        eval { Class::MOP::load_class($pkg) };
+    } else {
+        eval qq[require $pkg];
+    }
     die $@ if $@;
 
     return $pkg->new(%$args);
@@ -518,6 +526,7 @@ sub _getopt_full_usage {
 
         require FindBin;
         require File::Spec;
+        no warnings 'once';
 
         Pod::Usage::pod2usage(
             -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
@@ -589,8 +598,8 @@ command-line invocation.
 =head1 DESCRIPTION
 
 Hailo is a fast and lightweight markov engine intended to replace
-L<AI::MegaHAL|AI::MegaHAL>. It has a lightweight L<Moose|Moose>-based core
-with pluggable L<storage|Hailo::Role::Storage> and
+L<AI::MegaHAL|AI::MegaHAL>. It has a L<Mouse|Mouse> (or L<Moose|Moose>)
+based core with pluggable L<storage|Hailo::Role::Storage> and
 L<tokenizer|Hailo::Role::Tokenizer> backends.
 
 It is similar to MegaHAL in functionality, the main differences (with the

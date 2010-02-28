@@ -13,7 +13,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.93'
+generated_by: 'Module::Install version 0.94'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -25,11 +25,48 @@ no_index:
     - t
     - utils
     - xt
+provides:
+  Hailo:
+    file: lib/Hailo.pm
+    version: 0.20
+  Hailo::Role::Arguments:
+    file: lib/Hailo/Role/Arguments.pm
+    version: 0.20
+  Hailo::Role::Storage:
+    file: lib/Hailo/Role/Storage.pm
+    version: 0.20
+  Hailo::Role::Tokenizer:
+    file: lib/Hailo/Role/Tokenizer.pm
+    version: 0.20
+  Hailo::Role::UI:
+    file: lib/Hailo/Role/UI.pm
+    version: 0.20
+  Hailo::Storage::DBD:
+    file: lib/Hailo/Storage/DBD.pm
+    version: 0.20
+  Hailo::Storage::DBD::Pg:
+    file: lib/Hailo/Storage/DBD/Pg.pm
+    version: 0.20
+  Hailo::Storage::DBD::SQLite:
+    file: lib/Hailo/Storage/DBD/SQLite.pm
+    version: 0.20
+  Hailo::Storage::DBD::mysql:
+    file: lib/Hailo/Storage/DBD/mysql.pm
+    version: 0.20
+  Hailo::Tokenizer::Chars:
+    file: lib/Hailo/Tokenizer/Chars.pm
+    version: 0.20
+  Hailo::Tokenizer::Words:
+    file: lib/Hailo/Tokenizer/Words.pm
+    version: 0.20
+  Hailo::UI::ReadLine:
+    file: lib/Hailo/UI/ReadLine.pm
+    version: 0.20
 recommends:
   DBD::Pg: 2.16.1
   DBD::mysql: 4.013
 requires:
-  Class::MOP: 0.98
+  Any::Moose: 0.11
   DBD::SQLite: 1.29
   Data::Section: 0.100270
   File::CountLines: 0.0.2
@@ -39,11 +76,11 @@ requires:
   Module::Pluggable: 3.9
   Moose: 0.94
   MooseX::Getopt: 0.26
-  MooseX::Getopt::Dashes: 0
-  MooseX::Role::Strict: 0.03
   MooseX::StrictConstructor: 0.08
   MooseX::Types: 0.21
-  MooseX::Types::Moose: 0.21
+  Mouse: 0.50_04
+  MouseX::Getopt: 0.2601
+  MouseX::Types: 0.05
   Template: 2.22
   Term::ProgressBar: 2.00
   Term::ReadLine::Gnu: 0
@@ -56,4 +93,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hinrik/hailo.git
-version: 0.19
+version: 0.20

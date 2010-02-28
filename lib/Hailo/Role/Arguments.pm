@@ -1,10 +1,10 @@
 package Hailo::Role::Arguments;
 use 5.010;
-use MooseX::Role::Strict;
-use MooseX::Types::Moose qw/HashRef/;
+use Any::Moose '::Role';
+use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef/];
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 has arguments => (
     isa           => HashRef,

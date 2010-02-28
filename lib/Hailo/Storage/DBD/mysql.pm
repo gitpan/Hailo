@@ -1,11 +1,15 @@
 package Hailo::Storage::DBD::mysql;
 use 5.010;
-use Moose;
-use MooseX::StrictConstructor;
+use Any::Moose;
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 use List::MoreUtils qw< all >;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 extends 'Hailo::Storage::DBD';
 
