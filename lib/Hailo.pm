@@ -1,4 +1,5 @@
 package Hailo;
+our $VERSION = '0.21';
 
 use 5.010;
 use autodie qw(open close);
@@ -21,8 +22,6 @@ use Module::Pluggable (
 );
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
-
-our $VERSION = '0.20';
 
 with any_moose('X::Getopt::Dashes');
 
@@ -300,7 +299,12 @@ sub run {
     my ($self) = @_;
 
     if ($self->print_version) {
-        say "hailo $VERSION";
+        # Munging strictness because we don't have a version from a
+        # Git checkout. Dist::Zilla provides it.
+        no strict 'vars';
+        my $version = $VERSION // 'dev-git';
+
+        say "hailo $version";
         return;
     }
 
@@ -571,29 +575,29 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 This is the synopsis for using Hailo as a module. See L<hailo> for
 command-line invocation.
 
-    # Hailo requires Perl 5.10
-    use 5.010;
-    use strict;
-    use warnings;
-    use Hailo;
+ # Hailo requires Perl 5.10
+ use 5.010;
+ use strict;
+ use warnings;
+ use Hailo;
 
-    # Construct a new in-memory Hailo using the SQLite backend. See
-    # backend documentation for other options.
-    my $hailo = Hailo->new;
+ # Construct a new in-memory Hailo using the SQLite backend. See
+ # backend documentation for other options.
+ my $hailo = Hailo->new;
 
-    # Various ways to learn
-    my @train_this = qw< I like big butts and I can not lie >;
-    $hailo->learn(\@train_this);
-    $hailo->learn($_) for @train_this;
+ # Various ways to learn
+ my @train_this = qw< I like big butts and I can not lie >;
+ $hailo->learn(\@train_this);
+ $hailo->learn($_) for @train_this;
 
-    # Heavy-duty training interface. Backends may drop some safety
-    # features like journals or synchronous IO to train faster using
-    # this mode.
-    $hailo->learn("megahal.trn");
-    $hailo->learn($filehandle);
+ # Heavy-duty training interface. Backends may drop some safety
+ # features like journals or synchronous IO to train faster using
+ # this mode.
+ $hailo->learn("megahal.trn");
+ $hailo->learn($filehandle);
 
-    # Make the brain babble
-    say $hailo->reply("hello good sir.");
+ # Make the brain babble
+ say $hailo->reply("hello good sir.");
 
 =head1 DESCRIPTION
 
@@ -633,9 +637,8 @@ L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
 supported in earlier versions but they were removed as they had no
 redeeming quality.
 
-SQLite is the primary target for Hailo. It's much faster eats less
-resources than the other two and it's highly recommended that you use
-it.
+SQLite is the primary target for Hailo. It's much faster and uses less
+resources than the other two. It's highly recommended that you use it.
 
 This benchmark shows how the backends compare when training on the
 small testsuite dataset as reported by the F<utils/hailo-benchmark>
@@ -654,29 +657,23 @@ line IRC log on a Linode 1080 with Hailo 0.18:
 
 =over
 
-=item *
+=item * SQLite
 
-SQLite
+ real    8m38.285s
+ user    8m30.831s
+ sys     0m1.175s
 
-    real    8m38.285s
-    user    8m30.831s
-    sys     0m1.175s
+=item * MySQL
 
-=item *
+ real    48m30.334s
+ user    8m25.414s
+ sys     4m38.175s
 
-MySQL
+=item * PostgreSQL
 
-    real    48m30.334s
-    user    8m25.414s
-    sys     4m38.175s
-
-=item *
-
-PostgreSQL
-
-    real    216m38.906s
-    user    11m13.474s
-    sys     4m35.509s
+ real    216m38.906s
+ user    11m13.474s
+ sys     4m35.509s
 
 =back
 
@@ -732,6 +729,43 @@ There's also a L<the character
 tokenizer|Hailo::Tokenizer::Chars>. It's not generally useful for a
 conversation bot but can be used to e.g. generate new words given a
 list of existing words.
+
+=head1 UPGRADING
+
+Hailo makes no promises about brains generated with earlier versions
+being compatable with future version and due to the way Hailo works
+there's no practical way to make that promise.
+
+If you're maintaining a Hailo brain that you want to keep using you
+should save the input you trained it on and re-train when you upgrade.
+
+The reason for not offering a database schema upgrade for Hailo is
+twofold:
+
+=over
+
+=item * We're too lazy to maintain database upgrade scripts for every version.
+
+=item * Even if we weren't there's no way to do it right.
+
+=back
+
+The reason it can't be done right is that Hailo is always going to
+destroy information present in the input you give it. How input tokens
+get split up and saved to the storage backend depends on the version
+of the tokenizer being used and how that input gets saved to the
+database.
+
+For instance if an earlier version of Hailo tokenized C<"foo+bar">
+simply as as C<"foo+bar"> but a later version split that up into
+C<"foo", "+", "bar"> an input of C<"foo+bar are my favorite
+metasyntactic variables"> wouldn't take into account the existing
+C<"foo+bar"> string in the database.
+
+Just because of tokenizer changes carrying over brains like this would
+accumulate dead parts of the database & leave other parts in a state
+they wouldn't otherwise have gotten into. There have been similar
+changes to the database format itself.
 
 =head1 ATTRIBUTES
 
@@ -812,6 +846,14 @@ be passed as-is to the backend.
 Takes no arguments. Returns the number of tokens, expressions, previous
 token links and next token links.
 
+=head1 PRIVATE METHODS
+
+=head2 C<run>
+
+Run Hailo in accordance with the the attributes that were passed to
+it, this method is called by the L<hailo> command-line utility and the
+Hailo test suite, it's behavior is subject to change.
+
 =head1 SUPPORT
 
 You can join the IRC channel I<#hailo> on FreeNode if you have questions.
@@ -821,33 +863,17 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 Bugs, feature requests and other issues are tracked in L<Hailo's issue
 tracker on Github|http://github.com/hinrik/hailo/issues>.
 
-=head1 PRIVATE METHODS
-
-=head2 C<run>
-
-Run Hailo in accordance with the the attributes that were passed to
-it, this method is called by the L<hailo> command-line utility and the
-Hailo test suite, it's behavior is subject to change.
-
 =head1 SEE ALSO
 
 =over
 
-=item *
+=item * L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
 
-L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
+=item * L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
 
-=item *
+=item * L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
 
-L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
-
-=item *
-
-L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
-
-=item *
-
-L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
+=item * L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
 
 =back
 
@@ -855,9 +881,7 @@ L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
 
 =over
 
-=item *
-
-L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
+=item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo
 
 =back

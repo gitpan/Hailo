@@ -1,4 +1,5 @@
 package Hailo::Tokenizer::Chars;
+our $VERSION = '0.21';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -7,8 +8,6 @@ BEGIN {
     MooseX::StrictConstructor->import;
 }
 use namespace::clean -except => 'meta';
-
-our $VERSION = '0.20';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::Tokenizer);

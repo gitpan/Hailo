@@ -1,4 +1,5 @@
 package Hailo::Storage::DBD::Pg;
+our $VERSION = '0.21';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -7,8 +8,6 @@ BEGIN {
     MooseX::StrictConstructor->import;
 }
 use namespace::clean -except => 'meta';
-
-our $VERSION = '0.20';
 
 extends 'Hailo::Storage::DBD';
 
@@ -54,7 +53,7 @@ sub ready {
     return exists $self->arguments->{dbname};
 }
 
-# These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
+# These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING
 sub _add_expr {
     my ($self, $token_ids) = @_;
     # add the expression

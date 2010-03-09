@@ -84,7 +84,7 @@ subtest make_output => sub {
         [
             'foo 0.40 bar or .40 bar bla 0,40 foo ,40',
             [qw<foo 0.40 bar or .40 bar bla>, '0,40', 'foo', ',40'],
-            'Foo 0.40 bar or .40 bar bla 0,40 foo ,40.',
+            'Foo 0.40 bar or .40 bar bla 0,40 foo ,40',
         ],
         [
             "sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
@@ -104,7 +104,7 @@ subtest make_output => sub {
         [
             'http://foo.bar/baz',
             [qw<http :// foo . bar / baz>],
-            'http://foo.bar/baz.',
+            'http://foo.bar/baz',
         ],
         [
             "foo bar baz. i said i'll do this",
@@ -119,7 +119,7 @@ subtest make_output => sub {
         [
             'talking about i',
             [qw<talking about i>],
-            'Talking about I.'
+            'Talking about i.'
         ],
         [
             'none, as most animals do, I love conservapedia.',
@@ -165,6 +165,56 @@ subtest make_output => sub {
             'Maps to weekends/holidays',
             [qw<maps to weekends / holidays>],
             'Maps to weekends/holidays.'
+        ],
+        [
+            's/foo/bar',
+            [qw<s / foo / bar>],
+            's/foo/bar'
+        ],
+        [
+            's/foo/bar/',
+            [qw<s / foo / bar />],
+            's/foo/bar/'
+        ],
+        [
+            'Where did I go? http://foo.bar/',
+            [qw<where did I go ? http :// foo . bar />],
+            'Where did I go? http://foo.bar/'
+        ],
+        [
+            'What did I do? s/foo/bar/',
+            [qw<what did I do ? s / foo / bar />],
+            'What did I do? s/foo/bar/'
+        ],
+        [
+            'I called foo() and foo(bar)',
+            [qw<I called foo () and foo ( bar )>],
+            'I called foo() and foo(bar)'
+        ],
+        [
+            'foo() is a function',
+            [qw<foo () is a function>],
+            'foo() is a function.'
+        ],
+        [
+            'the symbol : and the symbol /',
+            [qw<the symbol : and the symbol />],
+            'The symbol : and the symbol /'
+        ],
+        [
+            '.com bubble',
+            [qw<. com bubble>],
+            '.com bubble.'
+        ],
+        [
+            'við vorum þar. í norður- eða vesturhlutanum',
+            [qw<við vorum þar . í norður - eða vesturhlutanum>],
+            'Við vorum þar. Í norður- eða vesturhlutanum.'
+        ],
+        [
+            "i'm talking about -postfix. yeah",
+            [qw<i'm talking about - postfix . yeah>],
+            "I'm talking about -postfix. yeah.",
         ],
     );
 

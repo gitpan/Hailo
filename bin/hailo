@@ -15,6 +15,14 @@ $_ = decode('utf8', $_) for @ARGV;
 # Set programname
 $0 = 'hailo';
 
+if ($^O eq 'linux') {
+    local $@;
+    eval {
+        require Sys::Prctl;
+        Sys::Prctl::prctl_name('hailo');
+    };
+}
+
 # Show help if run without arguments
 @ARGV = qw(--help) unless @ARGV;
 

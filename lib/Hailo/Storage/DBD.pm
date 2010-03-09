@@ -1,4 +1,5 @@
 package Hailo::Storage::DBD;
+our $VERSION = '0.21';
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
@@ -17,8 +18,6 @@ use namespace::clean -except => [ qw(meta
                                      section_data_names
                                      merged_section_data
                                      merged_section_data_names) ];
-
-our $VERSION = '0.20';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::Storage);

@@ -1,4 +1,5 @@
 package Hailo::UI::ReadLine;
+our $VERSION = '0.21';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -10,8 +11,6 @@ use Encode 'decode';
 use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
-
-our $VERSION = '0.20';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::UI);

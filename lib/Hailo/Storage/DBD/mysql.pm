@@ -1,4 +1,5 @@
 package Hailo::Storage::DBD::mysql;
+our $VERSION = '0.21';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -8,8 +9,6 @@ BEGIN {
 }
 use List::MoreUtils qw< all >;
 use namespace::clean -except => 'meta';
-
-our $VERSION = '0.20';
 
 extends 'Hailo::Storage::DBD';
 
@@ -67,17 +66,17 @@ L<DBD::mysql|DBD::mysql>
 
 As a module:
 
-    my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
-        storage_class => 'mysql',
-        storage_args  => {
-            database  => 'hailo',
-            host      => 'localhost',
-            port      => '3306',
-            username  => 'hailo',
-            password  => 'hailo'
-        },
-    );
+ my $hailo = Hailo->new(
+     train_file    => 'hailo.trn',
+     storage_class => 'mysql',
+     storage_args  => {
+         database  => 'hailo',
+         host      => 'localhost',
+         port      => '3306',
+         username  => 'hailo',
+         password  => 'hailo'
+     },
+ );
 
 From the command line:
 
