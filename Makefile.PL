@@ -49,7 +49,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.21',
+  'VERSION' => '0.22',
   'test' => {
     'TESTS' => 't/*.t t/storage/*.t t/tokenizer/*.t t/ui/*.t t/usage/*.t'
   }

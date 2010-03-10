@@ -1,6 +1,10 @@
 Revision history for Hailo
 
-0.21 2010-03-09 18:36:00
+0.22 2010-03-10 08:46:54
+
+    - A Bug in Dist::Zilla ruined 0.21. The unpacked tarball contained
+      home/avar/g/hailo/Hailo-0.21 instead just Hailo-0.21 at the top
+      level.
 
 0.21 2010-03-09 18:25:46
     - Word tokenizer: Various improvements to capitalization

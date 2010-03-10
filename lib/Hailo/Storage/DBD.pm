@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD;
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
