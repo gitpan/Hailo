@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD;
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
@@ -18,9 +18,6 @@ use namespace::clean -except => [ qw(meta
                                      section_data_names
                                      merged_section_data
                                      merged_section_data_names) ];
-
-with qw(Hailo::Role::Arguments
-        Hailo::Role::Storage);
 
 has dbd => (
     isa           => Str,
@@ -572,14 +569,6 @@ sub save {
     my ($self) = @_;
     # no op
     return;
-}
-
-sub ready {
-    my ($self) = @_;
-    my $class = ref $self;
-
-    # Implement me
-    die "$class didn't implement ready()";
 }
 
 __PACKAGE__->meta->make_immutable;

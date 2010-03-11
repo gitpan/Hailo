@@ -35,7 +35,7 @@ my %WriteMakefileArgs = (
     'MooseX::Getopt' => '0.26',
     'MooseX::StrictConstructor' => '0.08',
     'MooseX::Types' => '0.21',
-    'Mouse' => '0.50_04',
+    'Mouse' => '0.50',
     'MouseX::Getopt' => '0.2601',
     'MouseX::Types' => '0.05',
     'Template' => '2.22',
@@ -49,7 +49,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.22',
+  'VERSION' => '0.23',
   'test' => {
     'TESTS' => 't/*.t t/storage/*.t t/tokenizer/*.t t/ui/*.t t/usage/*.t'
   }

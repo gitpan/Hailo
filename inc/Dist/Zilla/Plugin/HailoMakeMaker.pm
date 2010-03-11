@@ -1,10 +1,10 @@
-package Dist::Zilla::Plugin::HailoMakeMaker;
-our $VERSION = '0.22';
+package inc::Dist::Zilla::Plugin::HailoMakeMaker;
+our $VERSION = '0.23';
 use Moose;
 
 extends 'Dist::Zilla::Plugin::MakeMaker';
 
-override _build_makemaker_template => sub {
+override _build__makemaker_template => sub {
     my ($self) = @_;
     my $template = super();
 

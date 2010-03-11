@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 22;
+use Test::More tests => 26;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -27,7 +27,7 @@ if ($has_test_exit) {
         sub {
             never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
         },
-        qr/^hailo [0-9.]+$/,
+        qr/^hailo (?:dev-git|[0-9.]+)$/,
         "Hailo prints its version",
     );
 } else {
@@ -105,6 +105,11 @@ SKIP: {
     dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
 }
 
+# Invalid storage/tokenizer/ui
+dies_ok { Hailo->new( storage_class => "Blahblahblah" )->learn_reply("foo") } "Hailo dies on unknown storage_class arguments";
+dies_ok { Hailo->new( tokenizer_class => "Blahblahblah" )->learn_reply("foo") } "Hailo dies on unknown tokenizer_class arguments";
+dies_ok { my $h = Hailo->new( ui_class => "Blahblahblah" ); $h->_ui_obj->run($h) } "Hailo dies on unknown ui_class arguments";
+
 ### Usage
 
 # train
@@ -119,6 +124,11 @@ dies_ok {
 } "train: undef input";
 
 lives_ok {
-    my $h = Hailo->new;
+    my $h = Hailo->new( print_progress => 0 );
     $h->train([])
 } "train: ARRAY input";
+
+lives_ok {
+    my $h = Hailo->new( print_progress => 1 );
+    $h->train([])
+} "train: ARRAY input interactively";

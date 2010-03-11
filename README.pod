@@ -1,0 +1,1132 @@
+=encoding utf8
+
+=head1 NAME
+
+hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
+
+=head1 SYNOPSIS
+
+Train in-memory from fortune files and reply:
+
+    for i in {1..1000}; do fortune >> /tmp/fortune.trn; done
+    hailo --brain :memory: --train /tmp/fortune.trn --reply art
+    # ==> He hath eaten me out of an art deeper than we ourselves.
+
+Create an on-disk brain for later use:
+
+    hailo --brain hailo.brn --train /tmp/fortune.trn
+    hailo --brain hailo.brn --reply "is"
+    # ==> Earth is ballasted with bones of millions of dollars.
+
+Interact with the brain using readline:
+
+    hailo --brain hailo.brn
+    hailo> hello there
+    # ==> Wife asked "what have you got there?" replied he, "just my cup of fur".
+
+=head1 DESCRIPTION
+
+See the documentation for L<Hailo|Hailo> for more information.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::UI::ReadLine - A UI for L<Hailo|Hailo> using L<Term::ReadLine|Term::ReadLine>
+
+=head1 SYNOPSIS
+
+This module is called internally by L<Hailo|Hailo>, it takes no options.
+
+A ReadLine interface will be presented when calling L<hailo> on the
+command-line with only a C<--brain> argument:
+
+    hailo --brain a-brain.brn
+
+=head1 DESCRIPTION
+
+Presents a ReadLine interface using L<Term::ReadLine>, the
+L<Term::ReadLine::Gnu> frontend will be used.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Storage::DBD - A base class for L<Hailo> DBD
+L<storage|Hailo::Role::Storage> backends
+
+=head1 METHODS
+
+The following methods must to be implemented by subclasses:
+
+=head2 C<_exists_db>
+
+Should return a true value if the database has already been created.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason and
+Hinrik E<Ouml>rn SigurE<eth>sson
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+__DATA__
+__[ table_info ]__
+CREATE TABLE info (
+    attribute [% SWITCH dbd %]
+                  [% CASE 'mysql' %]TEXT NOT NULL,
+                  [% CASE DEFAULT %]TEXT NOT NULL PRIMARY KEY,
+              [% END %]
+    text      TEXT NOT NULL
+);
+__[ table_token ]__
+CREATE TABLE token (
+    id   [% SWITCH dbd %]
+            [% CASE 'Pg'    %]SERIAL UNIQUE,
+            [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+            [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
+         [% END %]
+    spacing INTEGER NOT NULL,
+    text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL,
+    count INTEGER NOT NULL
+);
+__[ table_expr ]__
+CREATE TABLE expr (
+    id  [% SWITCH dbd %]
+            [% CASE 'Pg'    %]SERIAL UNIQUE
+            [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT
+            [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT
+        [% END %],
+[% FOREACH i IN orders %]
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (id)[% UNLESS loop.last %],[% END %]
+[% END %]
+);
+__[ table_next_token ]__
+CREATE TABLE next_token (
+    id       [% SWITCH dbd %]
+                 [% CASE 'Pg'    %]SERIAL UNIQUE,
+                 [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                 [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
+             [% END %]
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
+);
+__[ table_prev_token ]__
+CREATE TABLE prev_token (
+    id       [% SWITCH dbd %]
+                 [% CASE 'Pg'    %]SERIAL UNIQUE,
+                 [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                 [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
+             [% END %]
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
+);
+__[ table_indexes ]__
+CREATE INDEX token_text on token (text);
+[% FOREACH i IN orders %]
+    CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
+[% END %]
+CREATE INDEX expr_token_ids on expr ([% columns %]);
+CREATE INDEX next_token_expr_id ON next_token (expr_id);
+CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
+__[ static_query_get_order ]__
+SELECT text FROM info WHERE attribute = 'markov_order';
+__[ static_query_set_order ]__
+INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
+__[ static_query_token_total ]__
+SELECT COUNT(id) FROM token;
+__[ static_query_expr_total ]__
+SELECT COUNT(id) FROM expr;
+__[ static_query_prev_total ]__
+SELECT COUNT(id) FROM prev_token;
+__[ static_query_next_total ]__
+SELECT COUNT(id) FROM next_token;
+__[ static_query_random_expr ]__
+SELECT * from expr
+[% SWITCH dbd %]
+    [% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
+    [% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
+    [% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
+[% END %]
+  LIMIT 1;
+__[ static_query_token_id ]__
+SELECT id FROM token WHERE spacing = ? AND text = ?;
+__[ static_query_token_info ]__
+SELECT spacing, text FROM token WHERE id = ?;
+__[ static_query_token_similar ]__
+SELECT id, spacing FROM token WHERE text = ?
+[% SWITCH dbd %]
+    [% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
+    [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
+[% END %]
+__[ static_query_add_token ]__
+INSERT INTO token (spacing, text, count) VALUES (?, ?, 0)
+[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ static_query_inc_token_count ]__
+UPDATE token SET count = count + 1 WHERE id = ?;
+__[ static_query_last_expr_rowid ]_
+SELECT id FROM expr ORDER BY id DESC LIMIT 1;
+__[ static_query_last_token_rowid ]__
+SELECT id FROM token ORDER BY id DESC LIMIT 1;
+__[ static_query_(next_token|prev_token)_count ]__
+SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
+__[ static_query_(next_token|prev_token)_inc ]__
+UPDATE [% table %] SET count = count + 1 WHERE expr_id = ? AND token_id = ?
+__[ static_query_(next_token|prev_token)_add ]__
+INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
+__[ static_query_(next_token|prev_token)_get ]__
+SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
+__[ static_query_token_count ]__
+SELECT count FROM token WHERE id = ?;
+__[ dynamic_query_(add_expr) ]__
+INSERT INTO expr ([% columns %]) VALUES ([% ids %])
+[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ dynamic_query_expr_by_token(NUM)_id ]__
+SELECT * FROM expr WHERE [% column %] = ?
+[% SWITCH dbd %]
+    [% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
+    [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
+[% END %]
+__[ dynamic_query_expr_id ]__
+SELECT id FROM expr WHERE
+[% FOREACH i IN orders %]
+    token[% i %]_id = ? [% UNLESS loop.last %] AND [% END %]
+[% END %]
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Storage::DBD::Pg - A storage backend for L<Hailo|Hailo> using
+L<DBD::Pg|DBD::Pg>
+
+=head1 SYNOPSIS
+
+First create a PostgreSQL database for failo:
+
+    # Run it as a dedicated hailo user
+    createdb -E UTF8 -O hailo hailo
+
+    # Just create database..
+    createdb -E UTF8 hailo
+
+As a module:
+
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'Pg',
+        storage_args => {
+            dbname   => 'hailo',
+        },
+    );
+
+Or with complex connection options:
+
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'Pg',
+        storage_args => {
+            dbname   => 'hailo',
+            host     => 'localhost',
+            port     => '5432',
+            options  => '...',
+            username => 'hailo',
+            password => 'hailo'
+        },
+    );
+
+From the command line:
+
+    hailo --train hailo.trn \
+        --storage      Pg \
+        --storage-args dbname=hailo
+
+Or with complex connection options:
+
+    hailo --train hailo.trn \
+        --storage      Pg \
+        --storage-args dbname=hailo \
+        --storage-args host=localhost \
+        --storage-args port=5432 \
+        --storage-args options=... \
+        --storage-args username=hailo \
+        --storage-args password=hailo
+
+Almost all of these options can be omitted, see L<DBD::Pg's
+documentation|DBD::Pg/"connect"> for the default values.
+
+See L<Hailo's documentation|Hailo> for other non-Pg specific options.
+
+=head1 DESCRIPTION
+
+This backend maintains information in a PostgreSQL database.
+
+=head1 ATTRIBUTES
+
+=head2 C<storage_args>
+
+This is a hash reference which can have the following keys:
+
+B<'dbname'>, the name of the database to use (required).
+
+B<'host'>, the host to connect to (required).
+
+B<'port'>, the port to connect to (required).
+
+B<'options'>, additional options to pass to PostgreSQL.
+
+B<'username'>, the username to use.
+
+B<'password'>, the password to use.
+
+=head1 CAVEATS
+
+It's around 8x-10x slower than L<the SQLite
+backend|Hailo::Storage::DBD::SQLite> in my tests. Maybe this is due to
+an unoptimal PostgreSQL configuration (I used the Debian defaults) or
+perhaps the schema we're using simply suits SQLite better.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+__DATA__
+__[ static_query_exists_db ]__
+SELECT count(*) FROM information_schema.columns WHERE table_name ='info';
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Storage::DBD::mysql - A storage backend for L<Hailo|Hailo> using
+L<DBD::mysql|DBD::mysql>
+
+=head1 SYNOPSIS
+
+As a module:
+
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'mysql',
+        storage_args  => {
+            database  => 'hailo',
+            host      => 'localhost',
+            port      => '3306',
+            username  => 'hailo',
+            password  => 'hailo'
+        },
+    );
+
+From the command line:
+
+    hailo --train hailo.trn \
+        --storage      mysql \
+        --storage-args database=hailo \
+        --storage-args host=localhost \
+        --storage-args port=3306 \
+        --storage-args username=hailo \
+        --storage-args password=hailo
+
+Almost all of these options can be omitted, see L<DBD::mysql's
+documentation|DBD::mysql> for the default values.
+
+See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
+
+=head1 DESCRIPTION
+
+This backend maintains information in a MySQL database.
+
+=head1 ATTRIBUTES
+
+=head2 C<storage_args>
+
+This is a hash reference which can have the following keys:
+
+B<'database'>, the name of the database to use (required).
+
+B<'host'>, the host to connect to (required).
+
+B<'port'>, the port to connect to (required).
+
+B<'username'>, the username to use.
+
+B<'password'>, the password to use.
+
+=head1 CAVEATS
+
+MySQL sucks.
+
+=head1 MySQL setup
+
+Before creating a database for Hailo you need to ensure that the
+B<collation_connection>, B<collation_database> and B<collation_server>
+for the new database will be equivalent, you can do this by adding
+this to your C<[mysqld]> section in F<my.cnf>:
+
+    skip-character-set-client-handshake
+    collation_server=utf8_unicode_ci
+    character_set_server=utf8
+
+Now when you create the database you should get something like this:
+
+    mysql> show variables like 'coll%';
+    +----------------------+-----------------+
+    | Variable_name        | Value           |
+    +----------------------+-----------------+
+    | collation_connection | utf8_unicode_ci |
+    | collation_database   | utf8_unicode_ci |
+    | collation_server     | utf8_unicode_ci |
+    +----------------------+-----------------+
+
+If you instead get this:
+
+    +----------------------+-------------------+
+    | Variable_name        | Value             |
+    +----------------------+-------------------+
+    | collation_connection | utf8_unicode_ci   |
+    | collation_database   | latin1_swedish_ci |
+    | collation_server     | utf8_unicode_ci   |
+    +----------------------+-------------------+
+
+Then Hailo will eventually die when you train it on an error similar
+to this:
+
+    DBD::mysql::st execute failed: Illegal mix of collations (latin1_swedish_ci,IMPLICIT)
+    and (utf8_unicode_ci,COERCIBLE) for operation '=' at [...]
+
+After taking care of that create a MySQL database for Hailo using
+something like these commands:
+
+    mysql -u root -p
+    CREATE DATABASE hailo;
+    GRANT USAGE ON *.* TO hailo@localhost IDENTIFIED BY 'hailo';
+    GRANT ALL ON hailo.* TO hailo@localhost IDENTIFIED BY 'hailo';
+    FLUSH PRIVILEGES;
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+__DATA__
+__[ static_query_exists_db ]__
+SHOW TABLES;
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Storage::DBD::SQLite - A storage backend for L<Hailo|Hailo> using
+L<DBD::SQLite|DBD::SQLite>
+
+=head1 SYNOPSIS
+
+As a module:
+
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'SQLite',
+    );
+
+From the command line:
+
+ hailo --train hailo.trn --storage SQLite
+
+See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
+
+=head1 DESCRIPTION
+
+This backend maintains information in an SQLite database. It is the default
+storage backend.
+
+=head1 ATTRIBUTES
+
+=head2 C<storage_args>
+
+This is a hash reference which can have the following keys:
+
+=head3 C<pragma_*>
+
+Any option starting with B<'pragma_'> will be considered to be an L<SQLite
+pragma|http://www.sqlite.org/pragma.html> which will be set when the
+after we connect to the database. An example of this would be
+
+    storage_args => {
+        pragma_cache_size  => 10000,
+        pragma_synchronous => 'OFF',
+    }
+
+Setting B<'pragma_cache_size'> in particular can be beneficial. It's the
+size of the page cache used by SQLite. See L<SQLite's
+documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for
+more information.
+
+Increasing it might speed up Hailo, especially when disk IO is slow on
+your machine. Obviously, you shouldn't bother with this option if
+L<B<'in_memory'>|/in_memory> is enabled.
+
+Setting B<'pragma_synchronous'> to B<'OFF'> or B<'pragma_journal_mode'>
+to B<'OFF'> will speed up operations at the expense of safety. Since Hailo
+is most likely not running as a mission-critical component this trade-off
+should be acceptable in most cases. If the database becomes corrupt
+it's easy to rebuild it by retraining from the input it was trained on
+to begin with. For performance reasons, these two are set to B<'OFF'>
+by default unless L<B<'in_memory'>|/in_memory> is enabled.
+
+=head3 C<in_memory>
+
+When set to a true value, Hailo behaves much like MegaHAL.  The entire
+database will be kept in memory, and only written out to disk when the
+L<C<save>|Hailo/save> method is called and/or when the Hailo object gets
+destroyed (unless you disabled
+L<C<save_on_exit>|Hailo/save_on_exit>). This is disabled by default.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason and
+Hinrik E<Ouml>rn SigurE<eth>sson
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+__DATA__
+__[ static_query_last_expr_rowid ]__
+SELECT last_insert_rowid();
+__[ static_query_last_token_rowid ]__
+SELECT last_insert_rowid();
+__[ static_query_token_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'token';
+__[ static_query_expr_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'expr';
+__[ static_query_prev_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'prev_token';
+__[ static_query_next_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'next_token';
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Role::Storage - A role representing a L<Hailo|Hailo> storage backend
+
+=head1 ATTRIBUTES
+
+=head2 C<ready>
+
+A method might be called after the storage has been constructed to ask
+the storage if it considers itself ready to go. E.g. a storage that
+requires a C<brain> would return false if it wasn't passed one.
+
+=head2 C<order>
+
+The Markov order (chain length) being used.
+
+=head2 C<brain>
+
+The name of the resource (file name, database name) to use as storage.
+
+=head1 METHODS
+
+=head2 C<new>
+
+This is the constructor. It accept the attributes specified in
+L</ATTRIBUTES>.
+
+=head2 C<save>
+
+Saves the current state.
+
+=head2 C<learn_tokens>
+
+Learns from a sequence of tokens. Takes an array reference of strings.
+
+=head2 C<make_reply>
+
+Takes an (optional) array reference of tokens and returns a reply (arrayref
+of tokens) that might be relevant.
+
+=head2 C<token_total>
+
+Takes no arguments. Returns the number of tokens the brain knows.
+
+=head2 C<expr_total>
+
+Takes no arguments. Returns the number of expressions the brain knows.
+
+=head2 C<start_learning>
+
+Takes no arguments. This method is called by C<Hailo|Hailo> right before learning
+begins.
+
+=head2 C<stop_learning>
+
+Takes no arguments. This method is called by C<Hailo|Hailo> right after learning
+finishes.
+
+=head2 C<start_training>
+
+Takes no arguments. This method is called by C<Hailo|Hailo> right before training
+begins.
+
+=head2 C<stop_training>
+
+Takes no arguments. This method is called by C<Hailo|Hailo> right after training
+finishes.
+
+=head1 AUTHOR
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Role::Arguments - A role which adds an 'arguments' attribute
+
+=head1 ATTRIBUTES
+
+=head2 C<arguments>
+
+A C<HashRef> of arguments passed to us from L<Hailo|Hailo>'s
+L<storage|Hailo/storage_args>, or
+L<tokenizer|Hailo/tokenizer_args> arguments.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Role::Tokenizer - A role representing a L<Hailo|Hailo> tokenizer
+
+=head1 METHODS
+
+=head2 C<new>
+
+This is the constructor. It takes no arguments.
+
+=head2 C<make_tokens>
+
+Takes a line of input and returns an array reference of tokens.
+
+=head2 C<make_output>
+
+Takes an array reference of tokens and returns a line of output.
+
+=head1 AUTHOR
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Role::UI - A role representing a L<Hailo|Hailo> UI
+
+=head1 METHODS
+
+=head2 C<new>
+
+This is the constructor. It takes no arguments.
+
+=head2 C<run>
+
+Run the UI, a L<Hailo|Hailo> object will be the first and only
+argument.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Tokenizer::Words - A tokenizer for L<Hailo|Hailo> which splits
+on whitespace, mostly.
+
+=head1 DESCRIPTION
+
+This tokenizer does its best to handle various languages. It knows about most
+apostrophes, quotes, and sentence terminators.
+
+=head1 AUTHOR
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Tokenizer::Chars - A character tokenizer for L<Hailo|Hailo>
+
+=head1 DESCRIPTION
+
+This tokenizer dumbly splits input with C<split //>. Use it to
+generate chains on a per-character basis.
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+--
+=encoding utf8
+
+=head1 NAME
+
+Hailo - A pluggable Markov engine analogous to MegaHAL
+
+=head1 SYNOPSIS
+
+This is the synopsis for using Hailo as a module. See L<hailo> for
+command-line invocation.
+
+    # Hailo requires Perl 5.10
+    use 5.010;
+    use strict;
+    use warnings;
+    use Hailo;
+
+    # Construct a new in-memory Hailo using the SQLite backend. See
+    # backend documentation for other options.
+    my $hailo = Hailo->new;
+
+    # Various ways to learn
+    my @train_this = qw< I like big butts and I can not lie >;
+    $hailo->learn(\@train_this);
+    $hailo->learn($_) for @train_this;
+
+    # Heavy-duty training interface. Backends may drop some safety
+    # features like journals or synchronous IO to train faster using
+    # this mode.
+    $hailo->learn("megahal.trn");
+    $hailo->learn($filehandle);
+
+    # Make the brain babble
+    say $hailo->reply("hello good sir.");
+
+=head1 DESCRIPTION
+
+Hailo is a fast and lightweight markov engine intended to replace
+L<AI::MegaHAL|AI::MegaHAL>. It has a L<Mouse|Mouse> (or L<Moose|Moose>)
+based core with pluggable L<storage|Hailo::Role::Storage> and
+L<tokenizer|Hailo::Role::Tokenizer> backends.
+
+It is similar to MegaHAL in functionality, the main differences (with the
+default backends) being better scalability, drastically less memory usage,
+an improved tokenizer, and tidier output.
+
+With this distribution, you can create, modify, and query Hailo brains. To
+use Hailo in event-driven POE applications, you can use the
+L<POE::Component::Hailo|POE::Component::Hailo> wrapper. One example is
+L<POE::Component::IRC::Plugin::Hailo|POE::Component::IRC::Plugin::Hailo>,
+which implements an IRC chat bot.
+
+=head2 Etymology
+
+I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
+L<failo|http://identi.ca/failo>.
+
+=head1 Backends
+
+Hailo supports pluggable L<storage|Hailo::Role::Storage> and
+L<tokenizer|Hailo::Role::Tokenizer> backends, it also supports a
+pluggable L<UI|Hailo::Role::UI> backend which is used by the L<hailo>
+command-line utility.
+
+=head2 Storage
+
+Hailo can currently store its data in either a
+L<SQLite|Hailo::Storage::DBD::SQLite>,
+L<PostgreSQL|Hailo::Storage::DBD::Pg> or
+L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
+supported in earlier versions but they were removed as they had no
+redeeming quality.
+
+SQLite is the primary target for Hailo. It's much faster and uses less
+resources than the other two. It's highly recommended that you use it.
+
+This benchmark shows how the backends compare when training on the
+small testsuite dataset as reported by the F<utils/hailo-benchmark>
+utility (found in the distribution):
+
+                         Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
+    DBD::Pg            2.22/s      --       -33%             -49%               -56%
+    DBD::mysql         3.33/s     50%         --             -23%               -33%
+    DBD::SQLite/file   4.35/s     96%        30%               --               -13%
+    DBD::SQLite/memory 5.00/s    125%        50%              15%                 --
+
+Under real-world workloads SQLite is much faster than these results
+indicate since the time it takes to train/reply is relative to the
+existing database size. Here's how long it took to train on a 214,710
+line IRC log on a Linode 1080 with Hailo 0.18:
+
+=over
+
+=item * SQLite
+
+    real    8m38.285s
+    user    8m30.831s
+    sys     0m1.175s
+
+=item * MySQL
+
+    real    48m30.334s
+    user    8m25.414s
+    sys     4m38.175s
+
+=item * PostgreSQL
+
+    real    216m38.906s
+    user    11m13.474s
+    sys     4m35.509s
+
+=back
+
+In the case of PostgreSQL it's actually much faster to first train
+with SQLite, dump that database and then import it with L<psql(1)>,
+see L<failo's README|http://github.com/hinrik/failo> for how to do
+that.
+
+However when replying with an existing database (using
+F<utils/hailo-benchmark-replies>) yields different results. SQLite can
+reply really quickly without being warmed up (which is the typical
+usecase for chatbots) but once PostgreSQL and MySQL are warmed up they
+start replying faster:
+
+Here's a comparison of doing 10 replies:
+
+                        Rate PostgreSQL MySQL SQLite-file SQLite-file-28MB SQLite-memory
+    PostgreSQL        71.4/s         --  -14%        -14%             -29%          -50%
+    MySQL             83.3/s        17%    --          0%             -17%          -42%
+    SQLite-file       83.3/s        17%    0%          --             -17%          -42%
+    SQLite-file-28MB 100.0/s        40%   20%         20%               --          -30%
+    SQLite-memory      143/s       100%   71%         71%              43%            --
+
+In this test MySQL uses around 28MB of memory (using Debian's
+F<my-small.cnf>) and PostgreSQL around 34MB. Plain SQLite uses 2MB of
+cache but it's also tested with 28MB of cache as well as with the
+entire database in memory.
+
+But doing 10,000 replies is very different:
+
+                       Rate SQLite-file PostgreSQL SQLite-file-28MB MySQL SQLite-memory
+    SQLite-file      85.1/s          --        -7%             -18%  -27%          -38%
+    PostgreSQL       91.4/s          7%         --             -12%  -21%          -33%
+    SQLite-file-28MB  103/s         21%        13%               --  -11%          -25%
+    MySQL             116/s         37%        27%              13%    --          -15%
+    SQLite-memory     137/s         61%        50%              33%   18%            --
+
+Once MySQL gets more memory (using Debian's F<my-large.cnf>) and a
+chance to warm it starts yielding better results (I couldn't find out
+how to make PostgreSQL take as much memory as it wanted):
+
+                   Rate         MySQL SQLite-memory
+    MySQL         121/s            --          -12%
+    SQLite-memory 138/s           14%            --
+
+=head2 Tokenizer
+
+By default Hailo will use L<the word
+tokenizer|Hailo::Tokenizer::Words> to split up input by whitespace,
+taking into account things like quotes, sentence terminators and more.
+
+There's also a L<the character
+tokenizer|Hailo::Tokenizer::Chars>. It's not generally useful for a
+conversation bot but can be used to e.g. generate new words given a
+list of existing words.
+
+=head1 UPGRADING
+
+Hailo makes no promises about brains generated with earlier versions
+being compatable with future version and due to the way Hailo works
+there's no practical way to make that promise.
+
+If you're maintaining a Hailo brain that you want to keep using you
+should save the input you trained it on and re-train when you upgrade.
+
+The reason for not offering a database schema upgrade for Hailo is
+twofold:
+
+=over
+
+=item * We're too lazy to maintain database upgrade scripts for every version.
+
+=item * Even if we weren't there's no way to do it right.
+
+=back
+
+The reason it can't be done right is that Hailo is always going to
+lose information present in the input you give it. How input tokens
+get split up and saved to the storage backend depends on the version
+of the tokenizer being used and how that input gets saved to the
+database.
+
+For instance if an earlier version of Hailo tokenized C<"foo+bar">
+simply as C<"foo+bar"> but a later version split that up into
+C<"foo", "+", "bar">, then an input of C<"foo+bar are my favorite
+metasyntactic variables"> wouldn't take into account the existing
+C<"foo+bar"> string in the database.
+
+Tokenizer changes like this would cause the brains to accumulate garbage
+and would leave other parts in a state they wouldn't otherwise have gotten
+into. There have been similar changes to the database format itself.
+
+In short, learning is lossy so an accurate conversion is impossible.
+
+=head1 ATTRIBUTES
+
+=head2 C<brain_resource>
+
+The name of the resource (file name, database name) to use as storage.
+There is no default. Whether this gets used at all depends on the
+storage backend, currently only SQLite uses it.
+
+=head2 C<save_on_exit>
+
+A boolean value indicating whether Hailo should save its state before
+its object gets destroyed. This defaults to true and will simply call
+L<save|/save> at C<DEMOLISH> time.
+
+=head2 C<order>
+
+The Markov order (chain length) you want to use for an empty brain.
+The default is 2.
+
+=head2 C<storage_class>
+
+The storage backend to use. Default: 'SQLite'.
+
+=head2 C<tokenizer_class>
+
+The tokenizer to use. Default: 'Words';
+
+=head2 C<ui_class>
+
+The UI to use. Default: 'ReadLine';
+
+=head2 C<storage_args>
+
+=head2 C<tokenizer_args>
+
+=head2 C<ui_args>
+
+A C<HashRef> of arguments for storage/tokenizer/ui backends. See the
+documentation for the backends for what sort of arguments they accept.
+
+=head1 METHODS
+
+=head2 C<new>
+
+This is the constructor. It accepts the attributes specified in
+L</ATTRIBUTES>.
+
+=head2 C<learn>
+
+Takes a string or an array reference of strings and learns from them.
+
+=head2 C<train>
+
+Takes a filename, filehandle or array reference and learns from all its
+lines. If a filename is passed, the file is assumed to be UTF-8 encoded.
+Unlike L<C<learn>|/learn>, this method sacrifices some safety (disables
+the database journal, fsyncs, etc) for speed while learning.
+
+=head2 C<reply>
+
+Takes an optional line of text and generates a reply that might be relevant.
+
+=head2 C<learn_reply>
+
+Takes a string argument, learns from it, and generates a reply that
+might be relevant. This is equivalent to calling L<learn|/learn>
+followed by L<reply|/reply>.
+
+=head2 C<save>
+
+Tells the underlying storage backend to L<save its
+state|Hailo::Role::Storage/"save">, any arguments to this method will
+be passed as-is to the backend.
+
+=head2 C<stats>
+
+Takes no arguments. Returns the number of tokens, expressions, previous
+token links and next token links.
+
+=head1 PRIVATE METHODS
+
+=head2 C<run>
+
+Run Hailo in accordance with the the attributes that were passed to
+it, this method is called by the L<hailo> command-line utility and the
+Hailo test suite, it's behavior is subject to change.
+
+=head1 SUPPORT
+
+You can join the IRC channel I<#hailo> on FreeNode if you have questions.
+
+=head1 BUGS
+
+Bugs, feature requests and other issues are tracked in L<Hailo's issue
+tracker on Github|http://github.com/hinrik/hailo/issues>.
+
+=head1 SEE ALSO
+
+=over
+
+=item * L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
+
+=item * L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
+
+=item * L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
+
+=item * L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
+
+=item * L<http://github.com/bingos/gumbybrain> - GumbyBRAIN, a more famous IRC bot that uses Hailo
+
+=item * L<http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL "inspired by the success of Hailo"
+
+=back
+
+=head1 LINKS
+
+=over
+
+=item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
+MegaHAL, A blog posting about the motivation behind Hailo
+
+=back
+
+=head1 AUTHORS
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

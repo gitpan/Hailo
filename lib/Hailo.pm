@@ -1,5 +1,5 @@
 package Hailo;
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 use 5.010;
 use autodie qw(open close);
@@ -368,7 +368,7 @@ sub train {
         open $fh, '<:encoding(utf8)', $input;
     }
 
-    if ($self->print_progress) {
+    if ($self->print_progress and ref $input ne 'ARRAY' ) {
         $self->_train_progress($fh, $input);
     }
     elsif (ref $input eq 'ARRAY') {
@@ -575,29 +575,29 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 This is the synopsis for using Hailo as a module. See L<hailo> for
 command-line invocation.
 
- # Hailo requires Perl 5.10
- use 5.010;
- use strict;
- use warnings;
- use Hailo;
+    # Hailo requires Perl 5.10
+    use 5.010;
+    use strict;
+    use warnings;
+    use Hailo;
 
- # Construct a new in-memory Hailo using the SQLite backend. See
- # backend documentation for other options.
- my $hailo = Hailo->new;
+    # Construct a new in-memory Hailo using the SQLite backend. See
+    # backend documentation for other options.
+    my $hailo = Hailo->new;
 
- # Various ways to learn
- my @train_this = qw< I like big butts and I can not lie >;
- $hailo->learn(\@train_this);
- $hailo->learn($_) for @train_this;
+    # Various ways to learn
+    my @train_this = qw< I like big butts and I can not lie >;
+    $hailo->learn(\@train_this);
+    $hailo->learn($_) for @train_this;
 
- # Heavy-duty training interface. Backends may drop some safety
- # features like journals or synchronous IO to train faster using
- # this mode.
- $hailo->learn("megahal.trn");
- $hailo->learn($filehandle);
+    # Heavy-duty training interface. Backends may drop some safety
+    # features like journals or synchronous IO to train faster using
+    # this mode.
+    $hailo->learn("megahal.trn");
+    $hailo->learn($filehandle);
 
- # Make the brain babble
- say $hailo->reply("hello good sir.");
+    # Make the brain babble
+    say $hailo->reply("hello good sir.");
 
 =head1 DESCRIPTION
 
@@ -659,21 +659,21 @@ line IRC log on a Linode 1080 with Hailo 0.18:
 
 =item * SQLite
 
- real    8m38.285s
- user    8m30.831s
- sys     0m1.175s
+    real    8m38.285s
+    user    8m30.831s
+    sys     0m1.175s
 
 =item * MySQL
 
- real    48m30.334s
- user    8m25.414s
- sys     4m38.175s
+    real    48m30.334s
+    user    8m25.414s
+    sys     4m38.175s
 
 =item * PostgreSQL
 
- real    216m38.906s
- user    11m13.474s
- sys     4m35.509s
+    real    216m38.906s
+    user    11m13.474s
+    sys     4m35.509s
 
 =back
 
@@ -751,21 +751,22 @@ twofold:
 =back
 
 The reason it can't be done right is that Hailo is always going to
-destroy information present in the input you give it. How input tokens
+lose information present in the input you give it. How input tokens
 get split up and saved to the storage backend depends on the version
 of the tokenizer being used and how that input gets saved to the
 database.
 
 For instance if an earlier version of Hailo tokenized C<"foo+bar">
-simply as as C<"foo+bar"> but a later version split that up into
-C<"foo", "+", "bar"> an input of C<"foo+bar are my favorite
+simply as C<"foo+bar"> but a later version split that up into
+C<"foo", "+", "bar">, then an input of C<"foo+bar are my favorite
 metasyntactic variables"> wouldn't take into account the existing
 C<"foo+bar"> string in the database.
 
-Just because of tokenizer changes carrying over brains like this would
-accumulate dead parts of the database & leave other parts in a state
-they wouldn't otherwise have gotten into. There have been similar
-changes to the database format itself.
+Tokenizer changes like this would cause the brains to accumulate garbage
+and would leave other parts in a state they wouldn't otherwise have gotten
+into. There have been similar changes to the database format itself.
+
+In short, learning is lossy so an accurate conversion is impossible.
 
 =head1 ATTRIBUTES
 
@@ -874,6 +875,10 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 =item * L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
 
 =item * L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
+
+=item * L<http://github.com/bingos/gumbybrain> - GumbyBRAIN, a more famous IRC bot that uses Hailo
+
+=item * L<http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL "inspired by the success of Hailo"
 
 =back
 

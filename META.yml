@@ -35,7 +35,7 @@ requires:
   MooseX::Getopt: 0.26
   MooseX::StrictConstructor: 0.08
   MooseX::Types: 0.21
-  Mouse: 0.50_04
+  Mouse: 0.50
   MouseX::Getopt: 0.2601
   MouseX::Types: 0.05
   Template: 2.22
@@ -54,5 +54,5 @@ resources:
   bugtracker: http://github.com/hinrik/hailo/issues
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
-  repository: http://github.com/hinrik/hailo
-version: 0.22
+  repository: origin
+version: 0.23

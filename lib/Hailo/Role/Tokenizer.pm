@@ -1,5 +1,5 @@
 package Hailo::Role::Tokenizer;
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 use 5.010;
 use Any::Moose '::Role';
 use namespace::clean -except => 'meta';

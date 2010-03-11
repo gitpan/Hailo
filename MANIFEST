@@ -5,6 +5,7 @@ MANIFEST.SKIP
 META.json
 META.yml
 README
+README.pod
 bin/hailo
 dist.ini
 inc/Dist/Zilla/Plugin/HailoMakeMaker.pm
@@ -42,6 +43,7 @@ t/tokenizer/Chars.t
 t/tokenizer/Words-utf8-text.t
 t/tokenizer/Words.t
 t/ui/readline.t
+t/usage/hailo_cmd.t
 t/usage/options-and-usage.t
 t/usage/synopsis.t
 utils/crunchbase-companies

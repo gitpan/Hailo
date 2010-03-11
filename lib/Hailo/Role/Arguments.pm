@@ -1,5 +1,5 @@
 package Hailo::Role::Arguments;
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef/];

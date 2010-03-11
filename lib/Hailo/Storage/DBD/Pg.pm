@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD::Pg;
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -10,6 +10,7 @@ BEGIN {
 use namespace::clean -except => 'meta';
 
 extends 'Hailo::Storage::DBD';
+with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
 override _build_dbd         => sub { 'Pg' };
 override _build_dbd_options => sub {
