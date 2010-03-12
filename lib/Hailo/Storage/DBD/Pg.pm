@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD::Pg;
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 use 5.010;
 use Any::Moose;
 BEGIN {

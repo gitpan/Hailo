@@ -1,5 +1,5 @@
 package Hailo::Test;
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 use 5.010;
 use autodie;
 use Any::Moose;
@@ -26,6 +26,10 @@ sub all_tests {
     return qw(test_starcraft test_congress test_congress_unknown test_babble test_badger test_megahal);
 }
 
+sub exhaustive_tests {
+    return (all_tests(), qw(test_timtoady));
+}
+
 has brief => (
     is => 'ro',
     isa => 'Bool',
@@ -36,6 +40,12 @@ has in_memory => (
     is => 'ro',
     isa => 'Bool',
     default => 1,
+);
+
+has exhaustive => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 0,
 );
 
 has tmpdir => (
@@ -330,10 +340,11 @@ sub train_filename {
 
     for my $l (1 .. $lns) {
         chomp(my $_ = <$fh>);
-        pass("$storage: Training line $l/$filename: $_");
+        pass("$storage: Training line $l/$lns of $filename: $_");
         $hailo->learn($_);
     }
 }
+
 sub test_megahal {
     my ($self, $lines) = @_;
     my $hailo   = $self->hailo;
@@ -348,7 +359,34 @@ sub test_megahal {
 
     for (@tokens) {
         my $reply = $hailo->reply($_);
-        ok(defined $reply, "$storage: Got a reply to $_");
+        ok(defined $reply, "$storage: Got a reply to <<$_>> = <<$reply>>");
+    }
+
+    return;
+}
+
+sub test_timtoady {
+    my ($self, $lines) = @_;
+    my $filename = "TimToady.trn";
+    my $hailo    = $self->hailo;
+    my $storage  = $self->storage;
+    my $file     = $self->test_file($filename);
+    my $fh       = $self->test_fh($filename);
+    my $lns      = $lines // count_lines($file);
+    $lns         = ($self->brief) ? 30 : $lns;
+
+    $self->train_filename($filename, $lns);
+
+    my @tokens = $self->some_tokens($filename, $lns * 0.5);
+    for (@tokens) {
+        my $reply = $hailo->reply($_);
+        ok(defined $reply, "$storage: Got a reply to <<$_>> = <<$reply>>");
+    }
+
+    while (my $line = <$fh>) {
+        chomp $line;
+        my $reply = $hailo->reply($line);
+        ok(defined $reply, "$storage: Got a reply to <<$line>> = <<$reply>>");
     }
 
     return;
@@ -411,8 +449,13 @@ sub test_all_plan {
     my $ok = $self->spawn_storage();
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
-    plan(tests => 977);
-    $self->test_all;
+    if ($self->exhaustive) {
+        plan(tests => 29947);
+        $self->test_exhaustive;
+    } else {
+        plan(tests => 977);
+        $self->test_all;
+    }
   }
 }
 
@@ -441,6 +484,19 @@ sub test_all {
     ok($self->hailo->_storage_obj->ready(), "Storage object is ready for testing");
 
     for (all_tests()) {
+        $self->$_;
+        $self->test_stats($_);
+    }
+
+    return;
+}
+
+sub test_exhaustive {
+    my ($self) = @_;
+
+    ok($self->hailo->_storage_obj->ready(), "Storage object is ready for testing");
+
+    for (exhaustive_tests()) {
         $self->$_;
         $self->test_stats($_);
     }

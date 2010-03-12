@@ -26,10 +26,12 @@ t/01_compile.t
 t/02_chat.t
 t/03_sanity.t
 t/lib/Hailo/Test.pm
+t/lib/Hailo/Test/TimToady.trn
 t/lib/Hailo/Test/badger.trn
 t/lib/Hailo/Test/megahal.trn
 t/lib/Hailo/Test/starcraft.trn
 t/storage/DBD-Pg.t
+t/storage/DBD-SQLite-file-exhaustive.t
 t/storage/DBD-SQLite-file.t
 t/storage/DBD-SQLite-in-memory.t
 t/storage/DBD-SQLite-memory.t
@@ -50,6 +52,7 @@ utils/crunchbase-companies
 utils/hailo-benchmark
 utils/hailo-benchmark-mouse-moose
 utils/hailo-benchmark-replies
+utils/train/perl6-irc.sh
 utils/train/wikipedia-did-you-know.sh
 xt/01_pod.t
 xt/02_pod_coverage.t

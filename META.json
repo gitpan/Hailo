@@ -8,7 +8,7 @@
       ]
    },
    "resources" : {
-      "repository" : "origin",
+      "repository" : "http://github.com/avar/hailo",
       "homepage" : "http://search.cpan.org/dist/Hailo/",
       "bugtracker" : "http://github.com/hinrik/hailo/issues",
       "license" : "http://dev.perl.org/licenses/",
@@ -19,7 +19,7 @@
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
    },
    "generated_by" : "Dist::Zilla version (undef)",
-   "version" : "0.23",
+   "version" : "0.24",
    "name" : "Hailo",
    "author" : [
       "Hinrik \u00c3\u0096rn Sigur\u00c3\u00b0sson <hinrik.sig@gmail.com>",
