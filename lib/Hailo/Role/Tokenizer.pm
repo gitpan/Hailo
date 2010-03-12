@@ -1,8 +1,20 @@
 package Hailo::Role::Tokenizer;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use 5.010;
 use Any::Moose '::Role';
+use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef Int/];
 use namespace::clean -except => 'meta';
+
+has spacing => (
+    isa     => HashRef[Int],
+    is      => 'rw',
+    default => sub { {
+        normal  => 0,
+        prefix  => 1,
+        postfix => 2,
+        infix   => 3,
+    } },
+);
 
 requires 'make_tokens';
 requires 'make_output';
@@ -23,11 +35,30 @@ This is the constructor. It takes no arguments.
 
 =head2 C<make_tokens>
 
-Takes a line of input and returns an array reference of tokens.
+Takes a line of input and returns an array reference of tokens. A token is
+an array reference containing two elements: a I<spacing attribute> and the
+I<token text>. The spacing attribute is an integer which will be stored along
+with the token text in the database. The following values are currently being
+used:
+
+=over
+
+=item C<0> - normal token
+
+=item C<1> - prefix token (no whitespace follows it)
+
+=item C<2> - postfix token (no whitespace precedes it)
+
+=item C<3> - infix token (no whitespace follows or precedes it)
+
+=back
 
 =head2 C<make_output>
 
-Takes an array reference of tokens and returns a line of output.
+Takes an array reference of tokens and returns a line of output. A token an
+array reference as described in L<C<make_tokens>|/make_tokens>. The tokens
+will be joined together into a sentence according to the whitespace
+attributes associated with the tokens.
 
 =head1 AUTHOR
 

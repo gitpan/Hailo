@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD::SQLite;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -12,7 +12,8 @@ use namespace::clean -except => 'meta';
 extends 'Hailo::Storage::DBD';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
-override _build_dbd         => sub { 'SQLite' };
+sub _build_dbd { return 'SQLite' };
+
 override _build_dbd_options => sub {
     return {
         %{ super() },
@@ -115,7 +116,7 @@ sub _set_pragmas {
     return;
 }
 
-override save => sub {
+sub save {
     my ($self, $filename) = @_;
     my $file = $filename // $self->brain;
 
@@ -164,8 +165,8 @@ This is a hash reference which can have the following keys:
 =head3 C<pragma_*>
 
 Any option starting with B<'pragma_'> will be considered to be an L<SQLite
-pragma|http://www.sqlite.org/pragma.html> which will be set when the
-after we connect to the database. An example of this would be
+pragma|http://www.sqlite.org/pragma.html> which will be set after we connect
+to the database. An example of this would be
 
     storage_args => {
         pragma_cache_size  => 10000,

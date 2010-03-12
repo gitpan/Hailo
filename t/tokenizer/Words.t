@@ -84,7 +84,7 @@ subtest make_output => sub {
         [
             'foo 0.40 bar or .40 bar bla 0,40 foo ,40',
             [qw<foo 0.40 bar or .40 bar bla>, '0,40', 'foo', ',40'],
-            'Foo 0.40 bar or .40 bar bla 0,40 foo ,40',
+            'Foo 0.40 bar or .40 bar bla 0,40 foo ,40.',
         ],
         [
             "sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
@@ -220,6 +220,16 @@ subtest make_output => sub {
             "But..what about me? but...no",
             [qw<but .. what about me ? but ... no>],
             "But..what about me? But...no",
+        ],
+        [
+            "For foo'345",
+            [qw<for foo ' 345>],
+            "For foo'345",
+        ],
+        [
+            "loves2spooge",
+            [qw<loves2spooge>],
+            "Loves2spooge.",
         ],
     );
 

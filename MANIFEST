@@ -45,6 +45,7 @@ t/tokenizer/Chars.t
 t/tokenizer/Words-utf8-text.t
 t/tokenizer/Words.t
 t/ui/readline.t
+t/ui/readline_chat.t
 t/usage/hailo_cmd.t
 t/usage/options-and-usage.t
 t/usage/synopsis.t

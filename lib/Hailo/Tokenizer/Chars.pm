@@ -1,5 +1,5 @@
 package Hailo::Tokenizer::Chars;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -16,7 +16,7 @@ with qw(Hailo::Role::Arguments
 sub make_tokens {
     my ($self, $line) = @_;
     my @chars = split //, $line;
-    my @tokens = map { [0, $_] } @chars;
+    my @tokens = map { [$self->spacing->{normal}, $_] } @chars;
     return \@tokens;
 }
 

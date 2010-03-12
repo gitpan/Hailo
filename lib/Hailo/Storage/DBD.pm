@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
@@ -25,9 +25,6 @@ has dbd => (
     lazy_build    => 1,
     documentation => "The DBD::* driver we're using",
 );
-
-# Override me
-sub _build_dbd { die }
 
 has dbd_options => (
     isa           => HashRef,
@@ -107,6 +104,7 @@ has _boundary_token_id => (
     is  => 'rw',
 );
 
+# create statement handle objects
 sub _prepare_sth {
     my ($self, $sections, $prefix) = @_;
 
@@ -132,6 +130,7 @@ sub _prepare_sth {
     return \%state;
 }
 
+# return SQL statements which are not dependent on the Markov order
 sub _sth_sections_static {
     my ($self) = @_;
     my %sections;
@@ -155,6 +154,7 @@ sub _sth_sections_static {
     return \%sections, $prefix;;
 }
 
+# return SQL statements which are dependent on the Markov order
 sub _sth_sections_dynamic {
     my ($self) = @_;
     my %sections;
@@ -188,6 +188,7 @@ sub _sth_sections_dynamic {
     return \%sections, $prefix;
 }
 
+# bootstrap the database
 sub _engage {
     my ($self) = @_;
 
@@ -450,6 +451,7 @@ sub _find_rare_tokens {
     return @ids;
 }
 
+# increase the link weight between an expression and a token
 sub _inc_link {
     my ($self, $type, $expr_id, $token_id) = @_;
 
@@ -466,8 +468,10 @@ sub _inc_link {
     return;
 }
 
+# add new expression to the database
 sub _add_expr {
     my ($self, $token_ids) = @_;
+
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids);
 
@@ -503,6 +507,7 @@ sub _token_id_add {
     return $token_id;
 }
 
+# return all tokens (regardless of spacing) that consist of this text
 sub _token_similar {
     my ($self, $token_text) = @_;
     $self->sth->{token_similar}->execute($token_text);
@@ -544,6 +549,7 @@ sub _random_expr {
     return @$expr;
 }
 
+# return a new next/previous token
 sub _pos_token {
     my ($self, $pos, $expr_id, $key_tokens) = @_;
     my $dbh = $self->dbh;
@@ -562,13 +568,7 @@ sub _pos_token {
     for my $token (keys %$pos_tokens) {
         push @novel_tokens, ($token) x $pos_tokens->{$token}{count};
     }
-    return @novel_tokens[rand @novel_tokens];
-}
-
-sub save {
-    my ($self) = @_;
-    # no op
-    return;
+    return $novel_tokens[rand @novel_tokens];
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -583,6 +583,22 @@ L<storage|Hailo::Role::Storage> backends
 =head1 METHODS
 
 The following methods must to be implemented by subclasses:
+
+=head2 C<_build_dbd>
+
+Should return the name of the database driver (e.g. 'SQLite') which will be
+passed to L<DBI|DBI>.
+
+=head2 C<_build_dbd_options>
+
+Subclasses can override this method to add options of their own. E.g:
+
+    override _build_dbd_options => sub {
+        return {
+            %{ super() },
+            sqlite_unicode => 1,
+        };
+    };
 
 =head2 C<_exists_db>
 

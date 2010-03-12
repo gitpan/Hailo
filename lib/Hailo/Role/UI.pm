@@ -1,5 +1,5 @@
 package Hailo::Role::UI;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use 5.010;
 use Any::Moose '::Role';
 use namespace::clean -except => 'meta';

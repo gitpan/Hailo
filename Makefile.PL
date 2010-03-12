@@ -42,14 +42,16 @@ my %WriteMakefileArgs = (
     'Term::ProgressBar' => '2.00',
     'Term::ReadLine::Gnu' => '0',
     'Test::Exception' => '0.29',
+    'Test::Expect' => '0.30',
     'Test::More' => '0.94',
     'Test::Output' => '0.16',
     'Test::Script' => '1.07',
+    'Test::Script::Run' => '0.03',
     'Time::HiRes' => '0',
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.24',
+  'VERSION' => '0.25',
   'test' => {
     'TESTS' => 't/*.t t/storage/*.t t/tokenizer/*.t t/ui/*.t t/usage/*.t'
   }

@@ -1,5 +1,5 @@
 package inc::Dist::Zilla::Plugin::HailoMakeMaker;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use Moose;
 
 extends 'Dist::Zilla::Plugin::MakeMaker';

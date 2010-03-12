@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD::mysql;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -13,7 +13,8 @@ use namespace::clean -except => 'meta';
 extends 'Hailo::Storage::DBD';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
-override _build_dbd         => sub { 'mysql' };
+sub _build_dbd { return 'mysql' };
+
 override _build_dbd_options => sub {
     return {
         %{ super() },

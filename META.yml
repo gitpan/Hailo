@@ -42,9 +42,11 @@ requires:
   Term::ProgressBar: 2.00
   Term::ReadLine::Gnu: 0
   Test::Exception: 0.29
+  Test::Expect: 0.30
   Test::More: 0.94
   Test::Output: 0.16
   Test::Script: 1.07
+  Test::Script::Run: 0.03
   Time::HiRes: 0
   autodie: 2.08
   namespace::clean: 0.13
@@ -54,5 +56,5 @@ resources:
   bugtracker: http://github.com/hinrik/hailo/issues
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
-  repository: http://github.com/avar/hailo
-version: 0.24
+  repository: http://github.com/hinrik/hailo
+version: 0.25

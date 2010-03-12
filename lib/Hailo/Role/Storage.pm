@@ -1,5 +1,5 @@
 package Hailo::Role::Storage;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/Str Int/];
@@ -36,6 +36,11 @@ requires 'stop_learning';
 requires 'start_training';
 requires 'stop_training';
 
+sub save {
+    # does nothing by default
+    return;
+}
+
 1;
 
 =encoding utf8
@@ -48,9 +53,9 @@ Hailo::Role::Storage - A role representing a L<Hailo|Hailo> storage backend
 
 =head2 C<ready>
 
-A method might be called after the storage has been constructed to ask
-the storage if it considers itself ready to go. E.g. a storage that
-requires a C<brain> would return false if it wasn't passed one.
+This method can be called after the storage has been constructed, to ask
+the storage backend if it considers itself ready to go. E.g. a storage
+that requires a C<brain> would return false if it wasn't passed one.
 
 =head2 C<order>
 
@@ -90,22 +95,22 @@ Takes no arguments. Returns the number of expressions the brain knows.
 
 =head2 C<start_learning>
 
-Takes no arguments. This method is called by C<Hailo|Hailo> right before learning
+Takes no arguments. This method is called by L<Hailo|Hailo> right before learning
 begins.
 
 =head2 C<stop_learning>
 
-Takes no arguments. This method is called by C<Hailo|Hailo> right after learning
+Takes no arguments. This method is called by L<Hailo|Hailo> right after learning
 finishes.
 
 =head2 C<start_training>
 
-Takes no arguments. This method is called by C<Hailo|Hailo> right before training
+Takes no arguments. This method is called by L<Hailo|Hailo> right before training
 begins.
 
 =head2 C<stop_training>
 
-Takes no arguments. This method is called by C<Hailo|Hailo> right after training
+Takes no arguments. This method is called by L<Hailo|Hailo> right after training
 finishes.
 
 =head1 AUTHOR
