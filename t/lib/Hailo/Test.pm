@@ -1,5 +1,5 @@
 package Hailo::Test;
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 use 5.010;
 use autodie;
 use Any::Moose;
@@ -66,7 +66,7 @@ sub _build_tmpdir {
     return $dir;
 }
 
-has brain_resource => (
+has brain => (
     is => 'ro',
     isa => 'Str',
 );
@@ -104,10 +104,10 @@ sub _build_hailo {
     return $hailo;
 }
 
-sub brain {
+sub get_brain {
     my ($self) = @_;
     my $storage = $self->storage;
-    my $brainrs = $self->brain_resource;
+    my $brainrs = $self->brain;
 
     given ($storage) {
         when (/mysql/) {
@@ -116,7 +116,7 @@ sub brain {
             return $name;
         }
         default {
-            return $self->brain_resource // $self->tmpfile->[1];
+            return $self->brain // $self->tmpfile->[1];
         }
     }
 }
@@ -124,7 +124,7 @@ sub brain {
 sub spawn_storage {
     my ($self) = @_;
     my $storage = $self->storage;
-    my $brainrs = $self->brain;
+    my $brainrs = $self->get_brain;
     my $ok = 1;
 
     my %classes = (
@@ -171,11 +171,11 @@ sub spawn_storage {
 sub unspawn_storage {
     my ($self) = @_;
     my $storage = $self->storage;
-    my $brainrs = $self->brain;
+    my $brainrs = $self->get_brain;
 
     my $nuke_db = sub {
-        $_->finish for values %{ $self->hailo->_storage_obj->sth };
-        $self->hailo->_storage_obj->dbh->disconnect;
+        $_->finish for values %{ $self->hailo->_storage->sth };
+        $self->hailo->_storage->dbh->disconnect;
     };
 
     given ($storage) {
@@ -203,7 +203,7 @@ sub _connect_opts {
     given ($storage) {
         when (/SQLite/) {
             %opts = (
-                brain_resource => ($self->in_memory  ? ':memory:' : $self->brain),
+                brain => ($self->in_memory  ? ':memory:' : $self->get_brain),
                 storage_args => {
                     in_memory => 0,
                 },
@@ -212,14 +212,14 @@ sub _connect_opts {
         when (/Pg/) {
             %opts = (
                 storage_args => {
-                    dbname => $self->brain
+                    dbname => $self->get_brain
                 },
             );
         }
         when (/mysql/) {
             %opts = (
                 storage_args => {
-                    database => $self->brain,
+                    database => $self->get_brain,
                     host => 'localhost',
                     username => 'root',
                     password => $ENV{MYSQL_ROOT_PASSWORD},
@@ -229,7 +229,6 @@ sub _connect_opts {
     }
 
     my %all_opts = (
-        print_progress => 0,
         save_on_exit   => 0,
         storage_class  => $storage,
         %opts,
@@ -481,7 +480,7 @@ sub test_stats {
 sub test_all {
     my ($self) = @_;
 
-    ok($self->hailo->_storage_obj->ready(), "Storage object is ready for testing");
+    ok($self->hailo->_storage->ready(), "Storage object is ready for testing");
 
     for (all_tests()) {
         $self->$_;
@@ -494,7 +493,7 @@ sub test_all {
 sub test_exhaustive {
     my ($self) = @_;
 
-    ok($self->hailo->_storage_obj->ready(), "Storage object is ready for testing");
+    ok($self->hailo->_storage->ready(), "Storage object is ready for testing");
 
     for (exhaustive_tests()) {
         $self->$_;

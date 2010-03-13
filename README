@@ -23,8 +23,8 @@ SYNOPSIS
         # Heavy-duty training interface. Backends may drop some safety
         # features like journals or synchronous IO to train faster using
         # this mode.
-        $hailo->learn("megahal.trn");
-        $hailo->learn($filehandle);
+        $hailo->train("megahal.trn");
+        $hailo->train($filehandle);
 
         # Make the brain babble
         say $hailo->reply("hello good sir.");
@@ -178,8 +178,8 @@ UPGRADING
     In short, learning is lossy so an accurate conversion is impossible.
 
 ATTRIBUTES
-  "brain_resource"
-    The name of the resource (file name, database name) to use as storage.
+  "brain"
+    The name of the brain (file name, database name) to use as storage.
     There is no default. Whether this gets used at all depends on the
     storage backend, currently only SQLite uses it.
 
@@ -237,12 +237,6 @@ METHODS
   "stats"
     Takes no arguments. Returns the number of tokens, expressions, previous
     token links and next token links.
-
-PRIVATE METHODS
-  "run"
-    Run Hailo in accordance with the the attributes that were passed to it,
-    this method is called by the hailo command-line utility and the Hailo
-    test suite, it's behavior is subject to change.
 
 SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.

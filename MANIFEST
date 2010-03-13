@@ -10,6 +10,7 @@ bin/hailo
 dist.ini
 inc/Dist/Zilla/Plugin/HailoMakeMaker.pm
 lib/Hailo.pm
+lib/Hailo/Command.pm
 lib/Hailo/Role/Arguments.pm
 lib/Hailo/Role/Storage.pm
 lib/Hailo/Role/Tokenizer.pm
@@ -25,6 +26,14 @@ t/00_diag.t
 t/01_compile.t
 t/02_chat.t
 t/03_sanity.t
+t/command/passthrough.t
+t/command/run.t
+t/command/shell.t
+t/command/ui/readline_chat.t
+t/hailo/brain_resource.t
+t/hailo/methods.t
+t/hailo/methods/order.t
+t/hailo/synopsis.t
 t/lib/Hailo/Test.pm
 t/lib/Hailo/Test/TimToady.trn
 t/lib/Hailo/Test/badger.trn
@@ -45,10 +54,6 @@ t/tokenizer/Chars.t
 t/tokenizer/Words-utf8-text.t
 t/tokenizer/Words.t
 t/ui/readline.t
-t/ui/readline_chat.t
-t/usage/hailo_cmd.t
-t/usage/options-and-usage.t
-t/usage/synopsis.t
 utils/crunchbase-companies
 utils/hailo-benchmark
 utils/hailo-benchmark-mouse-moose

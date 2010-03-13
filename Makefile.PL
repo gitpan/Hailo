@@ -47,13 +47,14 @@ my %WriteMakefileArgs = (
     'Test::Output' => '0.16',
     'Test::Script' => '1.07',
     'Test::Script::Run' => '0.03',
+    'Test::Synopsis' => '0.06',
     'Time::HiRes' => '0',
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.25',
+  'VERSION' => '0.26',
   'test' => {
-    'TESTS' => 't/*.t t/storage/*.t t/tokenizer/*.t t/ui/*.t t/usage/*.t'
+    'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/tokenizer/*.t t/ui/*.t'
   }
 );
 

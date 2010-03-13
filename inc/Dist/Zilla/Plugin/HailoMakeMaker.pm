@@ -1,8 +1,9 @@
 package inc::Dist::Zilla::Plugin::HailoMakeMaker;
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 use Moose;
+#use Dist::Zilla::Plugin::OverridableMakeMaker;
 
-extends 'Dist::Zilla::Plugin::MakeMaker';
+extends 'Dist::Zilla::Plugin::OverridableMakeMaker';
 
 override _build__makemaker_template => sub {
     my ($self) = @_;

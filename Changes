@@ -1,5 +1,40 @@
 Revision history for Hailo
 
+0.26 2010-03-13 08:01:54
+
+    - Split the X::Getopt parts of Hailo into Hailo::Command. This way
+      the speed / memory penalty of loading all the command-line
+      related modules is only applicable if running the command-line
+      interface. using Hailo takes 1MB less memory now and loads a
+      total of 56 modules instead of 74.
+
+    - Due to the split it was possible to rename the `brain_resource'
+      attribute to `brain'. The former is still provided for backwards
+      compatibility.
+
+    - A lot of miscellaneous cleanups in the code made possible by
+      splitting the core of Hailo from the command line UI.
+
+    - DEMOLISH was broken. it would build storage objects during
+      global destruction if they didn't exist.
+
+    - Add --examples switch to be used as --help --examples, examples
+      are now not part of --help by default since they took up most of
+      the terminal & obscured the option help output.
+
+    - A lot has been changed in the test suite. Below is a partial
+      summary:
+
+    - Test the ->run method in Hailo::Command completely. Previously
+      only a subset of its functionality was tested. The only thing
+      that isn't tested completely is the invocation of
+      Hailo::UI::ReadLine via ->run.
+
+    - Completely test the ->train and ->learn methods and make
+      ->learn() die on unknown input like HashRefs.
+
+    - Test the --help output.
+
 0.25 2010-03-12 17:45:42
 
     - Improved documentation of the Tokenizer role and the DBD class
