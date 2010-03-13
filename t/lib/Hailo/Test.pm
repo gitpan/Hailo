@@ -1,5 +1,5 @@
 package Hailo::Test;
-our $VERSION = '0.27';
+our $VERSION = '0.28';
 use 5.010;
 use autodie;
 use Any::Moose;

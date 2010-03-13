@@ -1,5 +1,5 @@
 package Hailo;
-our $VERSION = '0.27';
+our $VERSION = '0.28';
 
 use 5.010;
 use autodie qw(open close);
@@ -228,6 +228,8 @@ sub _train_fh {
         chomp $line;
         $self->_learn_one($line);
     }
+
+    return;
 }
 
 sub learn {
@@ -337,7 +339,7 @@ command-line invocation.
     my $hailo = Hailo->new;
 
     # Various ways to learn
-    my @train_this = qw< I like big butts and I can not lie >;
+    my @train_this = ("I like big butts", "and I can not lie");
     $hailo->learn(\@train_this);
     $hailo->learn($_) for @train_this;
 
@@ -349,6 +351,8 @@ command-line invocation.
 
     # Make the brain babble
     say $hailo->reply("hello good sir.");
+    # Just say something at random
+    say $hailo->reply();
 
 =head1 DESCRIPTION
 

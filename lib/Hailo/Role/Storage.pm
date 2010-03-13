@@ -1,5 +1,5 @@
 package Hailo::Role::Storage;
-our $VERSION = '0.27';
+our $VERSION = '0.28';
 use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/Str Int/];

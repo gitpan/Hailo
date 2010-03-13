@@ -58,4 +58,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
   repository: http://github.com/avar/hailo
-version: 0.27
+version: 0.28

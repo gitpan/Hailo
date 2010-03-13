@@ -19,7 +19,7 @@
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
    },
    "generated_by" : "Dist::Zilla version 1.100711",
-   "version" : "0.27",
+   "version" : "0.28",
    "name" : "Hailo",
    "author" : [
       "Hinrik \u00c3\u0096rn Sigur\u00c3\u00b0sson <hinrik.sig@gmail.com>",

@@ -16,7 +16,7 @@ SYNOPSIS
         my $hailo = Hailo->new;
 
         # Various ways to learn
-        my @train_this = qw< I like big butts and I can not lie >;
+        my @train_this = ("I like big butts", "and I can not lie");
         $hailo->learn(\@train_this);
         $hailo->learn($_) for @train_this;
 
@@ -28,6 +28,8 @@ SYNOPSIS
 
         # Make the brain babble
         say $hailo->reply("hello good sir.");
+        # Just say something at random
+        say $hailo->reply();
 
 DESCRIPTION
     Hailo is a fast and lightweight markov engine intended to replace
