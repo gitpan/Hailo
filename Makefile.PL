@@ -40,7 +40,7 @@ my %WriteMakefileArgs = (
     'MouseX::Types' => '0.05',
     'Template' => '2.22',
     'Term::ProgressBar' => '2.00',
-    'Term::ReadLine::Gnu' => '0',
+    'Term::ReadLine' => '0',
     'Test::Exception' => '0.29',
     'Test::Expect' => '0.30',
     'Test::More' => '0.94',
@@ -52,7 +52,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.26',
+  'VERSION' => '0.27',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/tokenizer/*.t t/ui/*.t'
   }

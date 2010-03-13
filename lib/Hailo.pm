@@ -1,5 +1,5 @@
 package Hailo;
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 use 5.010;
 use autodie qw(open close);

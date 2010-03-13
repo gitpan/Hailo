@@ -19,7 +19,7 @@
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
    },
    "generated_by" : "Dist::Zilla version 1.100711",
-   "version" : "0.26",
+   "version" : "0.27",
    "name" : "Hailo",
    "author" : [
       "Hinrik \u00c3\u0096rn Sigur\u00c3\u00b0sson <hinrik.sig@gmail.com>",
@@ -35,6 +35,7 @@
       "IO::Interactive" : "0.0.6",
       "Test::Exception" : "0.29",
       "Test::More" : "0.94",
+      "Term::ReadLine" : "0",
       "MooseX::Types" : "0.21",
       "Any::Moose" : "0.11",
       "MouseX::Types" : "0.05",
@@ -55,12 +56,11 @@
       "Module::Pluggable" : "3.9",
       "Test::Synopsis" : "0.06",
       "Data::Random" : "0.05",
+      "Test::Expect" : "0.30",
       "Time::HiRes" : "0",
       "Template" : "2.22",
-      "Test::Expect" : "0.30",
-      "namespace::clean" : "0.13",
       "perl" : "5.010",
-      "Term::ReadLine::Gnu" : "0"
+      "namespace::clean" : "0.13"
    },
    "abstract" : "A pluggable Markov engine analogous to MegaHAL",
    "configure_requires" : {

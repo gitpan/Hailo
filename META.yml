@@ -40,7 +40,7 @@ requires:
   MouseX::Types: 0.05
   Template: 2.22
   Term::ProgressBar: 2.00
-  Term::ReadLine::Gnu: 0
+  Term::ReadLine: 0
   Test::Exception: 0.29
   Test::Expect: 0.30
   Test::More: 0.94
@@ -58,4 +58,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
   repository: http://github.com/avar/hailo
-version: 0.26
+version: 0.27
