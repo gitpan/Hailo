@@ -1,5 +1,5 @@
 package Hailo::Tokenizer::Words;
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 use 5.010;
 use utf8;
 use Any::Moose;

@@ -21,7 +21,6 @@ my %WriteMakefileArgs = (
   'PREREQ_PM' => {
     'Any::Moose' => '0.11',
     'DBD::SQLite' => '1.29',
-    'Data::Random' => '0.05',
     'Data::Section' => '0.100270',
     'File::CountLines' => '0.0.2',
     'File::Slurp' => '9999.13',
@@ -52,7 +51,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.28',
+  'VERSION' => '0.29',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/tokenizer/*.t t/ui/*.t'
   }
