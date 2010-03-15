@@ -1,5 +1,24 @@
 Revision history for Hailo
 
+0.30 2010-03-15 15:18:01
+
+    - Don't set EXLOCK on temporary files we create. This completely
+      broke Hailo tests on platforms like FreeBSD which aren't as
+      promiscuous as Linux about file locking.
+
+    - Use Dir::Self in hailo/Hailo::Command to work around the 0.29
+      bug in t/command/shell.t on some platforms like FreeBSD where
+      IPC3::Run calling a script that called FindBin didn't work
+      as expected.
+
+    - Add more testing including a really basic test for DBIx::Class
+      debugging (from the dbix-class branch) and making TAP output
+      more verbose.
+
+    - Run all the tests Hailo::Test runs internally for each engine
+      one-by-one using the DBD::SQLite memory driver. This makes sure
+      the internal tests don't depend on each other in odd ways.
+
 0.29 2010-03-13 10:32:43
 
     - Remove Data::Random as a dependency. It fails the most tests of

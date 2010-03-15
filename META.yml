@@ -22,6 +22,7 @@ requires:
   Any::Moose: 0.11
   DBD::SQLite: 1.29
   Data::Section: 0.100270
+  Dir::Self: 0.10
   File::CountLines: 0.0.2
   File::Slurp: 9999.13
   File::Spec::Functions: 0
@@ -57,4 +58,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
   repository: http://github.com/avar/hailo
-version: 0.29
+version: 0.30

@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD::SQLite;
-our $VERSION = '0.29';
+our $VERSION = '0.30';
 use 5.010;
 use Any::Moose;
 BEGIN {

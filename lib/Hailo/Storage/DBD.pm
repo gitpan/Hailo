@@ -1,5 +1,5 @@
 package Hailo::Storage::DBD;
-our $VERSION = '0.29';
+our $VERSION = '0.30';
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
@@ -525,7 +525,6 @@ sub _add_token {
 # return a random expression containing the given token
 sub _random_expr {
     my ($self, $token_id) = @_;
-    my $dbh = $self->dbh;
 
     my $expr;
 
@@ -552,7 +551,6 @@ sub _random_expr {
 # return a new next/previous token
 sub _pos_token {
     my ($self, $pos, $expr_id, $key_tokens) = @_;
-    my $dbh = $self->dbh;
 
     $self->sth->{"${pos}_token_get"}->execute($expr_id);
     my $pos_tokens = $self->sth->{"${pos}_token_get"}->fetchall_hashref('token_id');

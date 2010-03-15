@@ -1,5 +1,5 @@
 package Hailo::Test;
-our $VERSION = '0.29';
+our $VERSION = '0.30';
 use 5.010;
 use autodie;
 use Any::Moose;
@@ -81,7 +81,7 @@ sub _build_tmpfile {
     # Dir to store our brains
     my $dir = $self->tmpdir;
 
-    my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
+    my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.trn', EXLOCK => 0 );
     $fh->autoflush(1);
 
     return [$fh, $filename];
@@ -264,6 +264,7 @@ sub train_a_few_tokens {
     my @chr = map { chr } 50..120;
     my @random_tokens = map { $chr[rand @chr] } 1 .. 30;
 
+    pass("About to learn from <<@random_tokens>>");
     # Learn from it
     if ((int rand 2) == 1) {
         eval {
@@ -276,6 +277,17 @@ sub train_a_few_tokens {
     }
 
     return ($@, \@random_tokens);
+}
+
+sub test_trivial {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+    my $string = 'Hello there';
+
+    $hailo->learn($string);
+    is($hailo->reply('there'), "$string.", "$storage: Learned string correctly");
 }
 
 sub test_congress {
@@ -372,18 +384,19 @@ sub test_timtoady {
     my $file     = $self->test_file($filename);
     my $fh       = $self->test_fh($filename);
     my $lns      = $lines // count_lines($file);
-    $lns         = ($self->brief) ? 30 : $lns;
+    $lns         = ($self->brief) ? 1000 : $lns;
 
     $self->train_filename($filename, $lns);
 
-    my @tokens = $self->some_tokens($filename, $lns * 0.5);
+    my @tokens = $self->some_tokens($filename, $lns * 0.2);
+
     for (@tokens) {
         my $reply = $hailo->reply($_);
         ok(defined $reply, "$storage: Got a reply to <<$_>> = <<$reply>>");
     }
 
-    while (my $line = <$fh>) {
-        chomp $line;
+    for my $i (0 .. $lns) {
+        chomp(my $line = <$fh>);
         my $reply = $hailo->reply($line);
         ok(defined $reply, "$storage: Got a reply to <<$line>> = <<$reply>>");
     }
@@ -400,6 +413,7 @@ sub test_babble {
         my ($err, $tokens) = $self->train_a_few_tokens();
 
         my $input = $tokens->[5];
+        pass("Training on <<$input>>");
         my $reply = $hailo->reply($input);
         # Hailo replies
         cmp_ok(length($reply) * 2, '>', length($input), "$storage: Hailo knows how to babble, said '$reply' given '$input'");
@@ -413,7 +427,7 @@ sub test_starcraft {
 
 
   SKIP: {
-    skip "$storage: We have to implement a method for clearing brains, or construct a new brain for each test", 4;
+    skip "$storage: We have to implement a method for clearing brains, or construct a new brain for each test", 4 unless $ENV{TEST_STARCRAFT};
 
     $self->train_filename("starcraft.trn");
 
@@ -423,6 +437,7 @@ sub test_starcraft {
 
     my %reply;
     for (1 .. 500) {
+        pass("Getting a random reply $_/500");
         $reply{ $hailo->reply("that") } = 1;
     }
 
@@ -449,10 +464,14 @@ sub test_all_plan {
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if ($self->exhaustive) {
-        plan(tests => 29947);
+        if ($self->brief) {
+            plan(tests => 2358) 
+        } else {
+            plan(tests => 29977);
+        }
         $self->test_exhaustive;
     } else {
-        plan(tests => 977);
+        plan(tests => 997);
         $self->test_all;
     }
   }

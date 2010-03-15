@@ -6,6 +6,12 @@ use Test::More tests => 50;
 
 my $app = 'hailo';
 
+## --examples
+{
+    my ($return, $stdout, $stderr) = run_script( $app, [ '--help', '--examples']);
+    like($stdout, qr{examples:}, "no examples on normal output");
+}
+
 ## Basic usage
 run_not_ok( $app, [], 'hailo with no options' );
 
@@ -15,12 +21,6 @@ run_ok( $app, [ '--version' ], 'hailo with --version' );
 
 ## --no-help
 run_ok( $app, [ '--no-help' ], "Don't help me" );
-
-## --examples
-{
-    my ($return, $stdout, $stderr) = run_script( $app, [ '--help', '--examples']);
-    like($stdout, qr{examples:}, "no examples on normal output");
-}
 
 ## --help
 {
