@@ -21,7 +21,6 @@ no_index:
 requires:
   Any::Moose: 0.11
   DBD::SQLite: 1.29
-  Data::Section: 0.100270
   Dir::Self: 0.10
   File::CountLines: 0.0.2
   File::Slurp: 9999.13
@@ -30,7 +29,6 @@ requires:
   Getopt::Long::Descriptive: 0.083
   IO::Interactive: 0.0.6
   List::MoreUtils: 0.22
-  Module::Pluggable: 3.9
   Moose: 0.94
   MooseX::Getopt: 0.26
   MooseX::StrictConstructor: 0.08
@@ -38,7 +36,6 @@ requires:
   Mouse: 0.50
   MouseX::Getopt: 0.2601
   MouseX::Types: 0.05
-  Template: 2.22
   Term::ProgressBar: 2.00
   Term::ReadLine: 0
   Test::Exception: 0.29
@@ -58,4 +55,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
   repository: http://github.com/avar/hailo
-version: 0.30
+version: 0.31

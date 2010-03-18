@@ -1,5 +1,6 @@
-package Hailo::Storage::DBD::SQLite;
-our $VERSION = '0.30';
+package Hailo::Storage::SQLite;
+our $VERSION = '0.31';
+
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -9,7 +10,7 @@ BEGIN {
 }
 use namespace::clean -except => 'meta';
 
-extends 'Hailo::Storage::DBD';
+extends 'Hailo::Storage';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
 sub _build_dbd { return 'SQLite' };
@@ -133,17 +134,16 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::DBD::SQLite - A storage backend for L<Hailo|Hailo> using
-L<DBD::SQLite|DBD::SQLite>
+Hailo::Storage::SQLite - A storage backend for L<Hailo|Hailo> using L<DBD::SQLite>
 
 =head1 SYNOPSIS
 
 As a module:
 
     my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
         storage_class => 'SQLite',
     );
+    $hailo->train("hailo.trn");
 
 From the command line:
 
@@ -213,17 +213,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-__DATA__
-__[ static_query_last_expr_rowid ]__
-SELECT last_insert_rowid();
-__[ static_query_last_token_rowid ]__
-SELECT last_insert_rowid();
-__[ static_query_token_total ]__
-SELECT seq FROM sqlite_sequence WHERE name = 'token';
-__[ static_query_expr_total ]__
-SELECT seq FROM sqlite_sequence WHERE name = 'expr';
-__[ static_query_prev_total ]__
-SELECT seq FROM sqlite_sequence WHERE name = 'prev_token';
-__[ static_query_next_total ]__
-SELECT seq FROM sqlite_sequence WHERE name = 'next_token';

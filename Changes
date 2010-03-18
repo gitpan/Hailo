@@ -1,5 +1,54 @@
 Revision history for Hailo
 
+0.31 2010-03-18 21:45:25
+
+    - Optimization and cleanup release. Hailo is now much much
+      snappier and eats less memory. Here's how long it takes to run
+      the test suite before/after 0.30:
+
+                      s/iter   0.30 Hailo    0.31 Hailo
+        0.30 Hailo      20.2           --          -16%
+        0.31 Hailo      16.9          19%            --
+
+    - Split out Hailo::Storage::* into Hailo::Engine::* and
+      Hailo::Storage::*. This makes it possible to write pluggable
+      engines again (that ability was removed in 0.09). It's the
+      intent to write a XS version of the Default engine to make Hailo
+      even faster.
+
+    - In addition the storage backends have been moved
+      around. Hailo::Storage::DBD is now just Hailo::Storage and
+      DBD::Pg, DBD::mysql and DBD::SQLite are now directly under the
+      Hailo::Storage namespace as Hailo::Storage::PostgreSQL,
+      Hailo::Storage::MySQL and Hailo::Storage::SQLite.
+
+      For now "Pg" and "mysql" as short names for the storage backends
+      are supported for backwards compatability but this support may
+      be removed in a future release.
+
+    - Rather than use the ad-hoc Data::Section + Template::Toolkit way
+      of generating our SQL just use an ugly pure-perl-based class.
+
+      Hailo now uses ~7.2MB of memory when starting up & replying
+      rather than ~10MB as it did before. The startup time is also
+      reduced from around 250ms to 140ms.
+
+      See http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/03/benchmarking-dbixclass-vs-plain-dbi-on-hailo.html
+      for some of the other things that I tried before settling
+      on this hack.
+
+    - Don't manually use SQLite's `SELECT last_insert_rowid()' or
+      PostgreSQL's `INSERT ... RETURNING' in the engine. Instead use
+      DBI's `last_insert_id()' which uses those two automatically.
+
+    - Ditch Module::Pluggable: Hailo now can only load one of its
+      hardcoded core modules as a plugin or alternatively a foreign
+      module if it's prefixed with + before the module name. See
+      Hailo's main documentation for more info.
+
+    - Fix incorrect SYNOPSIS examples in the documentation for the
+      PostgreSQL, SQLite and MySQL backends.
+
 0.30 2010-03-15 15:18:01
 
     - Don't set EXLOCK on temporary files we create. This completely

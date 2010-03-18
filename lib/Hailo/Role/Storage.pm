@@ -1,9 +1,8 @@
 package Hailo::Role::Storage;
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/Str Int/];
-use List::Util qw<min>;
 use namespace::clean -except => 'meta';
 
 has brain => (
@@ -16,21 +15,8 @@ has order => (
     is  => 'rw',
 );
 
-has repeat_limit => (
-    isa     => Int,
-    is      => 'rw',
-    lazy    => 1,
-    default => sub {
-        my ($self) = @_;
-        my $order = $self->order;
-        return min(($order * 10), 50);
-    }
-);
-
 requires 'ready';
 requires 'save';
-requires 'learn_tokens';
-requires 'make_reply';
 requires 'start_learning';
 requires 'stop_learning';
 requires 'start_training';

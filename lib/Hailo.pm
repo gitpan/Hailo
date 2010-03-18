@@ -1,5 +1,5 @@
 package Hailo;
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 use 5.010;
 use autodie qw(open close);
@@ -10,17 +10,8 @@ BEGIN {
     require MooseX::StrictConstructor;
     MooseX::StrictConstructor->import;
 }
-use Module::Pluggable (
-    search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
-    except      => [
-        # If an old version of Hailo is already istalled these modules
-        # may be lying around. Ignore them manually; and make sure to
-        # update this list if we move things around again.
-        map( { qq[Hailo::Storage::$_] } qw(SQL SQLite Pg mysql)),
-    ],
-);
 use List::Util qw(first);
-use namespace::clean -except => [ qw(meta plugins) ];
+use namespace::clean -except => 'meta';
 
 has brain => (
     isa => Str,
@@ -50,6 +41,12 @@ has brain_resource => (
 );
     
 # working classes
+has engine_class => (
+    isa           => Str,
+    is            => "rw",
+    default       => "Default",
+);
+
 has storage_class => (
     isa           => Str,
     is            => "rw",
@@ -69,6 +66,14 @@ has ui_class => (
 );
 
 # Object arguments
+has engine_args => (
+    documentation => "Arguments for the Engine class",
+    isa           => HashRef,
+    coerce        => 1,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
 has storage_args => (
     documentation => "Arguments for the Storage class",
     isa           => HashRef,
@@ -92,6 +97,13 @@ has ui_args => (
 );
 
 # Working objects
+has _engine => (
+    does        => 'Hailo::Role::Engine',
+    lazy_build  => 1,
+    is          => 'ro',
+    init_arg    => undef,
+);
+
 has _storage => (
     does        => 'Hailo::Role::Storage',
     lazy_build  => 1,
@@ -112,6 +124,20 @@ has _ui => (
     is          => 'ro',
     init_arg    => undef,
 );
+
+sub _build__engine {
+    my ($self) = @_;
+    my $obj = $self->_new_class(
+        "Engine",
+        $self->engine_class,
+        {
+            storage   => $self->_storage,
+            arguments => $self->engine_args,
+        },
+    );
+
+    return $obj;
+}
 
 sub _build__storage {
     my ($self) = @_;
@@ -156,18 +182,42 @@ sub _build__ui {
     return $obj;
 }
 
+sub plugins { qw[
+    Hailo::Engine::Default
+    Hailo::Storage::MySQL
+    Hailo::Storage::PostgreSQL
+    Hailo::Storage::SQLite
+    Hailo::Tokenizer::Chars
+    Hailo::Tokenizer::Words
+    Hailo::UI::ReadLine
+] }
+
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
-    # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
-    my $pkg = first { / $type : .* : $class /ix }
-              sort { length $a <=> length $b } $self->plugins;
+    # Backwards compatability hack. Plugins were renamed in 0.31
+    $class =~ s/DBD:://;
+    $class =~ s/^Pg$/PostgreSQL/;
+    $class =~ s/^mysql$/MySQL/;
 
-    unless ($pkg) {
-        local $" = ', ';
-        my @plugins = grep { /$type/ } $self->plugins;
-        die "Couldn't find a class name matching '$class' in plugins '@plugins'";
+
+    my $pkg;
+    if ($class =~ m[^\+(?<custom_plugin>.+)$]) {
+        $pkg = $+{custom_plugin};
+    } else {
+        # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
+        $pkg = first { / $type : .* : $class /ix }
+               sort { length $a <=> length $b }
+               $self->plugins;
+
+        unless ($pkg) {
+            local $" = ', ';
+            my @plugins = grep { /$type/ } $self->plugins;
+            die "Couldn't find a class name matching '$class' in plugins '@plugins'";
+        }
     }
+
+
 
     if (Any::Moose::moose_is_preferred()) {
         require Class::MOP;
@@ -262,15 +312,11 @@ sub learn {
 
 sub _learn_one {
     my ($self, $input) = @_;
-    my $storage = $self->_storage;
-    my $order   = $storage->order;
+    my $engine  = $self->_engine;
 
     my $tokens = $self->_tokenizer->make_tokens($input);
+    $engine->learn($tokens);
 
-    # only learn from inputs which are long enough
-    return if @$tokens < $order;
-
-    $storage->learn_tokens($tokens);
     return;
 }
 
@@ -282,20 +328,25 @@ sub learn_reply {
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage = $self->_storage;
-    my $toke    = $self->_tokenizer;
+    my $engine    = $self->_engine;
+    my $storage   = $self->_storage;
+    my $tokenizer = $self->_tokenizer;
+
+    # start_training() hasn't been called so we can't guarentee that
+    # the storage has been engaged at this point.
+    $storage->_engage() unless $storage->_engaged;
 
     my $reply;
     if (defined $input) {
-        my $tokens = $toke->make_tokens($input);
-        $reply = $storage->make_reply($tokens);
+        my $tokens = $tokenizer->make_tokens($input);
+        $reply = $engine->reply($tokens);
     }
     else {
-        $reply = $storage->make_reply();
+        $reply = $engine->reply();
     }
 
     return if !defined $reply;
-    return $toke->make_output($reply);
+    return $tokenizer->make_output($reply);
 }
 
 sub stats {
@@ -357,9 +408,10 @@ command-line invocation.
 =head1 DESCRIPTION
 
 Hailo is a fast and lightweight markov engine intended to replace
-L<AI::MegaHAL|AI::MegaHAL>. It has a L<Mouse|Mouse> (or L<Moose|Moose>)
-based core with pluggable L<storage|Hailo::Role::Storage> and
-L<tokenizer|Hailo::Role::Tokenizer> backends.
+L<AI::MegaHAL|AI::MegaHAL>. It has a L<Mouse|Mouse> (or
+L<Moose|Moose>) based core with pluggable
+L<storage|Hailo::Role::Storage>, L<tokenizer|Hailo::Role::Tokenizer>
+and L<engine|Hailo::Role::Engine> backends.
 
 It is similar to MegaHAL in functionality, the main differences (with the
 default backends) being better scalability, drastically less memory usage,
@@ -386,11 +438,11 @@ command-line utility.
 =head2 Storage
 
 Hailo can currently store its data in either a
-L<SQLite|Hailo::Storage::DBD::SQLite>,
-L<PostgreSQL|Hailo::Storage::DBD::Pg> or
-L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
-supported in earlier versions but they were removed as they had no
-redeeming quality.
+L<SQLite|Hailo::Storage::SQLite>,
+L<PostgreSQL|Hailo::Storage::PostgreSQL> or
+L<MySQL|Hailo::Storage::MySQL> database, more backends were supported
+in earlier versions but they were removed as they had no redeeming
+quality.
 
 SQLite is the primary target for Hailo. It's much faster and uses less
 resources than the other two. It's highly recommended that you use it.
@@ -542,17 +594,26 @@ L<save|/save> at C<DEMOLISH> time.
 The Markov order (chain length) you want to use for an empty brain.
 The default is 2.
 
-=head2 C<storage_class>
+=head2 C<engine_class>
 
-The storage backend to use. Default: 'SQLite'.
+=head2 C<storage_class>
 
 =head2 C<tokenizer_class>
 
-The tokenizer to use. Default: 'Words';
-
 =head2 C<ui_class>
 
-The UI to use. Default: 'ReadLine';
+A a short name name of the class we use for the engine, storage,
+tokenizer or ui backends.
+
+By default this is B<Default> for the engine, B<SQLite> for storage,
+B<Words> for the tokenizer and B<ReadLine> for the UI. The UI backend
+is only used by the L<hailo> command-line interface.
+
+You can only specify the short name of one of the packages Hailo
+itself ships with. If you need another class then just prefix the
+package with a plus (Catalyst style), e.g. C<+My::Foreign::Tokenizer>.
+
+=head2 C<engine_args>
 
 =head2 C<storage_args>
 
@@ -560,8 +621,9 @@ The UI to use. Default: 'ReadLine';
 
 =head2 C<ui_args>
 
-A C<HashRef> of arguments for storage/tokenizer/ui backends. See the
-documentation for the backends for what sort of arguments they accept.
+A C<HashRef> of arguments for engine/storage/tokenizer/ui
+backends. See the documentation for the backends for what sort of
+arguments they accept.
 
 =head1 METHODS
 
@@ -635,6 +697,10 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo
+
+=item *L<http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> -
+More blog posts about Hailo on E<AElig>var ArnfjE<ouml>rE<eth>
+Bjarmason's L<blogs.perl.org|http://blogs.perl.org> blog
 
 =back
 

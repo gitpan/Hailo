@@ -33,8 +33,8 @@ SYNOPSIS
 
 DESCRIPTION
     Hailo is a fast and lightweight markov engine intended to replace
-    AI::MegaHAL. It has a Mouse (or Moose) based core with pluggable storage
-    and tokenizer backends.
+    AI::MegaHAL. It has a Mouse (or Moose) based core with pluggable
+    storage, tokenizer and engine backends.
 
     It is similar to MegaHAL in functionality, the main differences (with
     the default backends) being better scalability, drastically less memory
@@ -194,20 +194,28 @@ ATTRIBUTES
     The Markov order (chain length) you want to use for an empty brain. The
     default is 2.
 
+  "engine_class"
   "storage_class"
-    The storage backend to use. Default: 'SQLite'.
-
   "tokenizer_class"
-    The tokenizer to use. Default: 'Words';
-
   "ui_class"
-    The UI to use. Default: 'ReadLine';
+    A a short name name of the class we use for the engine, storage,
+    tokenizer or ui backends.
 
+    By default this is Default for the engine, SQLite for storage, Words for
+    the tokenizer and ReadLine for the UI. The UI backend is only used by
+    the hailo command-line interface.
+
+    You can only specify the short name of one of the packages Hailo itself
+    ships with. If you need another class then just prefix the package with
+    a plus (Catalyst style), e.g. "+My::Foreign::Tokenizer".
+
+  "engine_args"
   "storage_args"
   "tokenizer_args"
   "ui_args"
-    A "HashRef" of arguments for storage/tokenizer/ui backends. See the
-    documentation for the backends for what sort of arguments they accept.
+    A "HashRef" of arguments for engine/storage/tokenizer/ui backends. See
+    the documentation for the backends for what sort of arguments they
+    accept.
 
 METHODS
   "new"
@@ -267,6 +275,10 @@ LINKS
     *   <http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
         MegaHAL, A blog posting about the motivation behind Hailo
 
+    *   *<http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> - More
+        blog posts about Hailo on Ævar Arnfjörð Bjarmason's blogs.perl.org
+        <http://blogs.perl.org> blog
+
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
 
@@ -278,4 +290,11 @@ LICENSE AND COPYRIGHT
 
     This program is free software, you can redistribute it and/or modify it
     under the same terms as Perl itself.
+
+POD ERRORS
+    Hey! The above document had some coding errors, which are explained
+    below:
+
+    Around line 701:
+        Expected '=item *'
 
