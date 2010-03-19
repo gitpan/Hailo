@@ -21,11 +21,11 @@ my %WriteMakefileArgs = (
   'PREREQ_PM' => {
     'Any::Moose' => '0.11',
     'DBD::SQLite' => '1.29',
+    'Data::Section' => '0.100770',
     'Dir::Self' => '0.10',
     'File::CountLines' => '0.0.2',
     'File::Slurp' => '9999.13',
     'File::Spec::Functions' => '0',
-    'FindBin' => '0',
     'Getopt::Long::Descriptive' => '0.083',
     'IO::Interactive' => '0.0.6',
     'List::MoreUtils' => '0.22',
@@ -49,7 +49,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.31',
+  'VERSION' => '0.32',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/DBD-SQLite-memory/*.t t/tokenizer/*.t t/ui/*.t'
   }

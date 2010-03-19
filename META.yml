@@ -21,11 +21,11 @@ no_index:
 requires:
   Any::Moose: 0.11
   DBD::SQLite: 1.29
+  Data::Section: 0.100770
   Dir::Self: 0.10
   File::CountLines: 0.0.2
   File::Slurp: 9999.13
   File::Spec::Functions: 0
-  FindBin: 0
   Getopt::Long::Descriptive: 0.083
   IO::Interactive: 0.0.6
   List::MoreUtils: 0.22
@@ -55,4 +55,4 @@ resources:
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
   repository: http://github.com/avar/hailo
-version: 0.31
+version: 0.32

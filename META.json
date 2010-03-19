@@ -19,7 +19,7 @@
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
    },
    "generated_by" : "Dist::Zilla version 1.100711",
-   "version" : "0.31",
+   "version" : "0.32",
    "name" : "Hailo",
    "author" : [
       "Hinrik \u00c3\u0096rn Sigur\u00c3\u00b0sson <hinrik.sig@gmail.com>",
@@ -29,8 +29,8 @@
    "build_requires" : {},
    "requires" : {
       "DBD::SQLite" : "1.29",
-      "FindBin" : "0",
       "MouseX::Getopt" : "0.2601",
+      "Data::Section" : "0.100770",
       "Term::ProgressBar" : "2.00",
       "Test::Script::Run" : "0.03",
       "Test::Script" : "1.07",

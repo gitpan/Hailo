@@ -1,5 +1,5 @@
 package Hailo::Test;
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 use 5.010;
 use autodie;
 use Any::Moose;
@@ -151,6 +151,7 @@ sub spawn_storage {
             if (system "createdb '$brainrs' >/dev/null 2>&1") {
                 $ok = 0;
             } else {
+                $self->{_created_pg} = 1;
                 # Kill Pg notices
                 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
             }
@@ -179,8 +180,10 @@ sub unspawn_storage {
 
     given ($storage) {
         when (/Pg/) {
-            $nuke_db->();
-            system "dropdb '$brainrs'";
+            if ($self->{_created_pg}) {
+                $nuke_db->();
+                system "dropdb '$brainrs'";
+            }
         }
         when (/SQLite/) {
             $nuke_db->();

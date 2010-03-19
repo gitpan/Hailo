@@ -1,5 +1,5 @@
 package Hailo;
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 
 use 5.010;
 use autodie qw(open close);
@@ -182,7 +182,7 @@ sub _build__ui {
     return $obj;
 }
 
-sub plugins { qw[
+sub _plugins { qw[
     Hailo::Engine::Default
     Hailo::Storage::MySQL
     Hailo::Storage::PostgreSQL
@@ -208,7 +208,7 @@ sub _new_class {
         # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
         $pkg = first { / $type : .* : $class /ix }
                sort { length $a <=> length $b }
-               $self->plugins;
+               $self->_plugins;
 
         unless ($pkg) {
             local $" = ', ';
@@ -698,7 +698,7 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 =item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo
 
-=item *L<http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> -
+=item * L<http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> -
 More blog posts about Hailo on E<AElig>var ArnfjE<ouml>rE<eth>
 Bjarmason's L<blogs.perl.org|http://blogs.perl.org> blog
 

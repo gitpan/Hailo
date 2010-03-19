@@ -1,5 +1,5 @@
 package Hailo::UI::ReadLine;
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -17,6 +17,7 @@ with qw(Hailo::Role::Arguments
 
 sub BUILD {
     $ENV{PERL_RL} = 'Perl o=0' unless $ENV{PERL_RL};
+    return;
 }
 
 sub run {

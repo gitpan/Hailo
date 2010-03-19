@@ -75,10 +75,3 @@ utils/hailo-benchmark-mouse-moose
 utils/hailo-benchmark-replies
 utils/train/perl6-irc.sh
 utils/train/wikipedia-did-you-know.sh
-xt/01_pod.t
-xt/02_pod_coverage.t
-xt/03_perl_critic.t
-xt/04_perl_critic_tests.t
-xt/05_readme.t
-xt/perlcriticrc
-xt/perlcriticrc_tests
