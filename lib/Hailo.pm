@@ -1,5 +1,5 @@
 package Hailo;
-our $VERSION = '0.33';
+our $VERSION = '0.34';
 
 use 5.010;
 use autodie qw(open close);
@@ -22,6 +22,18 @@ has order => (
     isa     => Int,
     is      => 'rw',
     default => 2,
+    trigger => sub {
+        my ($self, $order) = @_;
+        $self->_custom_order(1);
+    },
+);
+
+has _custom_order => (
+    isa           => Bool,
+    is            => 'rw',
+    default       => 0,
+    init_arg      => undef,
+    documentation => "Here so we can differentiate between the default value of order being explictly set and being set by default",
 );
 
 has save_on_exit => (
@@ -40,146 +52,81 @@ has brain_resource => (
     },
 );
     
-# working classes
-has engine_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "Default",
+my %has = (
+    engine => {
+        name => 'Engine',
+        default => 'Default',
+    },
+    storage => {
+        name => 'Storage',
+        default => 'SQLite',
+    },
+    tokenizer => {
+        name => 'Tokenizer',
+        default => 'Words',
+    },
+    ui => {
+        name => 'UI',
+        default => 'ReadLine',
+    },
 );
 
-has storage_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "SQLite",
-);
+for my $k (keys %has) {
+    my $name          = $has{$k}->{name};
+    my $default       = $has{$k}->{default};
+    my $method_class  = "${k}_class";
+    my $method_args   = "${k}_args";
 
-has tokenizer_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "Words",
-);
-
-has ui_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "ReadLine",
-);
-
-# Object arguments
-has engine_args => (
-    documentation => "Arguments for the Engine class",
-    isa           => HashRef,
-    coerce        => 1,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-has storage_args => (
-    documentation => "Arguments for the Storage class",
-    isa           => HashRef,
-    coerce        => 1,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-has tokenizer_args => (
-    documentation => "Arguments for the Tokenizer class",
-    isa           => HashRef,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-has ui_args => (
-    documentation => "Arguments for the UI class",
-    isa           => HashRef,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-# Working objects
-has _engine => (
-    does        => 'Hailo::Role::Engine',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-has _storage => (
-    does        => 'Hailo::Role::Storage',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-has _tokenizer => (
-    does        => 'Hailo::Role::Tokenizer',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-has _ui => (
-    does        => 'Hailo::Role::UI',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-sub _build__engine {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Engine",
-        $self->engine_class,
-        {
-            storage   => $self->_storage,
-            arguments => $self->engine_args,
-        },
+    # working classes
+    has "${k}_class" => (
+        isa           => Str,
+        is            => "rw",
+        default       => $default,
     );
 
-    return $obj;
-}
-
-sub _build__storage {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Storage",
-        $self->storage_class,
-        {
-            (defined $self->brain
-             ? (brain => $self->brain)
-             : ()),
-            order           => $self->order,
-            arguments       => $self->storage_args,
-        }
+    # Object arguments
+    has "${k}_args" => (
+        documentation => "Arguments for the $name class",
+        isa           => HashRef,
+        coerce        => 1,
+        is            => "ro",
+        default       => sub { +{} },
     );
 
-    return $obj;
-}
-
-sub _build__tokenizer {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Tokenizer",
-        $self->tokenizer_class,
-        {
-            arguments => $self->tokenizer_args,
-        },
+    # Working objects
+    has "_${k}" => (
+        does        => "Hailo::Role::$name",
+        lazy_build  => 1,
+        is          => 'ro',
+        init_arg    => undef,
     );
 
-    return $obj;
-}
+    # Generate the object itself
+    no strict 'refs';
+    *{"_build__${k}"} = sub {
+        my ($self) = @_;
+        my $obj = $self->_new_class(
+            $name,
+            $self->$method_class,
+            {
+                arguments => $self->$method_args,
+                ($k ~~ [ qw< engine storage > ]
+                 ? (order     => $self->order)
+                 : ()),
+                ($k ~~ [ qw< engine > ]
+                 ? (storage   => $self->_storage)
+                 : ()),
+                (($k ~~ [ qw< storage > ] and defined $self->brain)
+                 ? (
+                     hailo => $self,
+                     brain => $self->brain
+                 )
+                 : ()),
+            },
+        );
 
-sub _build__ui {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "UI",
-        $self->ui_class,
-        {
-            arguments => $self->ui_args,
-        },
-    );
-
-    return $obj;
+        return $obj;
+    };
 }
 
 sub _plugins { qw[
@@ -212,7 +159,7 @@ sub _new_class {
 
         unless ($pkg) {
             local $" = ', ';
-            my @plugins = grep { /$type/ } $self->plugins;
+            my @plugins = grep { /$type/ } $self->_plugins;
             die "Couldn't find a class name matching '$class' in plugins '@plugins'";
         }
     }
@@ -544,27 +491,16 @@ list of existing words.
 
 Hailo makes no promises about brains generated with earlier versions
 being compatable with future version and due to the way Hailo works
-there's no practical way to make that promise.
+there's no practical way to make that promise. Learning in Hailo is
+lossy so an accurate conversion is impossible.
 
 If you're maintaining a Hailo brain that you want to keep using you
 should save the input you trained it on and re-train when you upgrade.
 
-The reason for not offering a database schema upgrade for Hailo is
-twofold:
-
-=over
-
-=item * We're too lazy to maintain database upgrade scripts for every version.
-
-=item * Even if we weren't there's no way to do it right.
-
-=back
-
-The reason it can't be done right is that Hailo is always going to
-lose information present in the input you give it. How input tokens
-get split up and saved to the storage backend depends on the version
-of the tokenizer being used and how that input gets saved to the
-database.
+Hailo is always going to lose information present in the input you
+give it. How input tokens get split up and saved to the storage
+backend depends on the version of the tokenizer being used and how
+that input gets saved to the database.
 
 For instance if an earlier version of Hailo tokenized C<"foo+bar">
 simply as C<"foo+bar"> but a later version split that up into
@@ -572,11 +508,19 @@ C<"foo", "+", "bar">, then an input of C<"foo+bar are my favorite
 metasyntactic variables"> wouldn't take into account the existing
 C<"foo+bar"> string in the database.
 
-Tokenizer changes like this would cause the brains to accumulate garbage
-and would leave other parts in a state they wouldn't otherwise have gotten
-into. There have been similar changes to the database format itself.
+Tokenizer changes like this would cause the brains to accumulate
+garbage and would leave other parts in a state they wouldn't otherwise
+have gotten into.
 
-In short, learning is lossy so an accurate conversion is impossible.
+There have been more drastic changes to the database format itself in
+the past.
+
+Having said all that the database format and the tokenizer are
+relatively stable. At the time of writing 0.33 is the latest release
+and it's compatable with brains down to at least 0.17. If you're
+upgrading and there isn't a big notice about the storage format being
+incompatable in the F<Changes> file your old brains will probably work
+just fine.
 
 =head1 ATTRIBUTES
 
@@ -680,8 +624,6 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =over
 
-=item * L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
-
 =item * L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
 
 =item * L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
@@ -690,6 +632,16 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =item * L<http://github.com/bingos/gumbybrain> - GumbyBRAIN, a more famous IRC bot that uses Hailo
 
+=item * L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web
+interface to Hailo available at L<hailo.nix.is|http://hailo.nix.is>
+and as L<hailo-ui-web|http://github.com/avar/hailo-ui-web> on
+L<GitHub|http://github.com>
+
+=item * L<HALBot> - Another L<Catalyst> Dojo powered web interface to
+Hailo available at L<www.dhdo.org|http://www.dhdo.org> and as
+L<halbot-on-the-web|http://gitorious.org/halbot-on-the-web/halbot-on-the-web>
+at L<gitorious|http://gitorious.org>
+
 =item * L<http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL "inspired by the success of Hailo"
 
 =back
@@ -697,6 +649,8 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 =head1 LINKS
 
 =over
+
+=item * L<hailo.github.com|http://hailo.github.com> - Hailo's website at GitHub.com
 
 =item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo

@@ -1,5 +1,6 @@
 package Hailo::Role::Storage;
-our $VERSION = '0.33';
+our $VERSION = '0.34';
+
 use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/Str Int/];
@@ -13,6 +14,11 @@ has brain => (
 has order => (
     isa => Int,
     is  => 'rw',
+);
+
+has hailo => (
+    isa => 'Hailo',
+    is  => 'ro',
 );
 
 requires 'ready';

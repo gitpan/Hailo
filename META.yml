@@ -51,8 +51,8 @@ requires:
   perl: 5.010
 resources:
   Ratings: http://cpanratings.perl.org/d/Hailo
-  bugtracker: http://github.com/hinrik/hailo/issues
+  bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Hailo
   homepage: http://search.cpan.org/dist/Hailo/
   license: http://dev.perl.org/licenses/
-  repository: http://github.com/avar/hailo
-version: 0.33
+  repository: http://github.com/hailo/hailo
+version: 0.34

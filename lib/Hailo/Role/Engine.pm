@@ -1,8 +1,23 @@
 package Hailo::Role::Engine;
-our $VERSION = '0.33';
+our $VERSION = '0.34';
+
 use 5.10.0;
 use Any::Moose '::Role';
+use Any::Moose 'X::Types::'.any_moose() => [qw< Int >];
 use namespace::clean -except => 'meta';
+
+has storage => (
+    required      => 1,
+    is            => 'ro',
+    documentation => "Our copy of the current Storage object",
+);
+
+has order => (
+    required      => 1,
+    isa           => Int,
+    is            => 'rw',
+    documentation => "Our copy of the current markov order",
+);
 
 requires 'learn';
 requires 'reply';
@@ -15,15 +30,17 @@ requires 'reply';
 
 Hailo::Role::Engine - A role representing a L<Hailo|Hailo> engine backend
 
-=head1 DESCRIPTION
-
 =head1 ATTRIBUTES
 
-A C<Hailo::Engine::*> should implement the following attributes:
+A C<Hailo::Engine::*> gets the following attributes by using this role:
 
 =head2 C<storage>
 
 A L<storage|Hailo::Role::Storage> object the engine should use to get data from.
+
+=head2 C<order>
+
+The current Markov order used by the storage object.
 
 =head1 METHODS
 
