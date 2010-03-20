@@ -1,4 +1,11 @@
 {
+   "resources" : {
+      "homepage" : "http://search.cpan.org/dist/Hailo/",
+      "repository" : "http://github.com/avar/hailo",
+      "bugtracker" : "http://github.com/hinrik/hailo/issues",
+      "license" : "http://dev.perl.org/licenses/",
+      "Ratings" : "http://cpanratings.perl.org/d/Hailo"
+   },
    "no_index" : {
       "directory" : [
          "inc",
@@ -7,19 +14,12 @@
          "utils"
       ]
    },
-   "resources" : {
-      "repository" : "http://github.com/avar/hailo",
-      "homepage" : "http://search.cpan.org/dist/Hailo/",
-      "bugtracker" : "http://github.com/hinrik/hailo/issues",
-      "license" : "http://dev.perl.org/licenses/",
-      "Ratings" : "http://cpanratings.perl.org/d/Hailo"
-   },
+   "generated_by" : "Dist::Zilla version 1.100711",
    "meta-spec" : {
       "version" : 1.4,
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
    },
-   "generated_by" : "Dist::Zilla version 1.100711",
-   "version" : "0.32",
+   "version" : "0.33",
    "name" : "Hailo",
    "author" : [
       "Hinrik \u00c3\u0096rn Sigur\u00c3\u00b0sson <hinrik.sig@gmail.com>",
@@ -30,33 +30,33 @@
    "requires" : {
       "DBD::SQLite" : "1.29",
       "MouseX::Getopt" : "0.2601",
-      "Data::Section" : "0.100770",
       "Term::ProgressBar" : "2.00",
-      "Test::Script::Run" : "0.03",
+      "Data::Section" : "0.100770",
       "Test::Script" : "1.07",
+      "Test::Script::Run" : "0.03",
       "MooseX::Getopt" : "0.26",
       "MooseX::StrictConstructor" : "0.08",
-      "File::CountLines" : "0.0.2",
       "Mouse" : "0.50",
+      "File::CountLines" : "0.0.2",
       "autodie" : "2.08",
-      "Test::Output" : "0.16",
-      "Getopt::Long::Descriptive" : "0.083",
       "File::Spec::Functions" : "0",
+      "Getopt::Long::Descriptive" : "0.083",
+      "Test::Output" : "0.16",
       "List::MoreUtils" : "0.22",
-      "IO::Interactive" : "0.0.6",
-      "File::Slurp" : "9999.13",
       "Moose" : "0.94",
+      "File::Slurp" : "9999.13",
+      "IO::Interactive" : "0.0.6",
       "Test::Exception" : "0.29",
       "Dir::Self" : "0.10",
       "Test::Synopsis" : "0.06",
-      "Test::Expect" : "0.30",
       "Time::HiRes" : "0",
-      "Test::More" : "0.94",
-      "namespace::clean" : "0.13",
+      "Test::Expect" : "0.30",
       "perl" : "5.010",
+      "namespace::clean" : "0.13",
+      "Test::More" : "0.94",
       "Term::ReadLine" : "0",
-      "MooseX::Types" : "0.21",
       "Any::Moose" : "0.11",
+      "MooseX::Types" : "0.21",
       "MouseX::Types" : "0.05"
    },
    "abstract" : "A pluggable Markov engine analogous to MegaHAL",

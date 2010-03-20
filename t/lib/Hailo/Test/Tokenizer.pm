@@ -1,5 +1,5 @@
 package Hailo::Test::Tokenizer;
-our $VERSION = '0.32';
+our $VERSION = '0.33';
 use 5.010;
 use Any::Moose;
 use namespace::clean -except => 'meta';

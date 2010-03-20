@@ -38,6 +38,7 @@ t/hailo/brain_resource.t
 t/hailo/methods.t
 t/hailo/methods/order.t
 t/hailo/non_standard_plugin.t
+t/hailo/real_workload.t
 t/hailo/synopsis.t
 t/lib/Hailo/Test.pm
 t/lib/Hailo/Test/TimToady.trn

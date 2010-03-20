@@ -46,8 +46,7 @@ DESCRIPTION
     POE::Component::IRC::Plugin::Hailo, which implements an IRC chat bot.
 
   Etymology
-    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and failo
-    <http://identi.ca/failo>.
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and <failo>.
 
 Backends
     Hailo supports pluggable storage and tokenizer backends, it also
@@ -96,8 +95,8 @@ Backends
             sys     4m35.509s
 
     In the case of PostgreSQL it's actually much faster to first train with
-    SQLite, dump that database and then import it with psql(1), see failo's
-    README <http://github.com/hinrik/failo> for how to do that.
+    SQLite, dump that database and then import it with psql(1), see <failo's
+    README> for how to do that.
 
     However when replying with an existing database (using
     utils/hailo-benchmark-replies) yields different results. SQLite can
@@ -252,8 +251,8 @@ SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.
 
 BUGS
-    Bugs, feature requests and other issues are tracked in Hailo's issue
-    tracker on Github <http://github.com/hinrik/hailo/issues>.
+    Bugs, feature requests and other issues are tracked in <Hailo's issue
+    tracker on Github>.
 
 SEE ALSO
     *   Hailo::UI::Web - A Catalyst and jQuery powered web interface to
@@ -276,8 +275,8 @@ LINKS
         MegaHAL, A blog posting about the motivation behind Hailo
 
     *   <http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> - More
-        blog posts about Hailo on Ævar Arnfjörð Bjarmason's blogs.perl.org
-        <http://blogs.perl.org> blog
+        blog posts about Hailo on Ævar Arnfjörð Bjarmason's <blogs.perl.org>
+        blog
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
