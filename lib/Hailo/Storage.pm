@@ -1,5 +1,5 @@
 package Hailo::Storage;
-our $VERSION = '0.34';
+$Hailo::Storage::VERSION = '0.35';
 
 use 5.010;
 use Any::Moose;
@@ -107,7 +107,7 @@ sub _engage {
         my $my_order = $self->order;
         if ($my_order != $db_order) {
             if ($self->hailo->_custom_order) {
-                die <<'DIE';
+                die <<"DIE";
 You've manually supplied an order of `$my_order' to Hailo but you're
 loading a brain that has the order `$db_order'.
 

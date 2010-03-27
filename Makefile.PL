@@ -9,17 +9,16 @@ my %WriteMakefileArgs = (
   'ABSTRACT' => 'A pluggable Markov engine analogous to MegaHAL',
   'AUTHOR' => 'Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>, Ævar Arnfjörð Bjarmason <avar@cpan.org>',
   'BUILD_REQUIRES' => {},
-  'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.11'
-  },
+  'CONFIGURE_REQUIRES' => {},
   'DISTNAME' => 'Hailo',
-  'EXE_FILES' => [
-    'bin/hailo'
-  ],
+  'EXE_FILES' => [],
   'LICENSE' => 'perl',
   'NAME' => 'Hailo',
   'PREREQ_PM' => {
     'Any::Moose' => '0.11',
+    'Bot::Training' => '0',
+    'Bot::Training::MegaHAL' => '0',
+    'Bot::Training::StarCraft' => '0',
     'DBD::SQLite' => '1.29',
     'Data::Section' => '0.100770',
     'Dir::Self' => '0.10',
@@ -49,7 +48,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.34',
+  'VERSION' => '0.35',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/DBD-SQLite-memory/*.t t/tokenizer/*.t t/ui/*.t'
   }

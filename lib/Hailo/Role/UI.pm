@@ -1,5 +1,5 @@
 package Hailo::Role::UI;
-our $VERSION = '0.34';
+$Hailo::Role::UI::VERSION = '0.35';
 
 use 5.010;
 use Any::Moose '::Role';

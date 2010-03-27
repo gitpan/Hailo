@@ -44,8 +44,6 @@ t/lib/Hailo/Test.pm
 t/lib/Hailo/Test/TimToady.trn
 t/lib/Hailo/Test/Tokenizer.pm
 t/lib/Hailo/Test/badger.trn
-t/lib/Hailo/Test/megahal.trn
-t/lib/Hailo/Test/starcraft.trn
 t/storage/DBD-Pg.t
 t/storage/DBD-SQLite-00-version.t
 t/storage/DBD-SQLite-file-exhaustive-all.t

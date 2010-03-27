@@ -1,5 +1,5 @@
 package Hailo::Storage::PostgreSQL;
-our $VERSION = '0.34';
+$Hailo::Storage::PostgreSQL::VERSION = '0.35';
 
 use 5.010;
 use Any::Moose;

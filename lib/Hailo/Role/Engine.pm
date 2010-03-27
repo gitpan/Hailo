@@ -1,7 +1,7 @@
 package Hailo::Role::Engine;
-our $VERSION = '0.34';
+$Hailo::Role::Engine::VERSION = '0.35';
 
-use 5.10.0;
+use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw< Int >];
 use namespace::clean -except => 'meta';

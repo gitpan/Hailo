@@ -1,5 +1,5 @@
 package Hailo::Role::Tokenizer;
-our $VERSION = '0.34';
+$Hailo::Role::Tokenizer::VERSION = '0.35';
 
 use 5.010;
 use Any::Moose '::Role';

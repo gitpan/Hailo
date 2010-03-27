@@ -1,5 +1,16 @@
 Revision history for Hailo
 
+0.35 2010-03-27 21:27:33
+
+    - The error "You've manually supplied an order of" error message
+      was always incorrect. It contained variables that weren't being
+      interpolated.
+
+    - Move some of our test data into the new Bot::Training dist.
+
+    - Fix 'v-string in use/require non-portable' warnings from a osx
+      smoker by using 5.010 instead of 5.10.0.
+
 0.34 2010-03-20 23:26:27
 
     - Reword the UPGRADING section in Hailo's POD to be less

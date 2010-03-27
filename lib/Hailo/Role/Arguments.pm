@@ -1,5 +1,5 @@
 package Hailo::Role::Arguments;
-our $VERSION = '0.34';
+$Hailo::Role::Arguments::VERSION = '0.35';
 
 use 5.010;
 use Any::Moose '::Role';
