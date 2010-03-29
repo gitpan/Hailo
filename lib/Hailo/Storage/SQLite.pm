@@ -1,5 +1,5 @@
 package Hailo::Storage::SQLite;
-$Hailo::Storage::SQLite::VERSION = '0.35';
+$Hailo::Storage::SQLite::VERSION = '0.36';
 
 use 5.010;
 use Any::Moose;

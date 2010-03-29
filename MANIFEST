@@ -44,6 +44,10 @@ t/lib/Hailo/Test.pm
 t/lib/Hailo/Test/TimToady.trn
 t/lib/Hailo/Test/Tokenizer.pm
 t/lib/Hailo/Test/badger.trn
+t/storage/001_meta/arguments.t
+t/storage/001_meta/exists.t
+t/storage/001_meta/options.t
+t/storage/001_meta/switch-order.t
 t/storage/DBD-Pg.t
 t/storage/DBD-SQLite-00-version.t
 t/storage/DBD-SQLite-file-exhaustive-all.t
@@ -60,9 +64,6 @@ t/storage/DBD-SQLite-memory/starcraft.t
 t/storage/DBD-SQLite-nonalpha.t
 t/storage/DBD-SQLite-pragmas.t
 t/storage/DBD-mysql.t
-t/storage/arguments.t
-t/storage/dbd-options.t
-t/storage/dbd-switch-order.t
 t/tokenizer/Chars.t
 t/tokenizer/Words-utf8-text.t
 t/tokenizer/Words.t

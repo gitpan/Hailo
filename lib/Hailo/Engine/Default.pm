@@ -1,5 +1,5 @@
 package Hailo::Engine::Default;
-$Hailo::Engine::Default::VERSION = '0.35';
+$Hailo::Engine::Default::VERSION = '0.36';
 
 use 5.010;
 use Any::Moose;

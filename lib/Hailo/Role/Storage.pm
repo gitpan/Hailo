@@ -1,5 +1,5 @@
 package Hailo::Role::Storage;
-$Hailo::Role::Storage::VERSION = '0.35';
+$Hailo::Role::Storage::VERSION = '0.36';
 
 use 5.010;
 use Any::Moose '::Role';
