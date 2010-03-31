@@ -1,5 +1,5 @@
 package Hailo::Role::Engine;
-$Hailo::Role::Engine::VERSION = '0.36';
+$Hailo::Role::Engine::VERSION = '0.37';
 
 use 5.010;
 use Any::Moose '::Role';

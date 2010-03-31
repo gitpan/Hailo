@@ -1,5 +1,5 @@
 package Hailo::Command;
-$Hailo::Command::VERSION = '0.36';
+$Hailo::Command::VERSION = '0.37';
 
 use 5.010;
 use Any::Moose;

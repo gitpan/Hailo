@@ -1,5 +1,5 @@
 package Hailo::Tokenizer::Words;
-$Hailo::Tokenizer::Words::VERSION = '0.36';
+$Hailo::Tokenizer::Words::VERSION = '0.37';
 
 use 5.010;
 use utf8;

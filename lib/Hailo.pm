@@ -1,5 +1,5 @@
 package Hailo;
-$Hailo::VERSION = '0.36';
+$Hailo::VERSION = '0.37';
 
 use 5.010;
 use autodie qw(open close);

@@ -8,7 +8,7 @@ README
 README.pod
 bin/hailo
 dist.ini
-inc/Dist/Zilla/Plugin/HailoMakeMaker.pm
+inc/HailoMakeMaker.pm
 lib/Hailo.pm
 lib/Hailo/Command.pm
 lib/Hailo/Engine/Default.pm

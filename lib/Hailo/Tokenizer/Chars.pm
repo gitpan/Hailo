@@ -1,5 +1,5 @@
 package Hailo::Tokenizer::Chars;
-$Hailo::Tokenizer::Chars::VERSION = '0.36';
+$Hailo::Tokenizer::Chars::VERSION = '0.37';
 
 use 5.010;
 use Any::Moose;
