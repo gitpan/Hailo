@@ -1,5 +1,7 @@
 package Hailo;
-$Hailo::VERSION = '0.37';
+BEGIN {
+  $Hailo::VERSION = '0.38';
+}
 
 use 5.010;
 use autodie qw(open close);
@@ -164,8 +166,6 @@ sub _new_class {
         }
     }
 
-
-
     if (Any::Moose::moose_is_preferred()) {
         require Class::MOP;
         eval { Class::MOP::load_class($pkg) };
@@ -295,7 +295,7 @@ sub reply {
         $reply = $engine->reply();
     }
 
-    return if !defined $reply;
+    return unless defined $reply;
     return $tokenizer->make_output($reply);
 }
 
@@ -650,7 +650,7 @@ at L<gitorious|http://gitorious.org>
 
 =over
 
-=item * L<hailo.github.com|http://hailo.github.com> - Hailo's website at GitHub.com
+=item * L<hailo.org|http://hailo.org> - Hailo's website
 
 =item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo
@@ -658,6 +658,9 @@ MegaHAL, A blog posting about the motivation behind Hailo
 =item * L<http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> -
 More blog posts about Hailo on E<AElig>var ArnfjE<ouml>rE<eth>
 Bjarmason's L<blogs.perl.org|http://blogs.perl.org> blog
+
+=item * Hailo on L<freshmeat|http://freshmeat.net/projects/hailo> and
+L<ohloh|https://www.ohloh.net/p/hailo>
 
 =back
 

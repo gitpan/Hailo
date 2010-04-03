@@ -279,8 +279,7 @@ SEE ALSO
         "inspired by the success of Hailo"
 
 LINKS
-    *   hailo.github.com <http://hailo.github.com> - Hailo's website at
-        GitHub.com
+    *   hailo.org <http://hailo.org> - Hailo's website
 
     *   <http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
         MegaHAL, A blog posting about the motivation behind Hailo
@@ -288,6 +287,9 @@ LINKS
     *   <http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> - More
         blog posts about Hailo on Ævar Arnfjörð Bjarmason's blogs.perl.org
         <http://blogs.perl.org> blog
+
+    *   Hailo on freshmeat <http://freshmeat.net/projects/hailo> and ohloh
+        <https://www.ohloh.net/p/hailo>
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com

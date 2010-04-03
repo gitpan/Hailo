@@ -1,5 +1,7 @@
 package Hailo::UI::ReadLine;
-$Hailo::UI::ReadLine::VERSION = '0.37';
+BEGIN {
+  $Hailo::UI::ReadLine::VERSION = '0.38';
+}
 
 use 5.010;
 use Any::Moose;

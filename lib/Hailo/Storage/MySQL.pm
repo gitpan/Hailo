@@ -1,5 +1,7 @@
 package Hailo::Storage::MySQL;
-$Hailo::Storage::MySQL::VERSION = '0.37';
+BEGIN {
+  $Hailo::Storage::MySQL::VERSION = '0.38';
+}
 
 use 5.010;
 use Any::Moose;
