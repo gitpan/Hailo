@@ -1,6 +1,6 @@
 package Hailo::Storage::PostgreSQL;
 BEGIN {
-  $Hailo::Storage::PostgreSQL::VERSION = '0.38';
+  $Hailo::Storage::PostgreSQL::VERSION = '0.39';
 }
 
 use 5.010;

@@ -10,7 +10,7 @@ my %WriteMakefileArgs = (
   'AUTHOR' => 'Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>, Ævar Arnfjörð Bjarmason <avar@cpan.org>',
   'BUILD_REQUIRES' => {},
   'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.11'
+    'ExtUtils::MakeMaker' => '6.31'
   },
   'DISTNAME' => 'Hailo',
   'EXE_FILES' => [],
@@ -51,7 +51,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.38',
+  'VERSION' => '0.39',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/DBD-SQLite-memory/*.t t/tokenizer/*.t t/ui/*.t'
   }

@@ -1,6 +1,6 @@
 package Hailo::Role::UI;
 BEGIN {
-  $Hailo::Role::UI::VERSION = '0.38';
+  $Hailo::Role::UI::VERSION = '0.39';
 }
 
 use 5.010;

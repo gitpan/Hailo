@@ -1,6 +1,6 @@
 package Hailo::Storage::SQLite;
 BEGIN {
-  $Hailo::Storage::SQLite::VERSION = '0.38';
+  $Hailo::Storage::SQLite::VERSION = '0.39';
 }
 
 use 5.010;

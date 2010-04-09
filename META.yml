@@ -5,8 +5,8 @@ author:
   - 'Ævar Arnfjörð Bjarmason <avar@cpan.org>'
 build_requires: {}
 configure_requires:
-  ExtUtils::MakeMaker: 6.11
-generated_by: 'Dist::Zilla version 2.100922'
+  ExtUtils::MakeMaker: 6.31
+generated_by: 'Dist::Zilla version 2.100960'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -57,7 +57,7 @@ requires:
 resources:
   Ratings: http://cpanratings.perl.org/d/Hailo
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Hailo
-  homepage: http://search.cpan.org/dist/Hailo/
+  homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: http://github.com/hailo/hailo
-version: 0.38
+version: 0.39

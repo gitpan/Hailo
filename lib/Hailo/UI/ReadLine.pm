@@ -1,6 +1,6 @@
 package Hailo::UI::ReadLine;
 BEGIN {
-  $Hailo::UI::ReadLine::VERSION = '0.38';
+  $Hailo::UI::ReadLine::VERSION = '0.39';
 }
 
 use 5.010;

@@ -1,6 +1,6 @@
 package Hailo::Storage::Schema;
 BEGIN {
-  $Hailo::Storage::Schema::VERSION = '0.38';
+  $Hailo::Storage::Schema::VERSION = '0.39';
 }
 
 use 5.010;
