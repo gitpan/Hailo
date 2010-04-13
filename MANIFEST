@@ -1,3 +1,4 @@
+BUGS
 Changes
 LICENSE
 MANIFEST
@@ -45,7 +46,6 @@ t/lib/Hailo/Test/TimToady.trn
 t/lib/Hailo/Test/Tokenizer.pm
 t/lib/Hailo/Test/badger.trn
 t/storage/001_meta/arguments.t
-t/storage/001_meta/exists.t
 t/storage/001_meta/options.t
 t/storage/001_meta/switch-order.t
 t/storage/DBD-Pg.t
@@ -73,5 +73,6 @@ utils/hailo-benchmark
 utils/hailo-benchmark-lib-vs-system
 utils/hailo-benchmark-mouse-moose
 utils/hailo-benchmark-replies
+utils/random-names
 utils/train/perl6-irc.sh
 utils/train/wikipedia-did-you-know.sh

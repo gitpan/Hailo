@@ -1,6 +1,6 @@
 package Hailo::Storage::PostgreSQL;
 BEGIN {
-  $Hailo::Storage::PostgreSQL::VERSION = '0.39';
+  $Hailo::Storage::PostgreSQL::VERSION = '0.40';
 }
 
 use 5.010;
@@ -44,12 +44,6 @@ sub _build_dbi_options {
     );
 
     return \@options;
-}
-
-sub _exists_db {
-    my ($self) = @_;
-    $self->sth->{exists_db}->execute();
-    return int $self->sth->{exists_db}->fetchrow_array;
 }
 
 sub ready {

@@ -1,6 +1,6 @@
 package Hailo::Command;
 BEGIN {
-  $Hailo::Command::VERSION = '0.39';
+  $Hailo::Command::VERSION = '0.40';
 }
 
 use 5.010;
@@ -96,6 +96,15 @@ has _go_reply => (
     is            => "ro",
 );
 
+has _go_random_reply => (
+    traits        => [ qw/ Getopt / ],
+    cmd_aliases   => "R",
+    cmd_flag      => "random-reply",
+    documentation => "Like --reply but takes no STRING; Babble at random",
+    isa           => Bool,
+    is            => "ro",
+);
+
 has _go_stats => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "s",
@@ -124,7 +133,7 @@ has _go_order => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "o",
     cmd_flag      => "order",
-    documentation => "Markov order",
+    documentation => "Markov order; How deep the rabbit hole goes",
     isa           => Int,
     is            => "rw",
     trigger       => sub {
@@ -214,7 +223,8 @@ before run => sub {
         (defined $self->_go_reply or
          defined $self->_go_train or
          defined $self->_go_learn or
-         defined $self->_go_learn_reply)) {
+         defined $self->_go_learn_reply or
+         defined $self->_go_random_reply)) {
         # TODO: Make this spew out the --help reply just like hailo
         # with invalid options does usually, but only if run via
         # ->new_with_options
@@ -243,8 +253,8 @@ sub run {
         not defined $self->_go_learn and
         not defined $self->_go_reply and
         not defined $self->_go_learn_reply and
-        not defined $self->_go_stats) {
-
+        not defined $self->_go_stats and
+        not defined $self->_go_random_reply) {
         $self->_ui->run($self);
     }
 
@@ -256,7 +266,11 @@ sub run {
         say $answer // "I don't know enough to answer you yet.";
     }
 
-    if (defined $self->_go_reply) {
+    if (defined $self->_go_random_reply) {
+        my $answer = $self->reply();
+        say $answer // "I don't know enough to answer you yet.";
+    }
+    elsif (defined $self->_go_reply) {
         my $answer = $self->reply($self->_go_reply);
         say $answer // "I don't know enough to answer you yet.";
     }
@@ -298,7 +312,7 @@ sub train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
-        name => "training from $filename",
+        name => "Training from $filename",
         count => $lines,
         remove => 1,
         ETA => 'linear',
@@ -322,7 +336,7 @@ sub train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    say "Imported in $elapsed seconds";
+    say sprintf "Trained from %d lines in %.2f seconds; %.2f lines/s", $i, $elapsed, ($i / $elapsed);
 
     return;
 }

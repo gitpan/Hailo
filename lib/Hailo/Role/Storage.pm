@@ -1,6 +1,6 @@
 package Hailo::Role::Storage;
 BEGIN {
-  $Hailo::Role::Storage::VERSION = '0.39';
+  $Hailo::Role::Storage::VERSION = '0.40';
 }
 
 use 5.010;
@@ -24,6 +24,7 @@ has hailo => (
 );
 
 requires 'ready';
+requires 'initialized';
 requires 'save';
 requires 'start_learning';
 requires 'stop_learning';
@@ -47,9 +48,14 @@ Hailo::Role::Storage - A role representing a L<Hailo|Hailo> storage backend
 
 =head2 C<ready>
 
-This method can be called after the storage has been constructed, to ask
-the storage backend if it considers itself ready to go. E.g. a storage
-that requires a C<brain> would return false if it wasn't passed one.
+Ask the storage backend if it considers itself ready to go. E.g. a
+storage that requires a C<brain> would return false if it wasn't
+passed one.
+
+=head2 C<initialized>
+
+If you're connecting to an existing storage that already has a
+populated schema and is ready to go this'll return true.
 
 =head2 C<order>
 

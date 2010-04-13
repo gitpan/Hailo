@@ -1,6 +1,6 @@
 package Hailo;
 BEGIN {
-  $Hailo::VERSION = '0.39';
+  $Hailo::VERSION = '0.40';
 }
 
 use 5.010;
@@ -331,8 +331,7 @@ command-line invocation.
 
     # Hailo requires Perl 5.10
     use 5.010;
-    use strict;
-    use warnings;
+    use Any::Moose;
     use Hailo;
 
     # Construct a new in-memory Hailo using the SQLite backend. See

@@ -1,6 +1,6 @@
 package Hailo::Role::Engine;
 BEGIN {
-  $Hailo::Role::Engine::VERSION = '0.39';
+  $Hailo::Role::Engine::VERSION = '0.40';
 }
 
 use 5.010;

@@ -8,7 +8,7 @@
    "configure_requires" : {
       "ExtUtils::MakeMaker" : "6.31"
    },
-   "generated_by" : "Dist::Zilla version 2.100960",
+   "generated_by" : "Dist::Zilla version 2.100991",
    "license" : "perl",
    "meta-spec" : {
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html",
@@ -67,6 +67,6 @@
       "license" : "http://dev.perl.org/licenses/",
       "repository" : "http://github.com/hailo/hailo"
    },
-   "version" : "0.39"
+   "version" : "0.40"
 }
 

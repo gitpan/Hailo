@@ -1,6 +1,6 @@
 package Hailo::Storage::SQLite;
 BEGIN {
-  $Hailo::Storage::SQLite::VERSION = '0.39';
+  $Hailo::Storage::SQLite::VERSION = '0.40';
 }
 
 use 5.010;
@@ -58,7 +58,7 @@ before _engage => sub {
     # Set any user-defined pragmas
     $self->_set_pragmas;
 
-    if ($self->_exists_db and $self->_backup_memory_to_disk) {
+    if ($self->initialized and $self->_backup_memory_to_disk) {
         $self->dbh->sqlite_backup_from_file($self->brain);
     }
 
@@ -79,13 +79,14 @@ after stop_training => sub {
     return;
 };
 
-sub _exists_db {
+override initialized => sub {
     my ($self) = @_;
+
     my $brain = $self->brain;
-    return unless defined $self->brain;
-    return if $self->brain eq ':memory:';
-    return -s $self->brain;
-}
+    return unless defined $brain;
+    return if $brain eq ':memory:';
+    return -e $brain && super();
+};
 
 sub ready {
     my ($self) = @_;

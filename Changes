@@ -1,5 +1,32 @@
 Revision history for Hailo
 
+0.40 2010-04-13 15:10:23
+
+    - Add --reply-random to the hailo command-line interface. Allows
+      command-line babbling at random.
+
+    - Improved formatting for --train on the command line. Now outputs
+      how many lines/s were trained, e.g. "Trained from 11587 lines in
+      36.97 seconds; 313.40/"
+
+    - Fixed a bug on Mac OS X and probably some other
+      systems. Previously the SQLite code would assume that a file
+      that was `-s $file' was an empty database.
+
+      On Mac OS X these files weren't 0 byte but 1 byte files. Route
+      around this entire issue by creating a new API (->initialized)
+      that checks if the schema has really been created by doing a
+      query on the info table.
+
+    - Solved bug in the t/storage/DBD-SQLite-memory/babble.t test. The
+      test was skipped due to intermittent failures. Failures were due
+      to a programming error in the tests.
+
+    - DBD-SQLite-file-exhaustive-all.t is now run on
+      TEST_EXHAUSTIVE_ALL=1. Previously this test was unreachable.
+
+    - Add example utility to spew random names in random-names.
+
 0.39 2010-04-09 13:21:22
 
     - Set the homepage field in META.yml to http://hailo.org
