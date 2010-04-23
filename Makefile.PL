@@ -51,7 +51,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.40',
+  'VERSION' => '0.41',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/DBD-SQLite-memory/*.t t/tokenizer/*.t t/ui/*.t'
   }

@@ -1,6 +1,6 @@
 package Hailo::Command;
 BEGIN {
-  $Hailo::Command::VERSION = '0.40';
+  $Hailo::Command::VERSION = '0.41';
 }
 
 use 5.010;
@@ -27,7 +27,7 @@ has help => (
     isa           => Bool,
     is            => 'ro',
     default       => 0,
-    documentation => 'This help message',
+    documentation => "You're soaking it in",
 );
 
 has _go_version => (

@@ -1,6 +1,6 @@
 package Hailo::Role::Storage;
 BEGIN {
-  $Hailo::Role::Storage::VERSION = '0.40';
+  $Hailo::Role::Storage::VERSION = '0.41';
 }
 
 use 5.010;

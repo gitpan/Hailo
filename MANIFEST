@@ -72,6 +72,7 @@ utils/crunchbase-companies
 utils/hailo-benchmark
 utils/hailo-benchmark-lib-vs-system
 utils/hailo-benchmark-mouse-moose
+utils/hailo-benchmark-perl-vs-perl
 utils/hailo-benchmark-replies
 utils/random-names
 utils/train/perl6-irc.sh
