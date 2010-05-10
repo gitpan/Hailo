@@ -1,6 +1,6 @@
 package Hailo::Tokenizer::Words;
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.41';
+  $Hailo::Tokenizer::Words::VERSION = '0.42';
 }
 
 use 5.010;

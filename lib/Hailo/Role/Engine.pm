@@ -1,11 +1,10 @@
 package Hailo::Role::Engine;
 BEGIN {
-  $Hailo::Role::Engine::VERSION = '0.41';
+  $Hailo::Role::Engine::VERSION = '0.42';
 }
 
 use 5.010;
 use Any::Moose '::Role';
-use Any::Moose 'X::Types::'.any_moose() => [qw< Int >];
 use namespace::clean -except => 'meta';
 
 has storage => (
@@ -16,7 +15,7 @@ has storage => (
 
 has order => (
     required      => 1,
-    isa           => Int,
+    isa           => 'Int',
     is            => 'rw',
     documentation => "Our copy of the current markov order",
 );

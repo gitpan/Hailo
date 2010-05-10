@@ -3,7 +3,7 @@
 BEGIN { require 5.010; }
 use strict;
 use warnings;
-use ExtUtils::MakeMaker 6.11;
+use ExtUtils::MakeMaker 6.31;
 
 my %WriteMakefileArgs = (
   'ABSTRACT' => 'A pluggable Markov engine analogous to MegaHAL',
@@ -34,31 +34,41 @@ my %WriteMakefileArgs = (
     'Moose' => '0.94',
     'MooseX::Getopt' => '0.26',
     'MooseX::StrictConstructor' => '0.08',
-    'MooseX::Types' => '0.21',
     'Mouse' => '0.50',
     'MouseX::Getopt' => '0.2601',
-    'MouseX::Types' => '0.05',
-    'Term::ProgressBar' => '2.00',
     'Term::ReadLine' => '0',
+    'Term::Sk' => '0.04',
     'Test::Exception' => '0.29',
-    'Test::Expect' => '0.30',
     'Test::More' => '0.94',
     'Test::Output' => '0.16',
     'Test::Script' => '1.07',
     'Test::Script::Run' => '0.03',
-    'Test::Synopsis' => '0.06',
     'Time::HiRes' => '0',
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.41',
+  'VERSION' => '0.42',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/DBD-SQLite-memory/*.t t/tokenizer/*.t t/ui/*.t'
   }
 );
 
-delete $WriteMakefileArgs{LICENSE}
-  unless eval { ExtUtils::MakeMaker->VERSION(6.31) };
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM}; 
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod}; 
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
 
 WriteMakefile(%WriteMakefileArgs);
 

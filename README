@@ -45,8 +45,7 @@ DESCRIPTION
     POE::Component::IRC::Plugin::Hailo, which implements an IRC chat bot.
 
   Etymology
-    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and failo
-    <http://identi.ca/failo>.
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and <failo>.
 
 Backends
     Hailo supports pluggable storage and tokenizer backends, it also
@@ -95,8 +94,8 @@ Backends
             sys     4m35.509s
 
     In the case of PostgreSQL it's actually much faster to first train with
-    SQLite, dump that database and then import it with psql(1), see failo's
-    README <http://github.com/hinrik/failo> for how to do that.
+    SQLite, dump that database and then import it with psql(1), see <failo's
+    README> for how to do that.
 
     However when replying with an existing database (using
     utils/hailo-benchmark-replies) yields different results. SQLite can
@@ -250,8 +249,8 @@ SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.
 
 BUGS
-    Bugs, feature requests and other issues are tracked in Hailo's issue
-    tracker on Github <http://github.com/hinrik/hailo/issues>.
+    Bugs, feature requests and other issues are tracked in <Hailo's issue
+    tracker on Github>.
 
 SEE ALSO
     *   POE::Component::Hailo - A non-blocking POE wrapper around Hailo
@@ -264,31 +263,25 @@ SEE ALSO
         IRC bot that uses Hailo
 
     *   Hailo::UI::Web - A Catalyst and jQuery powered web interface to
-        Hailo available at hailo.nix.is <http://hailo.nix.is> and as
-        hailo-ui-web <http://github.com/avar/hailo-ui-web> on GitHub
-        <http://github.com>
+        Hailo available at <hailo.nix.is> and as <hailo-ui-web> on <GitHub>
 
     *   HALBot - Another Catalyst Dojo powered web interface to Hailo
-        available at bifurcat.es <http://bifurcat.es/> and as
-        halbot-on-the-web
-        <http://gitorious.org/halbot-on-the-web/halbot-on-the-web> at
-        gitorious <http://gitorious.org>
+        available at <bifurcat.es> and as <halbot-on-the-web> at <gitorious>
 
     *   <http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL
         "inspired by the success of Hailo"
 
 LINKS
-    *   hailo.org <http://hailo.org> - Hailo's website
+    *   <hailo.org> - Hailo's website
 
     *   <http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
         MegaHAL, A blog posting about the motivation behind Hailo
 
     *   <http://blogs.perl.org/users/aevar_arnfjor_bjarmason/hailo/> - More
-        blog posts about Hailo on Ævar Arnfjörð Bjarmason's blogs.perl.org
-        <http://blogs.perl.org> blog
+        blog posts about Hailo on Ævar Arnfjörð Bjarmason's <blogs.perl.org>
+        blog
 
-    *   Hailo on freshmeat <http://freshmeat.net/projects/hailo> and ohloh
-        <https://www.ohloh.net/p/hailo>
+    *   Hailo on <freshmeat> and <ohloh>
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com

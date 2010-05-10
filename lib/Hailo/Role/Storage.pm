@@ -1,20 +1,19 @@
 package Hailo::Role::Storage;
 BEGIN {
-  $Hailo::Role::Storage::VERSION = '0.41';
+  $Hailo::Role::Storage::VERSION = '0.42';
 }
 
 use 5.010;
 use Any::Moose '::Role';
-use Any::Moose 'X::Types::'.any_moose() => [qw/Str Int/];
 use namespace::clean -except => 'meta';
 
 has brain => (
-    isa => Str,
+    isa => 'Str',
     is  => 'rw',
 );
 
 has order => (
-    isa => Int,
+    isa => 'Int',
     is  => 'rw',
 );
 

@@ -1,15 +1,14 @@
 package Hailo::Role::Arguments;
 BEGIN {
-  $Hailo::Role::Arguments::VERSION = '0.41';
+  $Hailo::Role::Arguments::VERSION = '0.42';
 }
 
 use 5.010;
 use Any::Moose '::Role';
-use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef Str/];
 use namespace::clean -except => 'meta';
 
 has arguments => (
-    isa           => HashRef[Str],
+    isa           => 'HashRef[Str]',
     is            => 'ro',
     documentation => "Arguments passed from Hailo",
     auto_deref    => 1,

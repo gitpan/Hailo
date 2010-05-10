@@ -1,6 +1,6 @@
 package Hailo::Storage::Schema;
 BEGIN {
-  $Hailo::Storage::Schema::VERSION = '0.41';
+  $Hailo::Storage::Schema::VERSION = '0.42';
 }
 
 use 5.010;
@@ -71,7 +71,7 @@ TABLE
 
     my $columns = join(', ', map { "token${_}_id" } @orders);
     push @tables => "CREATE INDEX expr_token_ids on expr ($columns);";
-    
+
     push @tables => 'CREATE INDEX token_text on token (text);';
     push @tables => 'CREATE INDEX next_token_expr_id ON next_token (expr_id);';
     push @tables => 'CREATE INDEX prev_token_expr_id ON prev_token (expr_id);';

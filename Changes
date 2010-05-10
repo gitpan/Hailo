@@ -1,5 +1,26 @@
 Revision history for Hailo
 
+0.42 2010-05-10 21:26:45
+
+    - Hailo should now work on Windows. Dependency on two modules that
+      had Windows failures in their dependencies has been dropped.
+
+    - Remove Term::ProgressBar dependency, use Term::Sk
+      instead. Unlike Term::ProgressBar it doesn't depend on
+      Class::MethodMaker and Term::ReadKey. Those contributed a lot to
+      our failures on Windows.
+    
+    - Don't hard depend on Test::Expect. It depends IO::Tty which does
+      not work under any version of Windows, except under Cygwin (it
+      calls fcntl(*fd, F_DUPFD, 3)).
+
+    - Remove Test::Synopsis dependency. It depends on
+      Filter::Util::Call which had some failures. Now only used if
+      it's installed on the system already.
+
+    - Remove MouseX/MooseX::Types dependency. We don't use any of the
+      fancy type features, so there's no point in using this.
+
 0.41 2010-04-23 00:24:24
 
     - Don't (optionally) use Sys::Prctl on Perl 5.13.0 and above. It

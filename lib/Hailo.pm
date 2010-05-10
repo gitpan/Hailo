@@ -1,12 +1,11 @@
 package Hailo;
 BEGIN {
-  $Hailo::VERSION = '0.41';
+  $Hailo::VERSION = '0.42';
 }
 
 use 5.010;
 use autodie qw(open close);
 use Any::Moose;
-use Any::Moose 'X::Types::'.any_moose() => [qw/Int Str Bool HashRef/];
 BEGIN {
     return unless Any::Moose::moose_is_preferred();
     require MooseX::StrictConstructor;
@@ -16,12 +15,12 @@ use List::Util qw(first);
 use namespace::clean -except => 'meta';
 
 has brain => (
-    isa => Str,
+    isa => 'Str',
     is  => 'rw',
 );
 
 has order => (
-    isa     => Int,
+    isa     => 'Int',
     is      => 'rw',
     default => 2,
     trigger => sub {
@@ -31,7 +30,7 @@ has order => (
 );
 
 has _custom_order => (
-    isa           => Bool,
+    isa           => 'Bool',
     is            => 'rw',
     default       => 0,
     init_arg      => undef,
@@ -39,21 +38,21 @@ has _custom_order => (
 );
 
 has save_on_exit => (
-    isa     => Bool,
+    isa     => 'Bool',
     is      => 'rw',
     default => 1,
 );
 
 has brain_resource => (
     documentation => "Alias for `brain' for backwards compatability",
-    isa           => Str,
+    isa           => 'Str',
     is            => 'rw',
     trigger       => sub {
         my ($self, $brain) = @_;
         $self->brain($brain);
     },
 );
-    
+
 my %has = (
     engine => {
         name => 'Engine',
@@ -81,7 +80,7 @@ for my $k (keys %has) {
 
     # working classes
     has "${k}_class" => (
-        isa           => Str,
+        isa           => 'Str',
         is            => "rw",
         default       => $default,
     );
@@ -89,7 +88,7 @@ for my $k (keys %has) {
     # Object arguments
     has "${k}_args" => (
         documentation => "Arguments for the $name class",
-        isa           => HashRef,
+        isa           => 'HashRef',
         coerce        => 1,
         is            => "ro",
         default       => sub { +{} },

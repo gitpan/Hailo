@@ -6,7 +6,7 @@ author:
 build_requires: {}
 configure_requires:
   ExtUtils::MakeMaker: 6.31
-generated_by: 'Dist::Zilla version 2.101040'
+generated_by: 'Dist::Zilla version 2.101290'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -37,19 +37,15 @@ requires:
   Moose: 0.94
   MooseX::Getopt: 0.26
   MooseX::StrictConstructor: 0.08
-  MooseX::Types: 0.21
   Mouse: 0.50
   MouseX::Getopt: 0.2601
-  MouseX::Types: 0.05
-  Term::ProgressBar: 2.00
   Term::ReadLine: 0
+  Term::Sk: 0.04
   Test::Exception: 0.29
-  Test::Expect: 0.30
   Test::More: 0.94
   Test::Output: 0.16
   Test::Script: 1.07
   Test::Script::Run: 0.03
-  Test::Synopsis: 0.06
   Time::HiRes: 0
   autodie: 2.08
   namespace::clean: 0.13
@@ -60,4 +56,4 @@ resources:
   homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: http://github.com/hailo/hailo
-version: 0.41
+version: 0.42

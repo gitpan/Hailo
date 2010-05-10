@@ -1,18 +1,17 @@
 package Hailo::Engine::Default;
 BEGIN {
-  $Hailo::Engine::Default::VERSION = '0.41';
+  $Hailo::Engine::Default::VERSION = '0.42';
 }
 
 use 5.010;
 use Any::Moose;
-use Any::Moose 'X::Types::'.any_moose() => [qw< Int >];
 use List::Util qw<min first shuffle>;
 use List::MoreUtils qw<uniq>;
 
 with qw[ Hailo::Role::Arguments Hailo::Role::Engine ];
 
 has repeat_limit => (
-    isa     => Int,
+    isa     => 'Int',
     is      => 'rw',
     lazy    => 1,
     default => sub {

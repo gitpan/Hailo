@@ -1,12 +1,11 @@
 package Hailo::Command;
 BEGIN {
-  $Hailo::Command::VERSION = '0.41';
+  $Hailo::Command::VERSION = '0.42';
 }
 
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Getopt';
-use Any::Moose 'X::Types::'.any_moose() => [qw/Int Str Bool HashRef/];
 BEGIN {
     return unless Any::Moose::moose_is_preferred();
     require MooseX::StrictConstructor;
@@ -24,7 +23,7 @@ has help => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => 'h',
     cmd_flag      => 'help',
-    isa           => Bool,
+    isa           => 'Bool',
     is            => 'ro',
     default       => 0,
     documentation => "You're soaking it in",
@@ -35,7 +34,7 @@ has _go_version => (
     cmd_aliases   => 'v',
     cmd_flag      => 'version',
     documentation => 'Print version and exit',
-    isa           => Bool,
+    isa           => 'Bool',
     is            => 'ro',
 );
 
@@ -43,7 +42,7 @@ has _go_examples => (
     traits        => [ qw/ Getopt / ],
     cmd_flag      => 'examples',
     documentation => 'Print examples along with the help message',
-    isa           => Bool,
+    isa           => 'Bool',
     is            => 'ro',
 );
 
@@ -51,8 +50,8 @@ has _go_progress => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => 'p',
     cmd_flag      => 'progress',
-    documentation => 'Print import progress with Term::ProgressBar',
-    isa           => Bool,
+    documentation => 'Display progress during the import',
+    isa           => 'Bool',
     is            => 'ro',
     default       => sub {
         my ($self) = @_;
@@ -65,7 +64,7 @@ has _go_learn => (
     cmd_aliases   => "l",
     cmd_flag      => "learn",
     documentation => "Learn from STRING",
-    isa           => Str,
+    isa           => 'Str',
     is            => "ro",
 );
 
@@ -74,7 +73,7 @@ has _go_learn_reply => (
     cmd_aliases   => "L",
     cmd_flag      => "learn-reply",
     documentation => "Learn from STRING and reply to it",
-    isa           => Str,
+    isa           => 'Str',
     is            => "ro",
 );
 
@@ -83,7 +82,7 @@ has _go_train => (
     cmd_aliases   => "t",
     cmd_flag      => "train",
     documentation => "Learn from all the lines in FILE, use - for STDIN",
-    isa           => Str,
+    isa           => 'Str',
     is            => "ro",
 );
 
@@ -92,7 +91,7 @@ has _go_reply => (
     cmd_aliases   => "r",
     cmd_flag      => "reply",
     documentation => "Reply to STRING",
-    isa           => Str,
+    isa           => 'Str',
     is            => "ro",
 );
 
@@ -101,7 +100,7 @@ has _go_random_reply => (
     cmd_aliases   => "R",
     cmd_flag      => "random-reply",
     documentation => "Like --reply but takes no STRING; Babble at random",
-    isa           => Bool,
+    isa           => 'Bool',
     is            => "ro",
 );
 
@@ -110,7 +109,7 @@ has _go_stats => (
     cmd_aliases   => "s",
     cmd_flag      => "stats",
     documentation => "Print statistics about the brain",
-    isa           => Bool,
+    isa           => 'Bool',
     is            => "ro",
 );
 
@@ -121,7 +120,7 @@ has _go_autosave => (
     cmd_aliases   => 'a',
     cmd_flag      => 'autosave',
     documentation => 'Save the brain on exit (on by default)',
-    isa           => Bool,
+    isa           => 'Bool',
     is            => 'rw',
     trigger       => sub {
         my ($self, $bool) = @_;
@@ -134,7 +133,7 @@ has _go_order => (
     cmd_aliases   => "o",
     cmd_flag      => "order",
     documentation => "Markov order; How deep the rabbit hole goes",
-    isa           => Int,
+    isa           => 'Int',
     is            => "rw",
     trigger       => sub {
         my ($self, $order) = @_;
@@ -147,7 +146,7 @@ has _go_brain => (
     cmd_aliases   => "b",
     cmd_flag      => "brain",
     documentation => "Load/save brain to/from FILE",
-    isa           => Str,
+    isa           => 'Str',
     is            => "ro",
     trigger       => sub {
         my ($self, $brain) = @_;
@@ -160,7 +159,7 @@ has _go_engine_class => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "E",
     cmd_flag      => "engine",
-    isa           => Str,
+    isa           => 'Str',
     is            => "rw",
     documentation => "Use engine CLASS",
     trigger       => sub {
@@ -173,7 +172,7 @@ has _go_storage_class => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "S",
     cmd_flag      => "storage",
-    isa           => Str,
+    isa           => 'Str',
     is            => "rw",
     documentation => "Use storage CLASS",
     trigger       => sub {
@@ -186,7 +185,7 @@ has _go_tokenizer_class => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "T",
     cmd_flag      => "tokenizer",
-    isa           => Str,
+    isa           => 'Str',
     is            => "rw",
     documentation => "Use tokenizer CLASS",
     trigger       => sub {
@@ -199,7 +198,7 @@ has _go_ui_class => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "u",
     cmd_flag      => "ui",
-    isa           => Str,
+    isa           => 'Str',
     is            => "rw",
     documentation => "Use UI CLASS",
     trigger       => sub {
@@ -299,8 +298,7 @@ override _train_fh => sub {
 };
 
 before train_progress => sub {
-    require Term::ProgressBar;
-    Term::ProgressBar->import(2.00);
+    require Term::Sk;
     require File::CountLines;
     File::CountLines->import('count_lines');
     require Time::HiRes;
@@ -311,30 +309,25 @@ before train_progress => sub {
 sub train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
-    my $progress = Term::ProgressBar->new({
-        name => "Training from $filename",
-        count => $lines,
-        remove => 1,
-        ETA => 'linear',
-    });
-    $progress->minor(0);
+    my $progress = Term::Sk->new('%d Elapsed: %8t %21b %4p %2d (%8c of %11m)', {
+        # Start at line 1, not 0
+        base => 1,
+        target => $lines,
+        # Every 0.1 seconds for long files
+        freq => ($lines < 10_000 ? 10 : 'd'),
+    }) or die "Error in Term::Sk->new: (code $Term::Sk::errcode) $Term::Sk::errmsg";
+
     my $next_update = 0;
     my $start_time = [gettimeofday()];
 
     my $i = 1; while (my $line = <$fh>) {
         chomp $line;
         $self->_learn_one($line);
-        if ($i >= $next_update) {
-            $next_update = $progress->update($.);
-
-            # The default Term::ProgressBar estimate for next updates
-            # is way too concervative. With a ~200k line file we only
-            # update every ~2k lines which is 10 seconds or so.
-            $next_update = (($next_update-$i) / 10) + $i;
-        }
+        $progress->up;
     } continue { $i++ }
 
-    $progress->update($lines) if $lines >= $next_update;
+    $progress->close;
+
     my $elapsed = tv_interval($start_time);
     say sprintf "Trained from %d lines in %.2f seconds; %.2f lines/s", $i, $elapsed, ($i / $elapsed);
 
