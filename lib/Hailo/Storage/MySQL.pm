@@ -1,6 +1,6 @@
 package Hailo::Storage::MySQL;
 BEGIN {
-  $Hailo::Storage::MySQL::VERSION = '0.42';
+  $Hailo::Storage::MySQL::VERSION = '0.43';
 }
 
 use 5.010;

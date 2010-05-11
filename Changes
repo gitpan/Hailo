@@ -1,5 +1,16 @@
 Revision history for Hailo
 
+0.43 2010-05-11 19:54:36
+
+    - Tests failed on 0.42 without Test::Synopsis due to invalid test plan.
+
+    - Don't test with both Mouse and Moose on Windows. Failed with
+      Strawberry Perl + dmake, see report
+      07242729-b19f-3f77-b713-d32bba55d77f.
+
+    - Skip t/storage/001_meta/switch-order.t on OpenBSD where it's
+      known to fail, see report 07172161-b19f-3f77-b713-d32bba55d77f.
+
 0.42 2010-05-10 21:26:45
 
     - Hailo should now work on Windows. Dependency on two modules that

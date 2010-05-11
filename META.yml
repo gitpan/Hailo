@@ -56,4 +56,4 @@ resources:
   homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: http://github.com/hailo/hailo
-version: 0.42
+version: 0.43

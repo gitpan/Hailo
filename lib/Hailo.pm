@@ -1,6 +1,6 @@
 package Hailo;
 BEGIN {
-  $Hailo::VERSION = '0.42';
+  $Hailo::VERSION = '0.43';
 }
 
 use 5.010;
