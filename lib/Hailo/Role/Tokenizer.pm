@@ -1,6 +1,6 @@
 package Hailo::Role::Tokenizer;
 BEGIN {
-  $Hailo::Role::Tokenizer::VERSION = '0.43';
+  $Hailo::Role::Tokenizer::VERSION = '0.44';
 }
 
 use 5.010;

@@ -36,6 +36,7 @@ my %WriteMakefileArgs = (
     'MooseX::StrictConstructor' => '0.08',
     'Mouse' => '0.50',
     'MouseX::Getopt' => '0.2601',
+    'Regexp::Common' => '2010010201',
     'Term::ReadLine' => '0',
     'Term::Sk' => '0.04',
     'Test::Exception' => '0.29',
@@ -47,7 +48,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.43',
+  'VERSION' => '0.44',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/DBD-SQLite-memory/*.t t/tokenizer/*.t t/ui/*.t'
   }

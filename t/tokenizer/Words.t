@@ -31,21 +31,21 @@ subtest make_tokens => sub {
     $t->("foo bar", [ qw<foo bar> ]);
     $t->("Æ", [ 'Æ' ]);
 
-  TODO: {
-    local $TODO = "Make these tokenizer cases work";
-
     # Words like WoW and other odd things that change capitalization
     # mid-way should retain their capitalization.
     $t->("I hate WoW.", [ qw< I hate WoW . > ]);
 
-    # Similarly we should preserve capitalization on words split by '
-    $t->("I FYIQ'ed that job.", [ qw< I FYIQ'ed that job . > ]);
-    $t->("That guy was KIA'd.", [ qw< that guy was KIA'd . > ]);
-
     # Preserve mixed capitalization
     $t->("GumbyBRAIN", [ qw< GumbyBRAIN > ]);
     $t->("\"GumbyBRAIN\"", [ qw< " GumbyBRAIN " > ]);
-  }
+    $t->("HoRRiBlE", [ qw< HoRRiBlE > ]);
+    $t->("HoRRiBle", [ qw< HoRRiBle > ]);
+    $t->("hoRRiBle", [ qw< hoRRiBle > ]);
+
+    # Similarly we should preserve capitalization on words split by '
+    # and other \W characters
+    $t->("I FYIQ'ed that job.", [ qw< I FYIQ'ed that job . > ]);
+    $t->("That guy was KIA'd.", [ qw< that guy was KIA'd . > ]);
 
     done_testing();
 };
@@ -118,9 +118,20 @@ subtest make_output => sub {
             'Pretty girl like her "peak". Oh and you’re touching yourself.',
         ],
         [
-            'http://foo.bar/baz',
-            [qw<http :// foo . bar / baz>],
-            'http://foo.bar/baz',
+            'http://foo.BAR/bAz',
+            [qw<http://foo.BAR/bAz>],
+            'http://foo.BAR/bAz',
+        ],
+        [
+            'http://www.example.com/some/path?funny**!(),,:;@=&=',
+            [ 'http://www.example.com/some/path?funny**!(),,:;@=&=' ],
+            'http://www.example.com/some/path?funny**!(),,:;@=&=',
+        ],
+        [
+            # TODO: Support + in URIs
+            'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
+            [ qw< svn + ssh :// svn . wikimedia . org / svnroot / mediawiki > ],
+            'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
         ],
         [
             "foo bar baz. i said i'll do this",
@@ -194,7 +205,7 @@ subtest make_output => sub {
         ],
         [
             'Where did I go? http://foo.bar/',
-            [qw<where did I go ? http :// foo . bar />],
+            [qw<where did I go ? http://foo.bar/>],
             'Where did I go? http://foo.bar/'
         ],
         [

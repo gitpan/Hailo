@@ -1,6 +1,6 @@
 package Hailo::Tokenizer::Words;
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.43';
+  $Hailo::Tokenizer::Words::VERSION = '0.44';
 }
 
 use 5.010;
@@ -11,6 +11,7 @@ BEGIN {
     require MooseX::StrictConstructor;
     MooseX::StrictConstructor->import;
 }
+use Regexp::Common qw/ URI /;
 use namespace::clean -except => 'meta';
 
 with qw(Hailo::Role::Arguments
@@ -21,6 +22,7 @@ my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
+my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $PLAIN_WORD = qr/\w+/;
 my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
 
@@ -55,16 +57,37 @@ sub make_tokens {
         my $got_word;
 
         while (length $chunk) {
+            # urls
+            if ($chunk =~ s/ ^ (?<uri> $RE{URI} ) //x) {
+                push @tokens, [$self->spacing->{normal}, $+{uri}];
+                $got_word = 1;
+            }
+            # Twitter names
+            elsif ($chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //x) {
+                # Names on Twitter/Identi.ca can only match
+                # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
+                # names.
+                push @tokens, [$self->spacing->{normal}, $+{twat}];
+                $got_word = 1;
+            }
             # normal words
-            if (my ($word) = $chunk =~ /^($WORD)/) {
-                $chunk =~ s/^\Q$word//;
-                $word = lc($word) if $word ne uc($word);
+            elsif ($chunk =~ s/ ^ (?<word> $WORD ) //x) {
+                my $word = $+{word};
+                # Maybe preserve the casing of this word
+                $word = lc $word
+                    if $word ne uc $word
+                       # Mixed-case words like "WoW"
+                       and $word !~ /^ (\p{Upper}+|\p{Lower}+)+ \p{Upper}+ (\p{Lower}+|\p{Upper}+)* $/x
+                       # Words that are upper case followed by a non-word character.
+                       # {2,} so it doesn't match I'm
+                       and $word !~ /^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
+
                 push @tokens, [$self->spacing->{normal}, $word];
                 $got_word = 1;
             }
             # everything else
-            elsif (my ($non_word) = $chunk =~ /^(\W+)/) {
-                $chunk =~ s/^\Q$non_word//;
+            elsif (my ($non_word) = $chunk =~ s/ ^ (?<non_word> \W+ ) //x) {
+                my $non_word = $+{non_word};
 
                 # lowercase it if it's not all-uppercase
                 $non_word = lc($non_word) if $non_word ne uc($non_word);

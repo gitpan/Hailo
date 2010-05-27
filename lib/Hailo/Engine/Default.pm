@@ -1,6 +1,6 @@
 package Hailo::Engine::Default;
 BEGIN {
-  $Hailo::Engine::Default::VERSION = '0.43';
+  $Hailo::Engine::Default::VERSION = '0.44';
 }
 
 use 5.010;

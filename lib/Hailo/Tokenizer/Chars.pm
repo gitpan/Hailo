@@ -1,6 +1,6 @@
 package Hailo::Tokenizer::Chars;
 BEGIN {
-  $Hailo::Tokenizer::Chars::VERSION = '0.43';
+  $Hailo::Tokenizer::Chars::VERSION = '0.44';
 }
 
 use 5.010;

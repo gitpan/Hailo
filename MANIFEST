@@ -5,6 +5,7 @@ MANIFEST
 MANIFEST.SKIP
 META.json
 META.yml
+Makefile.PL
 README
 README.pod
 bin/hailo
@@ -65,6 +66,7 @@ t/storage/DBD-SQLite-nonalpha.t
 t/storage/DBD-SQLite-pragmas.t
 t/storage/DBD-mysql.t
 t/tokenizer/Chars.t
+t/tokenizer/Words-twitter-names.t
 t/tokenizer/Words-utf8-text.t
 t/tokenizer/Words.t
 t/ui/readline.t

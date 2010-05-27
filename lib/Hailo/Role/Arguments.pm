@@ -1,6 +1,6 @@
 package Hailo::Role::Arguments;
 BEGIN {
-  $Hailo::Role::Arguments::VERSION = '0.43';
+  $Hailo::Role::Arguments::VERSION = '0.44';
 }
 
 use 5.010;
