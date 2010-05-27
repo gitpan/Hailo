@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.45';
+  $Hailo::Tokenizer::Words::VERSION = '0.46';
 }
 
 use 5.010;
@@ -28,6 +28,8 @@ my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $PLAIN_WORD = qr/\w+/;
 my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
+my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
+my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -61,12 +63,12 @@ sub make_tokens {
 
         while (length $chunk) {
             # urls
-            if ($chunk =~ s/ ^ (?<uri> $RE{URI} ) //x) {
+            if ($chunk =~ s/ ^ (?<uri> $RE{URI} ) //xo) {
                 push @tokens, [$self->spacing->{normal}, $+{uri}];
                 $got_word = 1;
             }
             # Twitter names
-            elsif ($chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //x) {
+            elsif ($chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //xo) {
                 # Names on Twitter/Identi.ca can only match
                 # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
                 # names.
@@ -74,22 +76,22 @@ sub make_tokens {
                 $got_word = 1;
             }
             # normal words
-            elsif ($chunk =~ s/ ^ (?<word> $WORD ) //x) {
+            elsif ($chunk =~ s/ ^ (?<word> $WORD ) //xo) {
                 my $word = $+{word};
                 # Maybe preserve the casing of this word
                 $word = lc $word
                     if $word ne uc $word
                        # Mixed-case words like "WoW"
-                       and $word !~ / \p{Lower}+ \p{Upper} /x
+                       and $word !~ $MIXED_CASE
                        # Words that are upper case followed by a non-word character.
                        # {2,} so it doesn't match I'm
-                       and $word !~ /^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
+                       and $word !~ $UPPER_NONW;
 
                 push @tokens, [$self->spacing->{normal}, $word];
                 $got_word = 1;
             }
             # everything else
-            elsif (my ($non_word) = $chunk =~ s/ ^ (?<non_word> \W+ ) //x) {
+            elsif (my ($non_word) = $chunk =~ s/ ^ (?<non_word> \W+ ) //xo) {
                 my $non_word = $+{non_word};
 
                 # lowercase it if it's not all-uppercase
@@ -140,22 +142,22 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\b)/\u$1/;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\b)/\u$1/o;
 
     # capitalize the second word
-    $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/o;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/g;
-    $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/g;
-    $reply =~ s/\x1B//g;
+    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
+    $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
+    $reply =~ s/\x1B//go;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/(?: |^)$OPEN_QUOTE?$SPLIT_WORD$CLOSE_QUOTE?\K$/./;
+    $reply =~ s/(?: |^)$OPEN_QUOTE?$SPLIT_WORD$CLOSE_QUOTE?\K$/./o;
 
     # capitalize I'm, I've...
-    $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE(?:[[:alpha:]]))}{I}g;
+    $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE(?:[[:alpha:]]))}{I}go;
 
     return $reply;
 }
