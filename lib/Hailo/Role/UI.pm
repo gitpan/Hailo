@@ -1,6 +1,9 @@
 package Hailo::Role::UI;
 BEGIN {
-  $Hailo::Role::UI::VERSION = '0.44';
+  $Hailo::Role::UI::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Role::UI::VERSION = '0.45';
 }
 
 use 5.010;

@@ -1,6 +1,9 @@
 package Hailo::Command;
 BEGIN {
-  $Hailo::Command::VERSION = '0.44';
+  $Hailo::Command::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Command::VERSION = '0.45';
 }
 
 use 5.010;
@@ -290,7 +293,7 @@ sub run {
 override _train_fh => sub {
     my ($self, $fh, $filename) = @_;
 
-    if ($self->_is_interactive) {
+    if ($self->_go_progress and $self->_is_interactive) {
         $self->train_progress($fh, $filename);
     } else {
         super();

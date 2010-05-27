@@ -1,6 +1,9 @@
 package Hailo::Storage::MySQL;
 BEGIN {
-  $Hailo::Storage::MySQL::VERSION = '0.44';
+  $Hailo::Storage::MySQL::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Storage::MySQL::VERSION = '0.45';
 }
 
 use 5.010;

@@ -1,6 +1,9 @@
 package Hailo::Tokenizer::Chars;
 BEGIN {
-  $Hailo::Tokenizer::Chars::VERSION = '0.44';
+  $Hailo::Tokenizer::Chars::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Tokenizer::Chars::VERSION = '0.45';
 }
 
 use 5.010;

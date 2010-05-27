@@ -1,6 +1,9 @@
 package Hailo::Tokenizer::Words;
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.44';
+  $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Tokenizer::Words::VERSION = '0.45';
 }
 
 use 5.010;
@@ -77,7 +80,7 @@ sub make_tokens {
                 $word = lc $word
                     if $word ne uc $word
                        # Mixed-case words like "WoW"
-                       and $word !~ /^ (\p{Upper}+|\p{Lower}+)+ \p{Upper}+ (\p{Lower}+|\p{Upper}+)* $/x
+                       and $word !~ / \p{Lower}+ \p{Upper} /x
                        # Words that are upper case followed by a non-word character.
                        # {2,} so it doesn't match I'm
                        and $word !~ /^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;

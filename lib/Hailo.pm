@@ -1,6 +1,9 @@
 package Hailo;
 BEGIN {
-  $Hailo::VERSION = '0.44';
+  $Hailo::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::VERSION = '0.45';
 }
 
 use 5.010;

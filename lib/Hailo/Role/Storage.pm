@@ -1,6 +1,9 @@
 package Hailo::Role::Storage;
 BEGIN {
-  $Hailo::Role::Storage::VERSION = '0.44';
+  $Hailo::Role::Storage::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Role::Storage::VERSION = '0.45';
 }
 
 use 5.010;

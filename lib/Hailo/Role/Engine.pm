@@ -1,6 +1,9 @@
 package Hailo::Role::Engine;
 BEGIN {
-  $Hailo::Role::Engine::VERSION = '0.44';
+  $Hailo::Role::Engine::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Role::Engine::VERSION = '0.45';
 }
 
 use 5.010;

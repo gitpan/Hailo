@@ -1,6 +1,9 @@
 package Hailo::Role::Arguments;
 BEGIN {
-  $Hailo::Role::Arguments::VERSION = '0.44';
+  $Hailo::Role::Arguments::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Role::Arguments::VERSION = '0.45';
 }
 
 use 5.010;

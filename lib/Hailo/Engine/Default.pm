@@ -1,6 +1,9 @@
 package Hailo::Engine::Default;
 BEGIN {
-  $Hailo::Engine::Default::VERSION = '0.44';
+  $Hailo::Engine::Default::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $Hailo::Engine::Default::VERSION = '0.45';
 }
 
 use 5.010;
