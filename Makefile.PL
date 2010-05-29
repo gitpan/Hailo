@@ -39,7 +39,7 @@ my %WriteMakefileArgs = (
     'MouseX::Getopt' => '0.2601',
     'Regexp::Common' => '2010010201',
     'Term::ReadLine' => '0',
-    'Term::Sk' => '0.04',
+    'Term::Sk' => '0.06',
     'Test::Exception' => '0.29',
     'Test::More' => '0.94',
     'Test::Output' => '0.16',
@@ -49,7 +49,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.48',
+  'VERSION' => '0.49',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }

@@ -42,7 +42,7 @@ requires:
   MouseX::Getopt: 0.2601
   Regexp::Common: 2010010201
   Term::ReadLine: 0
-  Term::Sk: 0.04
+  Term::Sk: 0.06
   Test::Exception: 0.29
   Test::More: 0.94
   Test::Output: 0.16
@@ -57,5 +57,5 @@ resources:
   homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hailo/hailo.git
-version: 0.48
+version: 0.49
 x_authority: cpan:AVAR

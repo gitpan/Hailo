@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Command::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Command::VERSION = '0.48';
+  $Hailo::Command::VERSION = '0.49';
 }
 
 use 5.010;
@@ -312,12 +312,20 @@ before train_progress => sub {
 sub train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
-    my $progress = Term::Sk->new('%d Elapsed: %8t %21b %4p %2d (%8c of %11m)', {
+    my $progress = Term::Sk->new('%d Elapsed: %8t %21b %4p %2d (%c of %m)', {
         # Start at line 1, not 0
         base => 1,
         target => $lines,
         # Every 0.1 seconds for long files
         freq => ($lines < 10_000 ? 10 : 'd'),
+        # Override Term::Sk's default 100_100 to 100,000
+        commify => sub {
+            my $int = shift;
+            $int = reverse $int;
+            $int =~ s/(\d{3})(?=\d)(?!\d*\.)/$1,/g;
+            $int = reverse $int;
+            return $int;
+        },
     }) or die "Error in Term::Sk->new: (code $Term::Sk::errcode) $Term::Sk::errmsg";
 
     my $next_update = 0;
