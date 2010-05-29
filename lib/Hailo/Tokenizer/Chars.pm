@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Chars::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Chars::VERSION = '0.46';
+  $Hailo::Tokenizer::Chars::VERSION = '0.47';
 }
 
 use 5.010;
@@ -22,7 +22,7 @@ with qw(Hailo::Role::Arguments
 sub make_tokens {
     my ($self, $line) = @_;
     my @chars = split //, $line;
-    my @tokens = map { [$self->spacing->{normal}, $_] } @chars;
+    my @tokens = map { [$self->{_spacing_normal}, $_] } @chars;
     return \@tokens;
 }
 

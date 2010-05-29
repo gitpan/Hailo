@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::VERSION = '0.46';
+  $Hailo::VERSION = '0.47';
 }
 
 use 5.010;
@@ -48,6 +48,14 @@ has _custom_order => (
     default       => 0,
     init_arg      => undef,
     documentation => "Here so we can differentiate between the default value of order being explictly set and being set by default",
+);
+
+has _custom_tokenizer_class => (
+    isa           => 'Bool',
+    is            => 'rw',
+    default       => 0,
+    init_arg      => undef,
+    documentation => "Here so we can differentiate between the default value of tokenizer_class being explictly set and being set by default",
 );
 
 has save_on_exit => (
@@ -96,6 +104,12 @@ for my $k (keys %has) {
         isa           => 'Str',
         is            => "rw",
         default       => $default,
+        ($k ~~ 'tokenizer'
+         ? (trigger => sub {
+             my ($self, $class) = @_;
+             $self->_custom_tokenizer_class(1);
+         })
+         : ())
     );
 
     # Object arguments
@@ -136,6 +150,9 @@ for my $k (keys %has) {
                      brain => $self->brain
                  )
                  : ()),
+                (($k ~~ [ qw< storage > ]
+                  ? (tokenizer_class => $self->tokenizer_class)
+                  : ()))
             },
         );
 

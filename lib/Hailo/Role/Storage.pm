@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Role::Storage::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Role::Storage::VERSION = '0.46';
+  $Hailo::Role::Storage::VERSION = '0.47';
 }
 
 use 5.010;
@@ -23,6 +23,11 @@ has order => (
 has hailo => (
     isa => 'Hailo',
     is  => 'ro',
+);
+
+has tokenizer_class => (
+    isa => 'Str',
+    is  => 'rw',
 );
 
 requires 'ready';

@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Role::Engine::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Role::Engine::VERSION = '0.46';
+  $Hailo::Role::Engine::VERSION = '0.47';
 }
 
 use 5.010;
