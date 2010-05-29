@@ -22,6 +22,7 @@ my %WriteMakefileArgs = (
     'Bot::Training::MegaHAL' => '0',
     'Bot::Training::StarCraft' => '0',
     'DBD::SQLite' => '1.29',
+    'Data::Dump' => '1.15',
     'Data::Section' => '0.100770',
     'Dir::Self' => '0.10',
     'File::CountLines' => '0.0.2',
@@ -48,7 +49,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.47',
+  'VERSION' => '0.48',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }
