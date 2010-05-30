@@ -13,7 +13,9 @@ my %WriteMakefileArgs = (
     'ExtUtils::MakeMaker' => '6.31'
   },
   'DISTNAME' => 'Hailo',
-  'EXE_FILES' => [],
+  'EXE_FILES' => [
+    'bin/hailo'
+  ],
   'LICENSE' => 'perl',
   'NAME' => 'Hailo',
   'PREREQ_PM' => {
@@ -49,7 +51,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.13'
   },
-  'VERSION' => '0.49',
+  'VERSION' => '0.50',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }
