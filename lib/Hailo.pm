@@ -3,17 +3,13 @@ BEGIN {
   $Hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::VERSION = '0.50';
+  $Hailo::VERSION = '0.51';
 }
 
 use 5.010;
 use autodie qw(open close);
 use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use List::Util qw(first);
 use namespace::clean -except => 'meta';
 
@@ -116,7 +112,6 @@ for my $k (keys %has) {
     has "${k}_args" => (
         documentation => "Arguments for the $name class",
         isa           => 'HashRef',
-        coerce        => 1,
         is            => "ro",
         default       => sub { +{} },
     );

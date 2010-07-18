@@ -3,16 +3,12 @@ BEGIN {
   $Hailo::Storage::SQLite::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::SQLite::VERSION = '0.50';
+  $Hailo::Storage::SQLite::VERSION = '0.51';
 }
 
 use 5.010;
 use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use namespace::clean -except => 'meta';
 
 extends 'Hailo::Storage';

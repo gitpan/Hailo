@@ -3,16 +3,12 @@ BEGIN {
   $Hailo::Storage::MySQL::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::MySQL::VERSION = '0.50';
+  $Hailo::Storage::MySQL::VERSION = '0.51';
 }
 
 use 5.010;
 use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use List::MoreUtils qw< all >;
 use namespace::clean -except => 'meta';
 

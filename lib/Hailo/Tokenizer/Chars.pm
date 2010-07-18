@@ -3,16 +3,12 @@ BEGIN {
   $Hailo::Tokenizer::Chars::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Chars::VERSION = '0.50';
+  $Hailo::Tokenizer::Chars::VERSION = '0.51';
 }
 
 use 5.010;
 use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use namespace::clean -except => 'meta';
 
 with qw(Hailo::Role::Arguments

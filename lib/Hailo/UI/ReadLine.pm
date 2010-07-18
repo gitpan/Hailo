@@ -3,16 +3,12 @@ BEGIN {
   $Hailo::UI::ReadLine::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::UI::ReadLine::VERSION = '0.50';
+  $Hailo::UI::ReadLine::VERSION = '0.51';
 }
 
 use 5.010;
 use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use Encode 'decode';
 use Hailo;
 use Term::ReadLine;
