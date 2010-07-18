@@ -37,6 +37,7 @@ t/command/run.t
 t/command/shell.t
 t/command/ui/readline_chat.t
 t/hailo/brain_resource.t
+t/hailo/destruction.t
 t/hailo/methods.t
 t/hailo/methods/order.t
 t/hailo/non_standard_plugin.t

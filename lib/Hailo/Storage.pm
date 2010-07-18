@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::VERSION = '0.51';
+  $Hailo::Storage::VERSION = '0.52';
 }
 
 use 5.010;
@@ -146,7 +146,7 @@ sub _engage_initialized_check_and_set_order {
 
     my $my_order = $self->order;
     if ($my_order != $db_order) {
-        if ($self->hailo->_custom_order) {
+        if ($self->hailo->{has_custom_order}->()) {
             die <<"DIE";
 You've manually supplied an order of `$my_order' to Hailo but you're
 loading a brain that has the order `$db_order'.
@@ -162,8 +162,7 @@ DIE
         }
 
         $self->order($db_order);
-        $self->hailo->order($db_order);
-        $self->hailo->_engine->order($db_order);
+        $self->hailo->{set_order}->($db_order);
     }
 
     return;
@@ -180,7 +179,7 @@ sub _engage_initialized_check_and_set_tokenizer {
     # defined() because we can't count on old brains having this
     if (defined $db_tokenizer_class
         and $my_tokenizer_class ne $db_tokenizer_class) {
-        if ($self->hailo->_custom_tokenizer_class) {
+        if ($self->hailo->{has_custom_tokenizer_class}->()) {
             die <<"DIE";
 You've manually supplied a tokenizer class `$my_tokenizer_class' to
 Hailo, but you're loading a brain that has the tokenizer class
@@ -198,7 +197,7 @@ DIE
         }
 
         $self->tokenizer_class($db_tokenizer_class);
-        $self->hailo->tokenizer_class($db_tokenizer_class);
+        $self->hailo->{set_tokenizer_class}->($db_tokenizer_class);
     }
 
     return;
