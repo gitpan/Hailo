@@ -153,9 +153,8 @@ subtest make_output => sub {
             'http://www.example.com/some/path?funny**!(),,:;@=&=',
         ],
         [
-            # TODO: Support + in URIs
             'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
-            [ qw< svn + ssh :// svn . wikimedia . org / svnroot / mediawiki > ],
+            [ qw< svn+ssh://svn.wikimedia.org/svnroot/mediawiki > ],
             'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
         ],
         [
@@ -185,17 +184,17 @@ subtest make_output => sub {
         ],
         [
             'anti-scientology demonstration in london? hella-cool',
-            [qw<anti - scientology demonstration in london ? hella - cool>],
+            [qw<anti-scientology demonstration in london ? hella-cool>],
             'Anti-scientology demonstration in london? Hella-cool.'
         ],
         [
             'This. compound-words are cool',
-            [qw<this . compound - words are cool>],
+            [qw<this . compound-words are cool>],
             'This. Compound-words are cool.'
         ],
         [
             'Foo. Compound-word',
-            [qw<foo .  compound - word>],
+            [qw<foo .  compound-word>],
             'Foo. Compound-word.'
         ],
         [
@@ -210,7 +209,7 @@ subtest make_output => sub {
         ],
         [
             'cpanm is a true "anti-religion"',
-            [qw<cpanm is a true " anti - religion ">],
+            [qw<cpanm is a true " anti-religion ">],
             'Cpanm is a true "anti-religion".'
         ],
         [
@@ -282,6 +281,41 @@ subtest make_output => sub {
             "loves2spooge",
             [qw<loves2spooge>],
             "Loves2spooge.",
+        ],
+        [
+            'she´ll be doing it now',
+            [qw<she´ll be doing it now>],
+            'She´ll be doing it now.',
+        ],
+        [
+            'CPAN upload: Crypt-Rijndael-MySQL-0.02 by SATOH',
+            [qw<CPAN upload : Crypt-Rijndael-MySQL-0.02 by SATOH>],
+            'CPAN upload: Crypt-Rijndael-MySQL-0.02 by SATOH.',
+        ],
+        [
+            "I use a resolution of 800x600 on my computer",
+            [qw<I use a resolution of 800x600 on my computer>],
+            "I use a resolution of 800x600 on my computer.",
+        ],
+        [
+            "WOAH 3D",
+            [qw<WOAH 3D>],
+            "WOAH 3D.",
+        ],
+        [
+            "jarl sounds like yankee negro-lovers. britain was even into old men.",
+            [qw<jarl sounds like yankee negro-lovers . britain was even into old men .>],
+            "Jarl sounds like yankee negro-lovers. Britain was even into old men.",
+        ],
+        [
+            "just look at http://beint.lýðræði.is does it turn tumi metrosexual",
+            [qw<just look at http://beint.lýðræði.is does it turn tumi metrosexual>],
+            "Just look at http://beint.lýðræði.is does it turn tumi metrosexual.",
+        ],
+        [
+            'du: Invalid option --^',
+            [qw<du : invalid option --^>],
+            'Du: Invalid option --^',
         ],
     );
 

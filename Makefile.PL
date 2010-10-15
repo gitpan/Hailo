@@ -8,7 +8,18 @@ use ExtUtils::MakeMaker 6.31;
 my %WriteMakefileArgs = (
   'ABSTRACT' => 'A pluggable Markov engine analogous to MegaHAL',
   'AUTHOR' => 'Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>, Ævar Arnfjörð Bjarmason <avar@cpan.org>',
-  'BUILD_REQUIRES' => {},
+  'BUILD_REQUIRES' => {
+    'Bot::Training' => '0',
+    'Bot::Training::MegaHAL' => '0',
+    'Bot::Training::StarCraft' => '0',
+    'Data::Section' => '0.101620',
+    'File::Slurp' => '9999.13',
+    'Test::Exception' => '0.29',
+    'Test::More' => '0.94',
+    'Test::Output' => '0.16',
+    'Test::Script' => '1.07',
+    'Test::Script::Run' => '0.04'
+  },
   'CONFIGURE_REQUIRES' => {
     'ExtUtils::MakeMaker' => '6.31'
   },
@@ -20,15 +31,10 @@ my %WriteMakefileArgs = (
   'NAME' => 'Hailo',
   'PREREQ_PM' => {
     'Any::Moose' => '0.13',
-    'Bot::Training' => '0',
-    'Bot::Training::MegaHAL' => '0',
-    'Bot::Training::StarCraft' => '0',
     'DBD::SQLite' => '1.29',
     'Data::Dump' => '1.17',
-    'Data::Section' => '0.101620',
     'Dir::Self' => '0.10',
     'File::CountLines' => '0.0.2',
-    'File::Slurp' => '9999.13',
     'File::Spec::Functions' => '0',
     'Getopt::Long::Descriptive' => '0.085',
     'IO::Interactive' => '0.0.6',
@@ -43,16 +49,12 @@ my %WriteMakefileArgs = (
     'Regexp::Common' => '2010010201',
     'Term::ReadLine' => '0',
     'Term::Sk' => '0.06',
-    'Test::Exception' => '0.29',
-    'Test::More' => '0.94',
-    'Test::Output' => '0.16',
-    'Test::Script' => '1.07',
-    'Test::Script::Run' => '0.04',
+    'Text::Unidecode' => '0',
     'Time::HiRes' => '0',
     'autodie' => '2.08',
     'namespace::clean' => '0.18'
   },
-  'VERSION' => '0.52',
+  'VERSION' => '0.53',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }
@@ -61,7 +63,7 @@ my %WriteMakefileArgs = (
 
 unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
   my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
-  my $pp = $WriteMakefileArgs{PREREQ_PM}; 
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
   for my $mod ( keys %$br ) {
     if ( exists $pp->{$mod} ) {
       $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod}; 

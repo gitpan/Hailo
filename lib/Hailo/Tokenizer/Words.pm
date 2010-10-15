@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.52';
+  $Hailo::Tokenizer::Words::VERSION = '0.53';
 }
 
 use 5.010;
@@ -11,6 +11,7 @@ use utf8;
 use Any::Moose;
 use Any::Moose 'X::StrictConstructor';
 use Regexp::Common qw/ URI /;
+use Text::Unidecode;
 use namespace::clean -except => 'meta';
 
 with qw(Hailo::Role::Arguments
@@ -19,11 +20,12 @@ with qw(Hailo::Role::Arguments
 # tokenization
 my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
-my $APOSTROPHE = qr/['’]/;
+my $APOSTROPHE = qr/['’´]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $PLAIN_WORD = qr/\w+/;
-my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
+my $WORD_TYPES = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
+my $WORD       = qr/$WORD_TYPES(?:-$WORD_TYPES)*/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
 my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
 
@@ -37,13 +39,12 @@ my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $WORD_BIT    = qr/$WORD(?:-(?!-))?/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $SPLIT_WORD  = qr{(?:$WORD_BIT(?:-$WORD_BIT)+|$WORD_BIT/$WORD_BIT|$WORD_BIT)(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
+my $SPLIT_WORD  = qr{$WORD(?:/$WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
-my $DOTTED_STRICT = qr/\w+(?:$DECIMAL(?:\d+|\w{2,}))?/;
+my $DOTTED_STRICT = qr/$WORD(?:$DECIMAL(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
@@ -58,8 +59,20 @@ sub make_tokens {
         my $got_word;
 
         while (length $chunk) {
+            # We convert it to ASCII and then look for a URI because $RE{URI}
+            # from Regexp::Common doesn't support non-ASCII domain names
+            my $ascii = unidecode($chunk);
+
             # urls
-            if ($chunk =~ s/ ^ (?<uri> $RE{URI} ) //xo) {
+            if ($ascii =~ / ^ $RE{URI} /xo) {
+                my $uri = $chunk;
+                $chunk = '';
+
+                push @tokens, [$self->{_spacing_normal}, $uri];
+                $got_word = 1;
+            }
+            # ssh:// (and foo+ssh://) URIs
+            elsif ($chunk =~ s{ ^ (?<uri> (?:\w+\+) ssh:// \S+ ) }{}xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{uri}];
                 $got_word = 1;
             }
@@ -72,7 +85,7 @@ sub make_tokens {
                 $got_word = 1;
             }
             # normal words
-            elsif ($chunk =~ s/ ^ (?<word> $WORD ) //xo) {
+            elsif ($chunk =~ s/ ^ (?<word> $WORD )(?! $WORD ) //xo) {
                 my $word = $+{word};
                 # Maybe preserve the casing of this word
                 $word = lc $word

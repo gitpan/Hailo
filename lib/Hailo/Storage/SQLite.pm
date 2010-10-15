@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::SQLite::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::SQLite::VERSION = '0.52';
+  $Hailo::Storage::SQLite::VERSION = '0.53';
 }
 
 use 5.010;
@@ -57,7 +57,7 @@ before _engage => sub {
     # Set any user-defined pragmas
     $self->_set_pragmas;
 
-    if ($self->initialized and $self->_backup_memory_to_disk) {
+    if ($self->_backup_memory_to_disk) {
         $self->dbh->sqlite_backup_from_file($self->brain);
     }
 
