@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::UI::ReadLine::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::UI::ReadLine::VERSION = '0.53';
+  $Hailo::UI::ReadLine::VERSION = '0.54';
 }
 
 use 5.010;

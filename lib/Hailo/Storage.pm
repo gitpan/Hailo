@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::VERSION = '0.53';
+  $Hailo::Storage::VERSION = '0.54';
 }
 
 use 5.010;

@@ -3,13 +3,14 @@ BEGIN {
   $Hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::VERSION = '0.53';
+  $Hailo::VERSION = '0.54';
 }
 
 use 5.010;
 use autodie qw(open close);
 use Any::Moose;
 use Any::Moose 'X::StrictConstructor';
+use Scalar::Util qw(blessed);
 use List::Util qw(first);
 use namespace::clean -except => 'meta';
 
@@ -336,7 +337,7 @@ sub stats {
 
 sub DEMOLISH {
     my ($self) = @_;
-    $self->save_on_exit if $self->{_storage} and $self->save;
+    $self->save() if blessed $self->{_storage} and $self->save_on_exit;
     return;
 }
 
@@ -488,6 +489,9 @@ storage backend, currently only SQLite uses it.
 A boolean value indicating whether Hailo should save its state before
 its object gets destroyed. This defaults to true and will simply call
 L<save|/save> at C<DEMOLISH> time.
+
+See L<Hailo::Storage::SQLite/"in_memory"> for how the SQLite backend
+uses this option in conjunction with its C<in_memory> option.
 
 =head2 C<order>
 
