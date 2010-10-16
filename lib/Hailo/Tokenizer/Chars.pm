@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Chars::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Chars::VERSION = '0.54';
+  $Hailo::Tokenizer::Chars::VERSION = '0.55';
 }
 
 use 5.010;
