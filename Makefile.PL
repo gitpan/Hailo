@@ -15,10 +15,12 @@ my %WriteMakefileArgs = (
     'Data::Section' => '0.101620',
     'File::Slurp' => '9999.13',
     'Test::Exception' => '0.29',
+    'Test::Expect' => '0.31',
     'Test::More' => '0.94',
     'Test::Output' => '0.16',
     'Test::Script' => '1.07',
-    'Test::Script::Run' => '0.04'
+    'Test::Script::Run' => '0.04',
+    'Test::Synopsis' => '0.06'
   },
   'CONFIGURE_REQUIRES' => {
     'ExtUtils::MakeMaker' => '6.31'
@@ -54,7 +56,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.18'
   },
-  'VERSION' => '0.55',
+  'VERSION' => '0.56',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }

@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.55';
+  $Hailo::Tokenizer::Words::VERSION = '0.56';
 }
 
 use 5.010;
@@ -144,7 +144,7 @@ sub make_tokens {
                 $got_word = 1;
             }
             # everything else
-            if ($chunk =~ s/ ^ (?<non_word> $NON_WORD ) //xo) {
+            elsif ($chunk =~ s/ ^ (?<non_word> $NON_WORD ) //xo) {
                 my $non_word = $+{non_word};
                 my $spacing = $self->{_spacing_normal};
 

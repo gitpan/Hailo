@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 package hailo;
 BEGIN {
-  $hailo::VERSION = '0.55';
+  $hailo::VERSION = '0.56';
 }
 use 5.010;
 use open qw< :encoding(utf8) :std >;

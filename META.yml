@@ -10,14 +10,16 @@ build_requires:
   Data::Section: 0.101620
   File::Slurp: 9999.13
   Test::Exception: 0.29
+  Test::Expect: 0.31
   Test::More: 0.94
   Test::Output: 0.16
   Test::Script: 1.07
   Test::Script::Run: 0.04
+  Test::Synopsis: 0.06
 configure_requires:
   ExtUtils::MakeMaker: 6.31
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.102342, CPAN::Meta::Converter version 2.102400'
+generated_by: 'Dist::Zilla version 4.102341, CPAN::Meta::Converter version 2.102400'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -62,5 +64,5 @@ resources:
   homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hailo/hailo.git
-version: 0.55
+version: 0.56
 x_authority: cpan:AVAR
