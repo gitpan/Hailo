@@ -5,7 +5,7 @@
       "\u00c3\u0086var Arnfj\u00c3\u00b6r\u00c3\u00b0 Bjarmason <avar@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.102341, CPAN::Meta::Converter version 2.102400",
+   "generated_by" : "Dist::Zilla version 4.102342, CPAN::Meta::Converter version 2.102400",
    "license" : [
       "perl_5"
    ],
@@ -53,7 +53,6 @@
             "Regexp::Common" : "2010010201",
             "Term::ReadLine" : 0,
             "Term::Sk" : "0.06",
-            "Text::Unidecode" : 0,
             "Time::HiRes" : 0,
             "autodie" : "2.08",
             "namespace::clean" : "0.18",
@@ -93,7 +92,7 @@
          "web" : "http://github.com/hailo/hailo"
       }
    },
-   "version" : "0.56",
+   "version" : "0.57",
    "x_authority" : "cpan:AVAR"
 }
 

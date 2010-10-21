@@ -51,12 +51,11 @@ my %WriteMakefileArgs = (
     'Regexp::Common' => '2010010201',
     'Term::ReadLine' => '0',
     'Term::Sk' => '0.06',
-    'Text::Unidecode' => '0',
     'Time::HiRes' => '0',
     'autodie' => '2.08',
     'namespace::clean' => '0.18'
   },
-  'VERSION' => '0.56',
+  'VERSION' => '0.57',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }

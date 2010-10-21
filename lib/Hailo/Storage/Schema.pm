@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::Schema::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::Schema::VERSION = '0.56';
+  $Hailo::Storage::Schema::VERSION = '0.57';
 }
 
 use 5.010;
@@ -37,7 +37,7 @@ TABLE
 CREATE TABLE token (
     id      $int_primary_key,
     spacing INTEGER NOT NULL,
-    text    $ text NOT NULL,
+    text    $text NOT NULL,
     count   INTEGER NOT NULL
 );
 TABLE
