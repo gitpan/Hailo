@@ -1,0 +1,62 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+}
+subgraph cluster_Exporter_Heavy {
+	label="Exporter::Heavy";
+	"Exporter::Heavy::heavy_export_to_level";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::export_to_level";
+}
+subgraph cluster_Term_Sk {
+	label="Term::Sk";
+	"Term::Sk::BEGIN@6";
+	"Term::Sk::new";
+	"Term::Sk::show_maybe";
+}
+subgraph cluster_Time_HiRes {
+	label="Time::HiRes";
+	"Time::HiRes::gettimeofday";
+	"Time::HiRes::BEGIN@42";
+	"Time::HiRes::BEGIN@4";
+	"Time::HiRes::BEGIN@3";
+	"Time::HiRes::import";
+	"Time::HiRes::tv_interval";
+	"Time::HiRes::time";
+	"Time::HiRes::bootstrap";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::__ANON__[lib/Hailo/Command.pm:307]";
+	"Hailo::Command::train_progress";
+}
+"Term::Sk::BEGIN@6" -> "Time::HiRes::BEGIN@4";
+"DynaLoader::bootstrap" -> "Time::HiRes::bootstrap";
+"Hailo::Command::train_progress" -> "Time::HiRes::tv_interval";
+"Time::HiRes::import" -> "Exporter::Heavy::heavy_export_to_level";
+"Term::Sk::BEGIN@6" -> "Time::HiRes::BEGIN@42";
+"Time::HiRes::import" -> "Exporter::export_to_level";
+"Time::HiRes::tv_interval" -> "Time::HiRes::gettimeofday";
+"Hailo::Command::train_progress" -> "Time::HiRes::gettimeofday";
+"Time::HiRes::BEGIN@42" -> "strict::unimport";
+"Term::Sk::BEGIN@6" -> "Time::HiRes::import";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:307]" -> "Time::HiRes::import";
+"Time::HiRes::BEGIN@4" -> "vars::import";
+"Term::Sk::new" -> "Time::HiRes::time";
+"Term::Sk::show_maybe" -> "Time::HiRes::time";
+"Term::Sk::BEGIN@6" -> "Time::HiRes::BEGIN@3";
+"Time::HiRes::BEGIN@3" -> "strict::import";
+}

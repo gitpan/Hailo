@@ -1,0 +1,12 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_bytes {
+	label="bytes";
+	"bytes::import";
+}
+subgraph cluster_Encode_utf8 {
+	label="Encode::utf8";
+	"Encode::utf8::BEGIN@323";
+}
+"Encode::utf8::BEGIN@323" -> "bytes::import";
+}

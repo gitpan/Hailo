@@ -1,0 +1,125 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Sub_Exporter {
+	label="Sub::Exporter";
+	"Sub::Exporter::_expand_group";
+	"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]";
+	"Sub::Exporter::__ANON__[Sub/Exporter.pm:544]";
+	"Sub::Exporter::BEGIN@6";
+	"Sub::Exporter::_collect_collections";
+	"Sub::Exporter::default_generator";
+	"Sub::Exporter::build_exporter";
+	"Sub::Exporter::BEGIN@8";
+	"Sub::Exporter::_do_import";
+	"Sub::Exporter::BEGIN@9";
+	"Sub::Exporter::__ANON__[Sub/Exporter.pm:937]";
+	"Sub::Exporter::_expand_groups";
+	"Sub::Exporter::default_installer";
+	"Sub::Exporter::_assert_collector_names_ok";
+	"Sub::Exporter::setup_exporter";
+	"Sub::Exporter::_key_intersection";
+	"Sub::Exporter::CORE:match";
+	"Sub::Exporter::_rewrite_build_config";
+	"Sub::Exporter::_mk_collection_builder";
+	"Sub::Exporter::BEGIN@7";
+	"Sub::Exporter::_group_name";
+	"Sub::Exporter::_setup";
+	"Sub::Exporter::BEGIN@636";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::BEGIN@214";
+	"Data::OptList::mkopt_hash";
+	"Data::OptList::BEGIN@131";
+	"Data::OptList::mkopt";
+	"Data::OptList::BEGIN@4";
+	"Data::OptList::BEGIN@7";
+	"Data::OptList::BEGIN@3";
+	"Data::OptList::BEGIN@8";
+	"Data::OptList::BEGIN@6";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_UNIVERSAL {
+	label="UNIVERSAL";
+	"UNIVERSAL::VERSION";
+	"UNIVERSAL::can";
+}
+subgraph cluster_Params_Util {
+	label="Params::Util";
+	"Params::Util::_SCALAR0";
+	"Params::Util::_CODELIKE";
+}
+subgraph cluster_B_Hooks_EndOfScope {
+	label="B::Hooks::EndOfScope";
+	"B::Hooks::EndOfScope::BEGIN@16";
+	"B::Hooks::EndOfScope::BEGIN@2";
+	"B::Hooks::EndOfScope::BEGIN@3";
+	"B::Hooks::EndOfScope::BEGIN@1";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::BEGIN@17";
+}
+subgraph cluster_Sub_Install {
+	label="Sub::Install";
+	"Sub::Install::__ANON__[Sub/Install.pm:132]";
+}
+"Sub::Exporter::_do_import" -> "Sub::Exporter::default_generator";
+"Sub::Exporter::default_generator" -> "Sub::Exporter::__ANON__[Sub/Exporter.pm:937]";
+"Sub::Exporter::_do_import" -> "Sub::Exporter::default_installer";
+"Sub::Exporter::BEGIN@7" -> "Data::OptList::BEGIN@4";
+"Sub::Exporter::BEGIN@7" -> "Data::OptList::BEGIN@7";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::setup_exporter";
+"Sub::Exporter::BEGIN@7" -> "Data::OptList::BEGIN@8";
+"Sub::Exporter::default_generator" -> "UNIVERSAL::can";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:544]" -> "Sub::Exporter::_setup";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::__ANON__[Sub/Exporter.pm:756]";
+"namespace::clean::BEGIN@17" -> "Sub::Exporter::__ANON__[Sub/Exporter.pm:756]";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::BEGIN@6";
+"Sub::Exporter::BEGIN@7" -> "Data::OptList::BEGIN@3";
+"B::Hooks::EndOfScope::BEGIN@16" -> "B::Hooks::EndOfScope::BEGIN@3";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:937]" -> "Sub::Exporter::build_exporter";
+"Sub::Exporter::setup_exporter" -> "Sub::Exporter::build_exporter";
+"Sub::Exporter::BEGIN@7" -> "Data::OptList::BEGIN@6";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::BEGIN@9";
+"B::Hooks::EndOfScope::BEGIN@3" -> "warnings::import";
+"Sub::Exporter::_rewrite_build_config" -> "Sub::Exporter::_assert_collector_names_ok";
+"Sub::Exporter::_expand_groups" -> "Sub::Exporter::_group_name";
+"Sub::Exporter::_expand_group" -> "Sub::Exporter::_group_name";
+"Sub::Exporter::BEGIN@7" -> "Data::OptList::BEGIN@214";
+"Sub::Exporter::_expand_groups" -> "Sub::Exporter::_expand_group";
+"B::Hooks::EndOfScope::BEGIN@16" -> "B::Hooks::EndOfScope::BEGIN@1";
+"Sub::Exporter::default_generator" -> "Params::Util::_CODELIKE";
+"Sub::Exporter::_expand_group" -> "Params::Util::_CODELIKE";
+"Sub::Exporter::_do_import" -> "Params::Util::_CODELIKE";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]" -> "Sub::Exporter::_collect_collections";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::BEGIN@8";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]" -> "Sub::Exporter::_do_import";
+"Sub::Exporter::_expand_group" -> "Sub::Exporter::_expand_groups";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]" -> "Sub::Exporter::_expand_groups";
+"Sub::Exporter::default_installer" -> "Sub::Install::__ANON__[Sub/Install.pm:132]";
+"Sub::Exporter::setup_exporter" -> "Sub::Install::__ANON__[Sub/Install.pm:132]";
+"Sub::Exporter::_assert_collector_names_ok" -> "Sub::Exporter::CORE:match";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::BEGIN@7";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::BEGIN@636";
+"B::Hooks::EndOfScope::BEGIN@16" -> "B::Hooks::EndOfScope::BEGIN@2";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]" -> "Data::OptList::mkopt";
+"Sub::Exporter::_expand_group" -> "Data::OptList::mkopt";
+"Sub::Exporter::BEGIN@7" -> "Data::OptList::BEGIN@131";
+"Sub::Exporter::_collect_collections" -> "Sub::Exporter::__ANON__[Sub/Exporter.pm:544]";
+"Sub::Exporter::_expand_group" -> "Params::Util::_SCALAR0";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:544]" -> "Params::Util::_SCALAR0";
+"Sub::Exporter::_rewrite_build_config" -> "Data::OptList::mkopt_hash";
+"Sub::Exporter::_rewrite_build_config" -> "Sub::Exporter::_key_intersection";
+"Sub::Exporter::build_exporter" -> "Sub::Exporter::_rewrite_build_config";
+"Sub::Exporter::_collect_collections" -> "Sub::Exporter::_mk_collection_builder";
+"Sub::Exporter::BEGIN@9" -> "UNIVERSAL::VERSION";
+"B::Hooks::EndOfScope::BEGIN@2" -> "strict::import";
+}

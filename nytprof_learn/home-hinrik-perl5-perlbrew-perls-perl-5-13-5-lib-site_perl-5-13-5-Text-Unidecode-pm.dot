@@ -1,0 +1,44 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Hailo_Tokenizer_Words {
+	label="Hailo::Tokenizer::Words";
+	"Hailo::Tokenizer::Words::BEGIN@8";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_utf8 {
+	label="utf8";
+	"utf8::import";
+}
+subgraph cluster_integer {
+	label="integer";
+	"integer::import";
+}
+subgraph cluster_Text_Unidecode {
+	label="Text::Unidecode";
+	"Text::Unidecode::BEGIN@13";
+	"Text::Unidecode::BEGIN@7";
+	"Text::Unidecode::BEGIN@6";
+	"Text::Unidecode::BEGIN@4";
+	"Text::Unidecode::unidecode";
+	"Text::Unidecode::BEGIN@5";
+	"Text::Unidecode::CORE:subst";
+}
+"Hailo::Tokenizer::Words::BEGIN@8" -> "Text::Unidecode::BEGIN@4";
+"Hailo::Tokenizer::Words::BEGIN@8" -> "Text::Unidecode::BEGIN@13";
+"Hailo::Tokenizer::Words::BEGIN@8" -> "Text::Unidecode::BEGIN@5";
+"Text::Unidecode::unidecode" -> "Text::Unidecode::CORE:subst";
+"Hailo::Tokenizer::Words::BEGIN@8" -> "Text::Unidecode::BEGIN@6";
+"Text::Unidecode::BEGIN@7" -> "vars::import";
+"Text::Unidecode::BEGIN@6" -> "integer::import";
+"Hailo::Tokenizer::Words::BEGIN@8" -> "Text::Unidecode::BEGIN@7";
+"Hailo::Tokenizer::Words::BEGIN@8" -> "Text::Unidecode::unidecode";
+"Text::Unidecode::BEGIN@4" -> "utf8::import";
+"Text::Unidecode::BEGIN@5" -> "strict::import";
+}

@@ -1,0 +1,38 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::setup_import_methods";
+	"Mouse::Exporter::do_import";
+	"Mouse::Exporter::do_unimport";
+}
+subgraph cluster_MouseX_Getopt {
+	label="MouseX::Getopt";
+	"MouseX::Getopt::BEGIN@14";
+	"MouseX::Getopt::BEGIN@5";
+	"MouseX::Getopt::BEGIN@2";
+	"MouseX::Getopt::BEGIN@10";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::_install_module";
+}
+subgraph cluster_Mouse_Role {
+	label="Mouse::Role";
+	"Mouse::Role::BEGIN@6";
+	"Mouse::Role::BEGIN@7";
+	"Mouse::Role::BEGIN@2";
+	"Mouse::Role::BEGIN@9";
+}
+"Any::Moose::_install_module" -> "MouseX::Getopt::BEGIN@2";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@6";
+"Any::Moose::_install_module" -> "MouseX::Getopt::BEGIN@5";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Exporter::setup_import_methods";
+"MouseX::Getopt::BEGIN@14" -> "Mouse::Exporter::do_unimport";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Exporter::do_import";
+"Any::Moose::_install_module" -> "MouseX::Getopt::BEGIN@10";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@2";
+"Any::Moose::_install_module" -> "MouseX::Getopt::BEGIN@14";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@7";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@9";
+}

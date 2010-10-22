@@ -1,0 +1,257 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Regexp_Common_URI_news {
+	label="Regexp::Common::URI::news";
+	"Regexp::Common::URI::news::BEGIN@11";
+}
+subgraph cluster_List_MoreUtils {
+	label="List::MoreUtils";
+	"List::MoreUtils::BEGIN@8";
+}
+subgraph cluster_base {
+	label="base";
+	"base::BEGIN@4";
+}
+subgraph cluster_Regexp_Common_URI_http {
+	label="Regexp::Common::URI::http";
+	"Regexp::Common::URI::http::BEGIN@10";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::BEGIN@3";
+	"vars::BEGIN@8";
+	"vars::import";
+	"vars::CORE:match";
+	"vars::BEGIN@7";
+}
+subgraph cluster_Regexp_Common_URI_pop {
+	label="Regexp::Common::URI::pop";
+	"Regexp::Common::URI::pop::BEGIN@11";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Regexp_Common_URI_prospero {
+	label="Regexp::Common::URI::prospero";
+	"Regexp::Common::URI::prospero::BEGIN@11";
+}
+subgraph cluster_Tie_RefHash {
+	label="Tie::RefHash";
+	"Tie::RefHash::BEGIN@91";
+	"Tie::RefHash::BEGIN@3";
+}
+subgraph cluster_Regexp_Common_URI_fax {
+	label="Regexp::Common::URI::fax";
+	"Regexp::Common::URI::fax::BEGIN@11";
+}
+subgraph cluster_Regexp_Common_URI_ftp {
+	label="Regexp::Common::URI::ftp";
+	"Regexp::Common::URI::ftp::BEGIN@11";
+}
+subgraph cluster_Regexp_Common_URI_gopher {
+	label="Regexp::Common::URI::gopher";
+	"Regexp::Common::URI::gopher::BEGIN@11";
+}
+subgraph cluster_Params_Util {
+	label="Params::Util";
+	"Params::Util::BEGIN@65";
+}
+subgraph cluster_Regexp_Common_URI_file {
+	label="Regexp::Common::URI::file";
+	"Regexp::Common::URI::file::BEGIN@10";
+}
+subgraph cluster_version {
+	label="version";
+	"version::BEGIN@7";
+}
+subgraph cluster_Regexp_Common_URI_tv {
+	label="Regexp::Common::URI::tv";
+	"Regexp::Common::URI::tv::BEGIN@13";
+}
+subgraph cluster_constant {
+	label="constant";
+	"constant::BEGIN@6";
+}
+subgraph cluster_Regexp_Common_URI_telnet {
+	label="Regexp::Common::URI::telnet";
+	"Regexp::Common::URI::telnet::BEGIN@10";
+}
+subgraph cluster_Regexp_Common_URI_wais {
+	label="Regexp::Common::URI::wais";
+	"Regexp::Common::URI::wais::BEGIN@11";
+}
+subgraph cluster_Regexp_Common_URI_RFC1035 {
+	label="Regexp::Common::URI::RFC1035";
+	"Regexp::Common::URI::RFC1035::BEGIN@8";
+	"Regexp::Common::URI::RFC1035::BEGIN@24";
+	"Regexp::Common::URI::RFC1035::BEGIN@11";
+}
+subgraph cluster_Params_Validate {
+	label="Params::Validate";
+	"Params::Validate::BEGIN@7";
+}
+subgraph cluster_File_Spec_Unix {
+	label="File::Spec::Unix";
+	"File::Spec::Unix::BEGIN@4";
+}
+subgraph cluster_Regexp_Common_URI_RFC1738 {
+	label="Regexp::Common::URI::RFC1738";
+	"Regexp::Common::URI::RFC1738::BEGIN@11";
+	"Regexp::Common::URI::RFC1738::BEGIN@8";
+	"Regexp::Common::URI::RFC1738::BEGIN@33";
+}
+subgraph cluster_List_Util {
+	label="List::Util";
+	"List::Util::BEGIN@12";
+}
+subgraph cluster_Regexp_Common_URI_RFC1808 {
+	label="Regexp::Common::URI::RFC1808";
+	"Regexp::Common::URI::RFC1808::BEGIN@19";
+	"Regexp::Common::URI::RFC1808::BEGIN@16";
+	"Regexp::Common::URI::RFC1808::BEGIN@40";
+}
+subgraph cluster_Getopt_Long {
+	label="Getopt::Long";
+	"Getopt::Long::BEGIN@19";
+	"Getopt::Long::BEGIN@48";
+	"Getopt::Long::BEGIN@51";
+	"Getopt::Long::BEGIN@46";
+	"Getopt::Long::BEGIN@45";
+	"Getopt::Long::BEGIN@26";
+}
+subgraph cluster_Regexp_Common_URI_RFC2806 {
+	label="Regexp::Common::URI::RFC2806";
+	"Regexp::Common::URI::RFC2806::BEGIN@9";
+	"Regexp::Common::URI::RFC2806::BEGIN@12";
+	"Regexp::Common::URI::RFC2806::BEGIN@42";
+}
+subgraph cluster_Regexp_Common_URI {
+	label="Regexp::Common::URI";
+	"Regexp::Common::URI::BEGIN@9";
+	"Regexp::Common::URI::BEGIN@19";
+}
+subgraph cluster_Tie_RefHash_Nestable {
+	label="Tie::RefHash::Nestable";
+	"Tie::RefHash::Nestable::BEGIN@262";
+}
+subgraph cluster_Text_Unidecode {
+	label="Text::Unidecode";
+	"Text::Unidecode::BEGIN@7";
+}
+subgraph cluster_Scalar_Util {
+	label="Scalar::Util";
+	"Scalar::Util::BEGIN@10";
+}
+subgraph cluster_DBD_SQLite {
+	label="DBD::SQLite";
+	"DBD::SQLite::BEGIN@9";
+	"DBD::SQLite::BEGIN@10";
+	"DBD::SQLite::BEGIN@8";
+}
+subgraph cluster_File_Spec {
+	label="File::Spec";
+	"File::Spec::BEGIN@4";
+}
+subgraph cluster_Regexp_Common_URI_RFC2396 {
+	label="Regexp::Common::URI::RFC2396";
+	"Regexp::Common::URI::RFC2396::BEGIN@32";
+	"Regexp::Common::URI::RFC2396::BEGIN@11";
+	"Regexp::Common::URI::RFC2396::BEGIN@8";
+}
+subgraph cluster_Regexp_Common {
+	label="Regexp::Common";
+	"Regexp::Common::BEGIN@19";
+}
+subgraph cluster_Regexp_Common_URI_RFC2384 {
+	label="Regexp::Common::URI::RFC2384";
+	"Regexp::Common::URI::RFC2384::BEGIN@13";
+	"Regexp::Common::URI::RFC2384::BEGIN@28";
+	"Regexp::Common::URI::RFC2384::BEGIN@10";
+}
+subgraph cluster_Regexp_Common_URI_tel {
+	label="Regexp::Common::URI::tel";
+	"Regexp::Common::URI::tel::BEGIN@11";
+}
+subgraph cluster_Time_HiRes {
+	label="Time::HiRes";
+	"Time::HiRes::BEGIN@4";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::BEGIN@13";
+}
+subgraph cluster_warnings_register {
+	label="warnings::register";
+	"warnings::register::import";
+}
+subgraph cluster_Cwd {
+	label="Cwd";
+	"Cwd::BEGIN@172";
+}
+"base::BEGIN@4" -> "vars::BEGIN@8";
+"base::BEGIN@4" -> "vars::BEGIN@3";
+"vars::BEGIN@7" -> "warnings::register::import";
+"Regexp::Common::URI::http::BEGIN@10" -> "vars::import";
+"Regexp::Common::URI::RFC1808::BEGIN@40" -> "vars::import";
+"List::MoreUtils::BEGIN@8" -> "vars::import";
+"Regexp::Common::URI::RFC2396::BEGIN@11" -> "vars::import";
+"Regexp::Common::URI::RFC2396::BEGIN@8" -> "vars::import";
+"namespace::clean::BEGIN@13" -> "vars::import";
+"Regexp::Common::URI::news::BEGIN@11" -> "vars::import";
+"Regexp::Common::URI::RFC2396::BEGIN@32" -> "vars::import";
+"Time::HiRes::BEGIN@4" -> "vars::import";
+"Regexp::Common::BEGIN@19" -> "vars::import";
+"Getopt::Long::BEGIN@46" -> "vars::import";
+"Regexp::Common::URI::tel::BEGIN@11" -> "vars::import";
+"Getopt::Long::BEGIN@51" -> "vars::import";
+"Regexp::Common::URI::RFC1738::BEGIN@8" -> "vars::import";
+"Params::Validate::BEGIN@7" -> "vars::import";
+"Regexp::Common::URI::ftp::BEGIN@11" -> "vars::import";
+"Regexp::Common::URI::prospero::BEGIN@11" -> "vars::import";
+"Regexp::Common::URI::gopher::BEGIN@11" -> "vars::import";
+"Tie::RefHash::BEGIN@3" -> "vars::import";
+"Regexp::Common::URI::RFC1738::BEGIN@33" -> "vars::import";
+"Getopt::Long::BEGIN@48" -> "vars::import";
+"Getopt::Long::BEGIN@19" -> "vars::import";
+"Regexp::Common::URI::RFC2806::BEGIN@9" -> "vars::import";
+"base::BEGIN@4" -> "vars::import";
+"Regexp::Common::URI::RFC1035::BEGIN@24" -> "vars::import";
+"Regexp::Common::URI::RFC2384::BEGIN@13" -> "vars::import";
+"List::Util::BEGIN@12" -> "vars::import";
+"Regexp::Common::URI::pop::BEGIN@11" -> "vars::import";
+"constant::BEGIN@6" -> "vars::import";
+"Getopt::Long::BEGIN@26" -> "vars::import";
+"version::BEGIN@7" -> "vars::import";
+"DBD::SQLite::BEGIN@9" -> "vars::import";
+"Params::Util::BEGIN@65" -> "vars::import";
+"DBD::SQLite::BEGIN@10" -> "vars::import";
+"Regexp::Common::URI::file::BEGIN@10" -> "vars::import";
+"Regexp::Common::URI::RFC1738::BEGIN@11" -> "vars::import";
+"Regexp::Common::URI::BEGIN@9" -> "vars::import";
+"Cwd::BEGIN@172" -> "vars::import";
+"Tie::RefHash::Nestable::BEGIN@262" -> "vars::import";
+"Scalar::Util::BEGIN@10" -> "vars::import";
+"Regexp::Common::URI::RFC2384::BEGIN@10" -> "vars::import";
+"Regexp::Common::URI::RFC1808::BEGIN@19" -> "vars::import";
+"Regexp::Common::URI::RFC1808::BEGIN@16" -> "vars::import";
+"Regexp::Common::URI::wais::BEGIN@11" -> "vars::import";
+"Text::Unidecode::BEGIN@7" -> "vars::import";
+"Regexp::Common::URI::RFC2806::BEGIN@12" -> "vars::import";
+"Regexp::Common::URI::RFC2806::BEGIN@42" -> "vars::import";
+"Regexp::Common::URI::fax::BEGIN@11" -> "vars::import";
+"Regexp::Common::URI::tv::BEGIN@13" -> "vars::import";
+"Regexp::Common::URI::RFC1035::BEGIN@8" -> "vars::import";
+"Regexp::Common::URI::BEGIN@19" -> "vars::import";
+"Tie::RefHash::BEGIN@91" -> "vars::import";
+"File::Spec::BEGIN@4" -> "vars::import";
+"File::Spec::Unix::BEGIN@4" -> "vars::import";
+"DBD::SQLite::BEGIN@8" -> "vars::import";
+"Regexp::Common::URI::RFC2384::BEGIN@28" -> "vars::import";
+"Regexp::Common::URI::telnet::BEGIN@10" -> "vars::import";
+"Getopt::Long::BEGIN@45" -> "vars::import";
+"Regexp::Common::URI::RFC1035::BEGIN@11" -> "vars::import";
+"vars::import" -> "vars::CORE:match";
+"vars::BEGIN@8" -> "strict::import";
+"base::BEGIN@4" -> "vars::BEGIN@7";
+}

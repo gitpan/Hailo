@@ -1,0 +1,112 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Config {
+	label="Config";
+	"Config::BEGIN@38";
+	"Config::TIEHASH";
+	"Config::BEGIN@9";
+	"Config::FETCH";
+}
+subgraph cluster_List_Util {
+	label="List::Util";
+	"List::Util::BEGIN@11";
+	"List::Util::BEGIN@12";
+}
+subgraph cluster_autodie {
+	label="autodie";
+	"autodie::BEGIN@6";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::BEGIN@3";
+	"vars::BEGIN@8";
+	"vars::import";
+	"vars::BEGIN@7";
+}
+subgraph cluster_Tie_RefHash_Nestable {
+	label="Tie::RefHash::Nestable";
+	"Tie::RefHash::Nestable::BEGIN@262";
+}
+subgraph cluster_Tie_Hash {
+	label="Tie::Hash";
+	"Tie::Hash::BEGIN@189";
+	"Tie::Hash::BEGIN@188";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Tie_RefHash {
+	label="Tie::RefHash";
+	"Tie::RefHash::STORE";
+	"Tie::RefHash::BEGIN@94";
+	"Tie::RefHash::BEGIN@96";
+	"Tie::RefHash::TIEHASH";
+	"Tie::RefHash::BEGIN@3";
+	"Tie::RefHash::BEGIN@93";
+	"Tie::RefHash::BEGIN@90";
+	"Tie::RefHash::BEGIN@106";
+	"Tie::RefHash::BEGIN@91";
+	"Tie::RefHash::BEGIN@7";
+	"Tie::RefHash::BEGIN@99";
+}
+subgraph cluster_Scalar_Util {
+	label="Scalar::Util";
+	"Scalar::Util::BEGIN@9";
+	"Scalar::Util::refaddr";
+	"Scalar::Util::BEGIN@10";
+}
+subgraph cluster_XSLoader {
+	label="XSLoader";
+	"XSLoader::load";
+}
+subgraph cluster_Fatal {
+	label="Fatal";
+	"Fatal::_make_fatal";
+	"Fatal::BEGIN@7";
+}
+subgraph cluster_version {
+	label="version";
+	"version::(bool";
+	"version::(cmp";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+"autodie::BEGIN@6" -> "Tie::RefHash::TIEHASH";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@3";
+"Tie::RefHash::BEGIN@106" -> "Exporter::import";
+"Tie::RefHash::BEGIN@94" -> "Exporter::import";
+"Tie::RefHash::BEGIN@96" -> "List::Util::BEGIN@12";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@90";
+"Tie::RefHash::BEGIN@96" -> "Scalar::Util::BEGIN@10";
+"Tie::RefHash::BEGIN@96" -> "List::Util::BEGIN@11";
+"Tie::RefHash::BEGIN@99" -> "version::(bool";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@93";
+"Tie::RefHash::STORE" -> "Scalar::Util::refaddr";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@91";
+"Tie::RefHash::BEGIN@99" -> "Config::TIEHASH";
+"Tie::RefHash::BEGIN@3" -> "vars::BEGIN@8";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@106";
+"Tie::RefHash::BEGIN@99" -> "Config::BEGIN@9";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@7";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@99";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@94";
+"Tie::RefHash::BEGIN@3" -> "vars::import";
+"Tie::RefHash::Nestable::BEGIN@262" -> "vars::import";
+"Tie::RefHash::BEGIN@91" -> "vars::import";
+"Tie::RefHash::BEGIN@99" -> "version::(cmp";
+"Fatal::_make_fatal" -> "Tie::RefHash::STORE";
+"Tie::RefHash::BEGIN@99" -> "Config::BEGIN@38";
+"Fatal::BEGIN@7" -> "Tie::RefHash::BEGIN@96";
+"Tie::RefHash::BEGIN@96" -> "Scalar::Util::BEGIN@9";
+"Tie::RefHash::BEGIN@90" -> "Tie::Hash::BEGIN@188";
+"Tie::RefHash::BEGIN@3" -> "vars::BEGIN@3";
+"Tie::RefHash::BEGIN@90" -> "Tie::Hash::BEGIN@189";
+"Fatal::BEGIN@7" -> "Tie::RefHash::Nestable::BEGIN@262";
+"Tie::RefHash::BEGIN@96" -> "XSLoader::load";
+"Tie::RefHash::BEGIN@96" -> "Config::FETCH";
+"Tie::RefHash::BEGIN@93" -> "strict::import";
+"Tie::RefHash::BEGIN@3" -> "vars::BEGIN@7";
+}

@@ -1,0 +1,46 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Hailo_Tokenizer_Words {
+	label="Hailo::Tokenizer::Words";
+	"Hailo::Tokenizer::Words::spacing";
+}
+subgraph cluster_feature {
+	label="feature";
+	"feature::import";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::import";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::new";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::_try_load_one_class";
+}
+subgraph cluster_Hailo_Role_Tokenizer {
+	label="Hailo::Role::Tokenizer";
+	"Hailo::Role::Tokenizer::BEGIN@3.19";
+	"Hailo::Role::Tokenizer::BEGIN@5";
+	"Hailo::Role::Tokenizer::BEGIN@3";
+	"Hailo::Role::Tokenizer::__ANON__[lib/Hailo/Role/Tokenizer.pm:15]";
+	"Hailo::Role::Tokenizer::BUILD";
+	"Hailo::Role::Tokenizer::BEGIN@4";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::import";
+}
+"Mouse::Object::new" -> "Hailo::Role::Tokenizer::BUILD";
+"Mouse::Util::_try_load_one_class" -> "Hailo::Role::Tokenizer::BEGIN@4";
+"Mouse::Util::_try_load_one_class" -> "Hailo::Role::Tokenizer::BEGIN@3";
+"Hailo::Role::Tokenizer::BEGIN@4" -> "Any::Moose::import";
+"Mouse::Util::_try_load_one_class" -> "Hailo::Role::Tokenizer::BEGIN@5";
+"Hailo::Role::Tokenizer::BEGIN@3.19" -> "feature::import";
+"Mouse::Object::new" -> "Hailo::Role::Tokenizer::__ANON__[lib/Hailo/Role/Tokenizer.pm:15]";
+"Hailo::Role::Tokenizer::BEGIN@3" -> "Hailo::Role::Tokenizer::BEGIN@3.19";
+"Hailo::Role::Tokenizer::BEGIN@5" -> "namespace::clean::import";
+"Hailo::Role::Tokenizer::BUILD" -> "Hailo::Tokenizer::Words::spacing";
+}

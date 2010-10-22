@@ -1,0 +1,36 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Sub_Identify {
+	label="Sub::Identify";
+	"Sub::Identify::BEGIN@3";
+	"Sub::Identify::get_code_info";
+	"Sub::Identify::sub_fullname";
+	"Sub::Identify::BEGIN@6";
+	"Sub::Identify::BEGIN@4";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_XSLoader {
+	label="XSLoader";
+	"XSLoader::load";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::__ANON__[namespace/clean.pm:52]";
+	"namespace::clean::BEGIN@15";
+}
+"namespace::clean::__ANON__[namespace/clean.pm:52]" -> "Sub::Identify::sub_fullname";
+"Sub::Identify::BEGIN@4" -> "Exporter::import";
+"namespace::clean::BEGIN@15" -> "Sub::Identify::BEGIN@6";
+"Sub::Identify::sub_fullname" -> "Sub::Identify::get_code_info";
+"namespace::clean::BEGIN@15" -> "Sub::Identify::BEGIN@3";
+"Sub::Identify::BEGIN@6" -> "XSLoader::load";
+"Sub::Identify::BEGIN@3" -> "strict::import";
+"namespace::clean::BEGIN@15" -> "Sub::Identify::BEGIN@4";
+}

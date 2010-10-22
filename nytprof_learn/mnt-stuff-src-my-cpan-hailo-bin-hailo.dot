@@ -1,0 +1,522 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::is_weak_ref";
+	"Mouse::Meta::Attribute::init_arg";
+	"Mouse::Meta::Attribute::has_trigger";
+	"Mouse::Meta::Attribute::should_coerce";
+	"Mouse::Meta::Attribute::is_required";
+	"Mouse::Meta::Attribute::has_type_constraint";
+	"Mouse::Meta::Attribute::is_lazy";
+	"Mouse::Meta::Attribute::install_accessors";
+	"Mouse::Meta::Attribute::name";
+	"Mouse::Meta::Attribute::type_constraint";
+	"Mouse::Meta::Attribute::has_builder";
+	"Mouse::Meta::Attribute::should_auto_deref";
+	"Mouse::Meta::Attribute::has_default";
+}
+subgraph cluster_DBD_SQLite_st {
+	label="DBD::SQLite::st";
+	"DBD::SQLite::st::_prepare";
+}
+subgraph cluster_Sub_Exporter {
+	label="Sub::Exporter";
+	"Sub::Exporter::default_generator";
+	"Sub::Exporter::BEGIN@9";
+}
+subgraph cluster_Internals {
+	label="Internals";
+	"Internals::SvREADONLY";
+}
+subgraph cluster_Encode {
+	label="Encode";
+	"Encode::find_encoding";
+	"Encode::decode";
+}
+subgraph cluster_File_CountLines {
+	label="File::CountLines";
+	"File::CountLines::BEGIN@8";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::_install_modifier";
+	"Mouse::Meta::Class::add_override_method_modifier";
+	"Mouse::Meta::Class::make_immutable";
+	"Mouse::Meta::Class::verify_superclass";
+}
+subgraph cluster_DBI {
+	label="DBI";
+	"DBI::__ANON__[DBI.pm:731]";
+	"DBI::setup_driver";
+	"DBI::disconnect_all";
+	"DBI::END";
+	"DBI::connect";
+}
+subgraph cluster_base {
+	label="base";
+	"base::import";
+}
+subgraph cluster_Hailo_Storage_Schema {
+	label="Hailo::Storage::Schema";
+	"Hailo::Storage::Schema::sth";
+	"Hailo::Storage::Schema::deploy";
+}
+subgraph cluster_Dir_Self {
+	label="Dir::Self";
+	"Dir::Self::BEGIN@3";
+	"Dir::Self::BEGIN@39";
+	"Dir::Self::BEGIN@6";
+	"Dir::Self::BEGIN@4";
+	"Dir::Self::BEGIN@36";
+	"Dir::Self::import";
+	"Dir::Self::__DIR__";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::BEGIN@8";
+}
+subgraph cluster_open {
+	label="open";
+	"open::BEGIN@2";
+	"open::import";
+	"open::BEGIN@88";
+}
+subgraph cluster_DBD_SQLite_dr {
+	label="DBD::SQLite::dr";
+	"DBD::SQLite::dr::connect";
+}
+subgraph cluster_DBI_common {
+	label="DBI::common";
+	"DBI::common::DESTROY";
+	"DBI::common::STORE";
+	"DBI::common::FETCH";
+}
+subgraph cluster_Encode_Encoding {
+	label="Encode::Encoding";
+	"Encode::Encoding::needs_lines";
+	"Encode::Encoding::renew";
+}
+subgraph cluster_DBD_SQLite_db {
+	label="DBD::SQLite::db";
+	"DBD::SQLite::db::do";
+	"DBD::SQLite::db::prepare";
+}
+subgraph cluster_Getopt_Long_Descriptive_Opts {
+	label="Getopt::Long::Descriptive::Opts";
+	"Getopt::Long::Descriptive::Opts::___class_for_opt";
+}
+subgraph cluster_Mouse_Meta_Method_Constructor_XS {
+	label="Mouse::Meta::Method::Constructor::XS";
+	"Mouse::Meta::Method::Constructor::XS::_generate_constructor";
+}
+subgraph cluster_PerlIO_Layer {
+	label="PerlIO::Layer";
+	"PerlIO::Layer::find";
+}
+subgraph cluster_Mouse_Meta_Method_Destructor_XS {
+	label="Mouse::Meta::Method::Destructor::XS";
+	"Mouse::Meta::Method::Destructor::XS::_generate_destructor";
+}
+subgraph cluster_DBI_dr {
+	label="DBI::dr";
+	"DBI::dr::disconnect_all";
+	"DBI::dr::connect";
+}
+subgraph cluster_constant {
+	label="constant";
+	"constant::import";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_B_Hooks_EndOfScope {
+	label="B::Hooks::EndOfScope";
+	"B::Hooks::EndOfScope::BEGIN@14";
+	"B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::build_import_methods";
+	"Mouse::Exporter::setup_import_methods";
+}
+subgraph cluster_Hailo_Engine_Default {
+	label="Hailo::Engine::Default";
+	"Hailo::Engine::Default::learn";
+	"Hailo::Engine::Default::_add_token";
+	"Hailo::Engine::Default::_inc_link";
+	"Hailo::Engine::Default::_token_id";
+	"Hailo::Engine::Default::_expr_id";
+	"Hailo::Engine::Default::_add_expr";
+}
+subgraph cluster_DBI_st {
+	label="DBI::st";
+	"DBI::st::fetchrow_array";
+	"DBI::st::rows";
+	"DBI::st::execute";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::get_attribute_list";
+}
+subgraph cluster_Hailo_Storage_SQLite {
+	label="Hailo::Storage::SQLite";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:66]";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:73]";
+	"Hailo::Storage::SQLite::_set_pragmas";
+}
+subgraph cluster_feature {
+	label="feature";
+	"feature::import";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::is_a_type_of";
+	"Mouse::Meta::TypeConstraint::has_coercion";
+}
+subgraph cluster_Getopt_Long {
+	label="Getopt::Long";
+	"Getopt::Long::FindOption";
+	"Getopt::Long::BEGIN@931";
+	"Getopt::Long::GetOptionsFromArray";
+	"Getopt::Long::VERSION";
+}
+subgraph cluster_main {
+	label="main";
+	"main::NULL";
+	"main::RUNTIME";
+}
+subgraph cluster_MouseX_Getopt_GLD {
+	label="MouseX::Getopt::GLD";
+	"MouseX::Getopt::GLD::meta";
+	"MouseX::Getopt::GLD::BEGIN@12";
+}
+subgraph cluster_MouseX_Getopt_Basic {
+	label="MouseX::Getopt::Basic";
+	"MouseX::Getopt::Basic::new_with_options";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::BEGIN@69";
+	"Any::Moose::_is_moose_loaded";
+	"Any::Moose::any_moose";
+	"Any::Moose::import";
+	"Any::Moose::BEGIN@8";
+	"Any::Moose::moose_is_preferred";
+	"Any::Moose::BEGIN@9";
+	"Any::Moose::BEGIN@7";
+	"Any::Moose::_backer_of";
+	"Any::Moose::BEGIN@191";
+	"Any::Moose::BEGIN@2";
+}
+subgraph cluster_DBI_db {
+	label="DBI::db";
+	"DBI::db::sqlite_create_function";
+	"DBI::db::sqlite_collation_needed";
+	"DBI::db::connected";
+	"DBI::db::last_insert_id";
+	"DBI::db::begin_work";
+	"DBI::db::do";
+	"DBI::db::sqlite_register_fts3_perl_tokenizer";
+	"DBI::db::prepare";
+	"DBI::db::commit";
+}
+subgraph cluster_UNIVERSAL {
+	label="UNIVERSAL";
+	"UNIVERSAL::isa";
+	"UNIVERSAL::VERSION";
+	"UNIVERSAL::can";
+}
+subgraph cluster_DBD_SQLite {
+	label="DBD::SQLite";
+	"DBD::SQLite::BEGIN@5";
+}
+subgraph cluster_Encode_utf8 {
+	label="Encode::utf8";
+	"Encode::utf8::encode_xs";
+	"Encode::utf8::decode_xs";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::start_learning";
+	"Hailo::Storage::__ANON__[lib/Hailo/Storage.pm:238]";
+	"Hailo::Storage::_engage";
+	"Hailo::Storage::stop_learning";
+	"Hailo::Storage::initialized";
+}
+subgraph cluster_Mouse_Meta_Method_Accessor_XS {
+	label="Mouse::Meta::Method::Accessor::XS";
+	"Mouse::Meta::Method::Accessor::XS::_generate_reader";
+	"Mouse::Meta::Method::Accessor::XS::_generate_accessor";
+	"Mouse::Meta::Method::Accessor::XS::_generate_predicate";
+	"Mouse::Meta::Method::Accessor::XS::_generate_clearer";
+}
+subgraph cluster_hailo {
+	label="hailo";
+	"hailo::BEGIN@8";
+	"hailo::meta";
+	"hailo::BEGIN@4";
+	"hailo::BEGIN@5";
+	"hailo::BEGIN@6";
+	"hailo::BEGIN@3.1";
+	"hailo::BEGIN@7";
+	"hailo::BEGIN@9";
+	"hailo::BEGIN@3";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::BEGIN@11";
+	"Mouse::with";
+	"Mouse::BEGIN@17";
+	"Mouse::has";
+	"Mouse::override";
+	"Mouse::BEGIN@14";
+	"Mouse::BEGIN@15";
+	"Mouse::extends";
+	"Mouse::BEGIN@2";
+	"Mouse::BEGIN@16";
+	"Mouse::BEGIN@18";
+	"Mouse::BEGIN@4";
+	"Mouse::BEGIN@8";
+	"Mouse::BEGIN@13";
+	"Mouse::before";
+	"Mouse::BEGIN@9";
+}
+subgraph cluster_Getopt_Long_Descriptive {
+	label="Getopt::Long::Descriptive";
+	"Getopt::Long::Descriptive::BEGIN@260";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::resolve_metaclass_alias";
+	"Mouse::Util::END";
+}
+subgraph cluster_Mouse_Meta_Role_Application {
+	label="Mouse::Meta::Role::Application";
+	"Mouse::Meta::Role::Application::check_required_methods";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::BEGIN@15";
+	"namespace::clean::BEGIN@16";
+	"namespace::clean::import";
+	"namespace::clean::BEGIN@14";
+	"namespace::clean::BEGIN@17";
+}
+subgraph cluster_DBD___db {
+	label="DBD::_::db";
+	"DBD::_::db::begin_work";
+}
+subgraph cluster_DBD__mem_common {
+	label="DBD::_mem::common";
+	"DBD::_mem::common::DESTROY";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::BEGIN@5";
+	"Hailo::Command::BEGIN@242";
+	"Hailo::Command::BEGIN@370";
+	"Hailo::Command::BEGIN@4";
+	"Hailo::Command::meta";
+	"Hailo::Command::BEGIN@6";
+	"Hailo::Command::BEGIN@3";
+	"Hailo::Command::run";
+	"Hailo::Command::BEGIN@7";
+	"Hailo::Command::BEGIN@374";
+}
+"hailo::BEGIN@6" -> "Any::Moose::_is_moose_loaded";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@5";
+"DBD::SQLite::dr::connect" -> "DBI::db::sqlite_collation_needed";
+"hailo::BEGIN@5" -> "Encode::utf8::decode_xs";
+"hailo::BEGIN@8" -> "Encode::utf8::decode_xs";
+"hailo::BEGIN@6" -> "Encode::utf8::decode_xs";
+"DBI::db::begin_work" -> "DBD::_::db::begin_work";
+"Getopt::Long::FindOption" -> "Getopt::Long::BEGIN@931";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@370";
+"Mouse::Meta::Method::Accessor::XS::_generate_clearer" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_predicate" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::should_auto_deref";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::should_auto_deref";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_default";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_default";
+"main::RUNTIME" -> "hailo::BEGIN@8";
+"hailo::BEGIN@6" -> "Any::Moose::BEGIN@9";
+"main::RUNTIME" -> "DBI::END";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@18";
+"Mouse::Meta::Class::make_immutable" -> "Mouse::Meta::Method::Destructor::XS::_generate_destructor";
+"hailo::BEGIN@7" -> "Exporter::import";
+"hailo::BEGIN@8" -> "Encode::Encoding::needs_lines";
+"hailo::BEGIN@5" -> "Encode::Encoding::needs_lines";
+"hailo::BEGIN@6" -> "Encode::Encoding::needs_lines";
+"Hailo::Storage::stop_learning" -> "DBI::db::commit";
+"main::RUNTIME" -> "Hailo::Command::run";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::is_weak_ref";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::is_weak_ref";
+"hailo::BEGIN@6" -> "Mouse::Exporter::setup_import_methods";
+"hailo::BEGIN@5" -> "Dir::Self::BEGIN@36";
+"DBI::disconnect_all" -> "DBI::dr::disconnect_all";
+"DBD::SQLite::db::do" -> "DBI::db::prepare";
+"Hailo::Storage::Schema::sth" -> "DBI::db::prepare";
+"Hailo::Storage::_engage" -> "DBI::st::fetchrow_array";
+"Hailo::Engine::Default::_token_id" -> "DBI::st::fetchrow_array";
+"Hailo::Engine::Default::_inc_link" -> "DBI::st::fetchrow_array";
+"Hailo::Engine::Default::_expr_id" -> "DBI::st::fetchrow_array";
+"hailo::BEGIN@8" -> "Mouse::extends";
+"DBD::SQLite::dr::connect" -> "DBI::db::sqlite_create_function";
+"main::RUNTIME" -> "MouseX::Getopt::Basic::new_with_options";
+"constant::import" -> "Internals::SvREADONLY";
+"hailo::BEGIN@5" -> "Encode::utf8::encode_xs";
+"hailo::BEGIN@8" -> "Encode::utf8::encode_xs";
+"hailo::BEGIN@6" -> "Encode::utf8::encode_xs";
+"Hailo::Engine::Default::_add_token" -> "DBI::db::last_insert_id";
+"Hailo::Engine::Default::_add_expr" -> "DBI::db::last_insert_id";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@9";
+"hailo::BEGIN@8" -> "MouseX::Getopt::GLD::meta";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@11";
+"hailo::BEGIN@8" -> "Mouse::has";
+"DBI::db::prepare" -> "DBD::SQLite::db::prepare";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@242";
+"hailo::BEGIN@8" -> "Encode::Encoding::renew";
+"hailo::BEGIN@5" -> "Encode::Encoding::renew";
+"hailo::BEGIN@6" -> "Encode::Encoding::renew";
+"DBD::SQLite::dr::connect" -> "DBI::db::sqlite_register_fts3_perl_tokenizer";
+"main::RUNTIME" -> "Dir::Self::__DIR__";
+"hailo::BEGIN@8" -> "Mouse::Meta::Class::make_immutable";
+"main::RUNTIME" -> "Mouse::Meta::Class::make_immutable";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@7";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_type_constraint";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_type_constraint";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::common::FETCH";
+"DBD::_::db::begin_work" -> "DBI::common::FETCH";
+"DBD::SQLite::db::do" -> "DBI::common::FETCH";
+"main::RUNTIME" -> "hailo::BEGIN@6";
+"hailo::BEGIN@5" -> "Dir::Self::BEGIN@3";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@3";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::TypeConstraint::has_coercion";
+"hailo::BEGIN@6" -> "Any::Moose::BEGIN@7";
+"DBD::SQLite::db::do" -> "DBI::common::DESTROY";
+"main::NULL" -> "DBI::common::DESTROY";
+"DBD::SQLite::db::prepare" -> "DBI::common::DESTROY";
+"DBI::dr::connect" -> "DBD::SQLite::dr::connect";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@15";
+"main::RUNTIME" -> "hailo::meta";
+"main::RUNTIME" -> "hailo::BEGIN@5";
+"DBI::db::do" -> "DBD::SQLite::db::do";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_predicate";
+"hailo::BEGIN@5" -> "Dir::Self::BEGIN@4";
+"hailo::BEGIN@6" -> "Any::Moose::BEGIN@191";
+"open::import" -> "PerlIO::Layer::find";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::type_constraint";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::type_constraint";
+"PerlIO::Layer::find" -> "open::BEGIN@88";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::db::connected";
+"hailo::BEGIN@8" -> "Encode::find_encoding";
+"hailo::BEGIN@5" -> "Encode::find_encoding";
+"hailo::BEGIN@6" -> "Encode::find_encoding";
+"Mouse::Meta::Class::make_immutable" -> "Mouse::Meta::Method::Constructor::XS::_generate_constructor";
+"main::RUNTIME" -> "hailo::BEGIN@9";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@14";
+"DBD::SQLite::db::do" -> "DBD::_mem::common::DESTROY";
+"main::NULL" -> "DBD::_mem::common::DESTROY";
+"DBD::SQLite::db::prepare" -> "DBD::_mem::common::DESTROY";
+"hailo::BEGIN@5" -> "Dir::Self::BEGIN@6";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::should_coerce";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::should_coerce";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@2";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::is_lazy";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::is_lazy";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@13";
+"Mouse::Meta::Role::Application::check_required_methods" -> "UNIVERSAL::can";
+"Sub::Exporter::default_generator" -> "UNIVERSAL::can";
+"Mouse::Exporter::build_import_methods" -> "UNIVERSAL::can";
+"Mouse::Meta::Class::_install_modifier" -> "UNIVERSAL::can";
+"Mouse::Meta::Class::add_override_method_modifier" -> "UNIVERSAL::can";
+"Mouse::Util::resolve_metaclass_alias" -> "UNIVERSAL::can";
+"Mouse::Meta::Class::verify_superclass" -> "UNIVERSAL::can";
+"hailo::BEGIN@8" -> "Mouse::before";
+"hailo::BEGIN@6" -> "Any::Moose::import";
+"hailo::BEGIN@8" -> "Mouse::with";
+"hailo::BEGIN@5" -> "Dir::Self::import";
+"hailo::BEGIN@6" -> "Any::Moose::moose_is_preferred";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@17";
+"DBD::SQLite::db::prepare" -> "DBD::SQLite::st::_prepare";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@4";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_reader";
+"DBI::setup_driver" -> "UNIVERSAL::isa";
+"Any::Moose::_backer_of" -> "UNIVERSAL::isa";
+"Getopt::Long::GetOptionsFromArray" -> "UNIVERSAL::isa";
+"Mouse::Meta::Class::verify_superclass" -> "UNIVERSAL::isa";
+"base::import" -> "UNIVERSAL::isa";
+"hailo::BEGIN@8" -> "Mouse::override";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@6";
+"main::RUNTIME" -> "hailo::BEGIN@7";
+"hailo::BEGIN@6" -> "Any::Moose::BEGIN@2";
+"hailo::BEGIN@4" -> "open::import";
+"hailo::BEGIN@8" -> "Any::Moose::any_moose";
+"hailo::BEGIN@8" -> "Mouse::Meta::Module::get_attribute_list";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@8";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::TypeConstraint::is_a_type_of";
+"hailo::BEGIN@3.1" -> "feature::import";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_accessor";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:66]" -> "DBI::db::do";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:73]" -> "DBI::db::do";
+"Hailo::Storage::Schema::deploy" -> "DBI::db::do";
+"Hailo::Storage::initialized" -> "DBI::db::do";
+"Hailo::Storage::SQLite::_set_pragmas" -> "DBI::db::do";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_builder";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_builder";
+"hailo::BEGIN@4" -> "open::BEGIN@2";
+"Hailo::Storage::start_learning" -> "DBI::db::begin_work";
+"main::RUNTIME" -> "hailo::BEGIN@3";
+"hailo::BEGIN@8" -> "Hailo::Command::BEGIN@374";
+"hailo::BEGIN@6" -> "Any::Moose::BEGIN@69";
+"hailo::BEGIN@5" -> "Dir::Self::BEGIN@39";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_trigger";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_trigger";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::is_required";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::is_required";
+"main::RUNTIME" -> "Encode::decode";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@4";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::init_arg";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::init_arg";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::dr::connect";
+"main::RUNTIME" -> "hailo::BEGIN@4";
+"hailo::BEGIN@8" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+"main::RUNTIME" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+"main::RUNTIME" -> "Mouse::Util::END";
+"Hailo::Engine::Default::_inc_link" -> "DBI::st::execute";
+"Hailo::Engine::Default::learn" -> "DBI::st::execute";
+"Hailo::Engine::Default::_add_token" -> "DBI::st::execute";
+"DBD::SQLite::db::do" -> "DBI::st::execute";
+"Hailo::Storage::_engage" -> "DBI::st::execute";
+"Hailo::Engine::Default::_token_id" -> "DBI::st::execute";
+"Hailo::Engine::Default::_expr_id" -> "DBI::st::execute";
+"Hailo::Engine::Default::_add_expr" -> "DBI::st::execute";
+"hailo::BEGIN@6" -> "Any::Moose::BEGIN@8";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_clearer";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@16";
+"DBI::db::do" -> "Hailo::Storage::__ANON__[lib/Hailo/Storage.pm:238]";
+"hailo::BEGIN@3" -> "hailo::BEGIN@3.1";
+"hailo::BEGIN@9" -> "namespace::clean::import";
+"hailo::BEGIN@8" -> "Hailo::Command::meta";
+"DBD::SQLite::db::do" -> "DBI::st::rows";
+"File::CountLines::BEGIN@8" -> "UNIVERSAL::VERSION";
+"namespace::clean::BEGIN@14" -> "UNIVERSAL::VERSION";
+"MouseX::Getopt::GLD::BEGIN@12" -> "UNIVERSAL::VERSION";
+"Getopt::Long::Descriptive::BEGIN@260" -> "UNIVERSAL::VERSION";
+"namespace::clean::BEGIN@17" -> "UNIVERSAL::VERSION";
+"B::Hooks::EndOfScope::BEGIN@14" -> "UNIVERSAL::VERSION";
+"Getopt::Long::VERSION" -> "UNIVERSAL::VERSION";
+"Getopt::Long::Descriptive::Opts::___class_for_opt" -> "UNIVERSAL::VERSION";
+"Data::OptList::BEGIN@8" -> "UNIVERSAL::VERSION";
+"namespace::clean::BEGIN@16" -> "UNIVERSAL::VERSION";
+"namespace::clean::BEGIN@15" -> "UNIVERSAL::VERSION";
+"DBD::SQLite::BEGIN@5" -> "UNIVERSAL::VERSION";
+"Sub::Exporter::BEGIN@9" -> "UNIVERSAL::VERSION";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::common::STORE";
+"DBD::_::db::begin_work" -> "DBI::common::STORE";
+"DBI::connect" -> "DBI::common::STORE";
+}

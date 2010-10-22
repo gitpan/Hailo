@@ -1,0 +1,80 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Sub_Exporter {
+	label="Sub::Exporter";
+	"Sub::Exporter::default_installer";
+	"Sub::Exporter::setup_exporter";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::BEGIN@214";
+	"Data::OptList::BEGIN@8";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+}
+subgraph cluster_Scalar_Util {
+	label="Scalar::Util";
+	"Scalar::Util::reftype";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_Sub_Install {
+	label="Sub::Install";
+	"Sub::Install::__ANON__[Sub/Install.pm:187]";
+	"Sub::Install::BEGIN@148";
+	"Sub::Install::_installer";
+	"Sub::Install::BEGIN@3";
+	"Sub::Install::BEGIN@184";
+	"Sub::Install::BEGIN@6";
+	"Sub::Install::__ANON__[Sub/Install.pm:175]";
+	"Sub::Install::BEGIN@139";
+	"Sub::Install::_CODELIKE";
+	"Sub::Install::__ANON__[Sub/Install.pm:176]";
+	"Sub::Install::exporter";
+	"Sub::Install::BEGIN@4";
+	"Sub::Install::CORE:qr";
+	"Sub::Install::__ANON__[Sub/Install.pm:132]";
+	"Sub::Install::_build_public_installer";
+	"Sub::Install::BEGIN@287";
+	"Sub::Install::_do_with_warn";
+	"Sub::Install::BEGIN@190";
+	"Sub::Install::BEGIN@7";
+}
+"Sub::Install::BEGIN@190" -> "Sub::Install::_installer";
+"Sub::Install::__ANON__[Sub/Install.pm:132]" -> "Sub::Install::__ANON__[Sub/Install.pm:175]";
+"Sub::Install::BEGIN@6" -> "Exporter::import";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@287";
+"Sub::Install::BEGIN@190" -> "Sub::Install::_do_with_warn";
+"Sub::Install::_CODELIKE" -> "Scalar::Util::reftype";
+"Sub::Install::__ANON__[Sub/Install.pm:175]" -> "Sub::Install::__ANON__[Sub/Install.pm:187]";
+"Sub::Install::BEGIN@184" -> "strict::unimport";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@3";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@6";
+"Sub::Install::__ANON__[Sub/Install.pm:132]" -> "Sub::Install::_CODELIKE";
+"Sub::Install::_do_with_warn" -> "Sub::Install::__ANON__[Sub/Install.pm:176]";
+"Sub::Install::BEGIN@190" -> "Sub::Install::__ANON__[Sub/Install.pm:176]";
+"Sub::Install::BEGIN@287" -> "Sub::Install::exporter";
+"Data::OptList::BEGIN@214" -> "Sub::Install::exporter";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@4";
+"Sub::Install::BEGIN@139" -> "Sub::Install::CORE:qr";
+"Sub::Install::BEGIN@148" -> "Sub::Install::CORE:qr";
+"Sub::Install::BEGIN@3" -> "warnings::import";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@7";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@184";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@139";
+"Sub::Exporter::default_installer" -> "Sub::Install::__ANON__[Sub/Install.pm:132]";
+"Sub::Exporter::setup_exporter" -> "Sub::Install::__ANON__[Sub/Install.pm:132]";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@190";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@148";
+"Sub::Install::BEGIN@190" -> "Sub::Install::_build_public_installer";
+"Sub::Install::BEGIN@4" -> "strict::import";
+}

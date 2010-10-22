@@ -1,0 +1,60 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Encode {
+	label="Encode";
+	"Encode::find_encoding";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::CORE:regcomp";
+	"warnings::CORE:match";
+	"warnings::import";
+}
+subgraph cluster_open {
+	label="open";
+	"open::import";
+	"open::BEGIN@88";
+	"open::CORE:subst";
+	"open::CORE:substcont";
+	"open::CORE:binmode";
+	"open::BEGIN@2";
+	"open::_drop_oldenc";
+	"open::CORE:match";
+}
+subgraph cluster_Encode_Encoding {
+	label="Encode::Encoding";
+	"Encode::Encoding::needs_lines";
+	"Encode::Encoding::renew";
+}
+subgraph cluster_PerlIO_Layer {
+	label="PerlIO::Layer";
+	"PerlIO::Layer::find";
+}
+subgraph cluster_PerlIO {
+	label="PerlIO";
+	"PerlIO::get_layers";
+	"PerlIO::import";
+}
+subgraph cluster_hailo {
+	label="hailo";
+	"hailo::BEGIN@4";
+}
+"open::import" -> "open::CORE:binmode";
+"open::_drop_oldenc" -> "PerlIO::get_layers";
+"open::CORE:binmode" -> "Encode::Encoding::needs_lines";
+"open::import" -> "open::CORE:match";
+"open::_drop_oldenc" -> "open::CORE:match";
+"open::CORE:binmode" -> "Encode::Encoding::renew";
+"open::import" -> "open::_drop_oldenc";
+"open::BEGIN@2" -> "warnings::CORE:regcomp";
+"open::import" -> "PerlIO::Layer::find";
+"PerlIO::Layer::find" -> "open::BEGIN@88";
+"open::import" -> "open::CORE:substcont";
+"open::CORE:binmode" -> "Encode::find_encoding";
+"open::BEGIN@2" -> "warnings::CORE:match";
+"hailo::BEGIN@4" -> "open::import";
+"open::BEGIN@2" -> "warnings::import";
+"hailo::BEGIN@4" -> "open::BEGIN@2";
+"open::BEGIN@88" -> "PerlIO::import";
+"open::import" -> "open::CORE:subst";
+}

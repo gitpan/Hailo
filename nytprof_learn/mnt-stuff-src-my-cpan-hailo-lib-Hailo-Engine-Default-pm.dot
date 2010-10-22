@@ -1,0 +1,110 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_List_MoreUtils {
+	label="List::MoreUtils";
+	"List::MoreUtils::BEGIN@4";
+	"List::MoreUtils::BEGIN@3";
+	"List::MoreUtils::uniq";
+	"List::MoreUtils::BEGIN@8";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_Hailo_Engine_Default {
+	label="Hailo::Engine::Default";
+	"Hailo::Engine::Default::BEGIN@3.16";
+	"Hailo::Engine::Default::_token_id_add";
+	"Hailo::Engine::Default::BEGIN@4";
+	"Hailo::Engine::Default::_inc_link";
+	"Hailo::Engine::Default::BUILD";
+	"Hailo::Engine::Default::BEGIN@5";
+	"Hailo::Engine::Default::learn";
+	"Hailo::Engine::Default::_add_token";
+	"Hailo::Engine::Default::BEGIN@6";
+	"Hailo::Engine::Default::_token_id";
+	"Hailo::Engine::Default::_expr_id";
+	"Hailo::Engine::Default::order";
+	"Hailo::Engine::Default::storage";
+	"Hailo::Engine::Default::_add_expr";
+	"Hailo::Engine::Default::BEGIN@3";
+}
+subgraph cluster_DBI_st {
+	label="DBI::st";
+	"DBI::st::fetchrow_array";
+	"DBI::st::execute";
+}
+subgraph cluster_feature {
+	label="feature";
+	"feature::import";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::import";
+}
+subgraph cluster_DBI_db {
+	label="DBI::db";
+	"DBI::db::last_insert_id";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::_learn_one";
+	"Hailo::_new_class";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::dbh";
+	"Hailo::Storage::sth";
+	"Hailo::Storage::_boundary_token_id";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::new";
+}
+"Hailo::Engine::Default::BUILD" -> "Hailo::Storage::sth";
+"Hailo::Engine::Default::BEGIN@6" -> "List::MoreUtils::BEGIN@4";
+"Mouse::Object::new" -> "Hailo::Engine::Default::BUILD";
+"Hailo::Engine::Default::BEGIN@5" -> "Exporter::import";
+"Hailo::Engine::Default::BEGIN@6" -> "Exporter::import";
+"Hailo::Engine::Default::learn" -> "Hailo::Engine::Default::storage";
+"Hailo::Engine::Default::_add_token" -> "Hailo::Engine::Default::storage";
+"Hailo::Engine::Default::BUILD" -> "Hailo::Engine::Default::storage";
+"Hailo::Engine::Default::_add_expr" -> "Hailo::Engine::Default::storage";
+"Hailo::Engine::Default::learn" -> "Hailo::Engine::Default::_add_expr";
+"Hailo::Engine::Default::BEGIN@6" -> "DynaLoader::bootstrap";
+"Hailo::Engine::Default::_inc_link" -> "DBI::st::fetchrow_array";
+"Hailo::Engine::Default::_token_id" -> "DBI::st::fetchrow_array";
+"Hailo::Engine::Default::_expr_id" -> "DBI::st::fetchrow_array";
+"Hailo::Engine::Default::_add_token" -> "DBI::db::last_insert_id";
+"Hailo::Engine::Default::_add_expr" -> "DBI::db::last_insert_id";
+"Hailo::Engine::Default::learn" -> "Hailo::Engine::Default::_inc_link";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@5";
+"Hailo::Engine::Default::learn" -> "Hailo::Engine::Default::_token_id_add";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@3";
+"Hailo::Engine::Default::BEGIN@6" -> "List::MoreUtils::BEGIN@8";
+"Hailo::Engine::Default::_token_id_add" -> "Hailo::Engine::Default::_token_id";
+"Hailo::Engine::Default::BEGIN@3" -> "Hailo::Engine::Default::BEGIN@3.16";
+"Hailo::Engine::Default::BEGIN@4" -> "Any::Moose::import";
+"Hailo::Engine::Default::learn" -> "List::MoreUtils::uniq";
+"Hailo::Engine::Default::learn" -> "Hailo::Engine::Default::order";
+"Hailo::Engine::Default::BEGIN@3.16" -> "feature::import";
+"Hailo::Engine::Default::learn" -> "Hailo::Engine::Default::_expr_id";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@4";
+"Hailo::Engine::Default::_token_id_add" -> "Hailo::Engine::Default::_add_token";
+"Hailo::Engine::Default::_add_token" -> "Hailo::Storage::dbh";
+"Hailo::Engine::Default::_add_expr" -> "Hailo::Storage::dbh";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@6";
+"Hailo::_learn_one" -> "Hailo::Engine::Default::learn";
+"Hailo::Engine::Default::_add_token" -> "DBI::st::execute";
+"Hailo::Engine::Default::learn" -> "DBI::st::execute";
+"Hailo::Engine::Default::_token_id" -> "DBI::st::execute";
+"Hailo::Engine::Default::_inc_link" -> "DBI::st::execute";
+"Hailo::Engine::Default::_expr_id" -> "DBI::st::execute";
+"Hailo::Engine::Default::_add_expr" -> "DBI::st::execute";
+"Hailo::Engine::Default::learn" -> "Hailo::Storage::_boundary_token_id";
+"Hailo::Engine::Default::BEGIN@6" -> "List::MoreUtils::BEGIN@3";
+}

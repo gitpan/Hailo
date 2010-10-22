@@ -1,0 +1,20 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Hailo_Tokenizer_Words {
+	label="Hailo::Tokenizer::Words";
+	"Hailo::Tokenizer::Words::make_tokens";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::BEGIN@178";
+}
+subgraph cluster_Tie_Hash_NamedCapture {
+	label="Tie::Hash::NamedCapture";
+	"Tie::Hash::NamedCapture::FETCH";
+	"Tie::Hash::NamedCapture::TIEHASH";
+	"Tie::Hash::NamedCapture::flags";
+}
+"Hailo::BEGIN@178" -> "Tie::Hash::NamedCapture::flags";
+"Hailo::Tokenizer::Words::make_tokens" -> "Tie::Hash::NamedCapture::FETCH";
+"Hailo::BEGIN@178" -> "Tie::Hash::NamedCapture::TIEHASH";
+}

@@ -1,0 +1,33 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Hailo_Tokenizer_Words {
+	label="Hailo::Tokenizer::Words";
+	"Hailo::Tokenizer::Words::BEGIN@4";
+}
+subgraph cluster_utf8 {
+	label="utf8";
+	"utf8::BEGIN@325";
+	"utf8::AUTOLOAD";
+	"utf8::BEGIN@89";
+	"utf8::BEGIN@2";
+	"utf8::BEGIN@383";
+	"utf8::BEGIN@3";
+	"utf8::import";
+}
+subgraph cluster_Getopt_Long {
+	label="Getopt::Long";
+	"Getopt::Long::FindOption";
+}
+subgraph cluster_Text_Unidecode {
+	label="Text::Unidecode";
+	"Text::Unidecode::BEGIN@4";
+}
+"utf8::AUTOLOAD" -> "utf8::BEGIN@3";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@89";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@383";
+"Getopt::Long::FindOption" -> "utf8::AUTOLOAD";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@2";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@325";
+"Text::Unidecode::BEGIN@4" -> "utf8::import";
+"Hailo::Tokenizer::Words::BEGIN@4" -> "utf8::import";
+}

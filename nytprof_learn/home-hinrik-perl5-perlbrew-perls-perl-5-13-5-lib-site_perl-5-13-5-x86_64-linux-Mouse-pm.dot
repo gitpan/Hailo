@@ -1,0 +1,285 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Hailo_Tokenizer_Words {
+	label="Hailo::Tokenizer::Words";
+	"Hailo::Tokenizer::Words::meta";
+}
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::BEGIN@4";
+	"Mouse::Meta::Attribute::new";
+	"Mouse::Meta::Attribute::BEGIN@6";
+	"Mouse::Meta::Attribute::BEGIN@2";
+}
+subgraph cluster_MouseX_Getopt_Meta_Attribute_NoGetopt {
+	label="MouseX::Getopt::Meta::Attribute::NoGetopt";
+	"MouseX::Getopt::Meta::Attribute::NoGetopt::meta";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::superclasses";
+	"Mouse::Meta::Class::BEGIN@26";
+	"Mouse::Meta::Class::add_attribute";
+	"Mouse::Meta::Class::add_override_method_modifier";
+	"Mouse::Meta::Class::BEGIN@6";
+	"Mouse::Meta::Class::add_before_method_modifier";
+	"Mouse::Meta::Class::add_after_method_modifier";
+	"Mouse::Meta::Class::BEGIN@2";
+	"Mouse::Meta::Class::add_around_method_modifier";
+	"Mouse::Meta::Class::BEGIN@4";
+}
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::BEGIN@5";
+	"Mouse::Util::TypeConstraints::class_type";
+	"Mouse::Util::TypeConstraints::find_type_constraint";
+	"Mouse::Util::TypeConstraints::BEGIN@7";
+	"Mouse::Util::TypeConstraints::BEGIN@8";
+	"Mouse::Util::TypeConstraints::BEGIN@2";
+	"Mouse::Util::TypeConstraints::BEGIN@4";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::BEGIN@10";
+	"Mouse::Exporter::setup_import_methods";
+	"Mouse::Exporter::BEGIN@2";
+	"Mouse::Exporter::BEGIN@96";
+	"Mouse::Exporter::BEGIN@5";
+	"Mouse::Exporter::BEGIN@231";
+	"Mouse::Exporter::do_import";
+	"Mouse::Exporter::BEGIN@13";
+	"Mouse::Exporter::import";
+	"Mouse::Exporter::BEGIN@3";
+}
+subgraph cluster_Hailo_Engine_Default {
+	label="Hailo::Engine::Default";
+	"Hailo::Engine::Default::meta";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::BEGIN@2";
+	"Mouse::Meta::Module::BEGIN@4";
+	"Mouse::Meta::Module::initialize";
+	"Mouse::Meta::Module::BEGIN@224";
+	"Mouse::Meta::Module::BEGIN@303";
+	"Mouse::Meta::Module::_collect_methods";
+	"Mouse::Meta::Module::add_method";
+	"Mouse::Meta::Module::BEGIN@5";
+}
+subgraph cluster_Hailo_Storage_SQLite {
+	label="Hailo::Storage::SQLite";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:82]";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:18]";
+	"Hailo::Storage::SQLite::meta";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::new";
+	"Mouse::Meta::TypeConstraint::_identity";
+}
+subgraph cluster_main {
+	label="main";
+	"main::RUNTIME";
+}
+subgraph cluster_MouseX_Getopt_Basic {
+	label="MouseX::Getopt::Basic";
+	"MouseX::Getopt::Basic::BEGIN@13";
+	"MouseX::Getopt::Basic::new_with_options";
+	"MouseX::Getopt::Basic::BEGIN@14";
+	"MouseX::Getopt::Basic::_compute_getopt_attrs";
+}
+subgraph cluster_Mouse_Meta_Role {
+	label="Mouse::Meta::Role";
+	"Mouse::Meta::Role::BEGIN@4";
+	"Mouse::Meta::Role::BEGIN@2";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::_new_class";
+	"Hailo::meta";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::meta";
+	"Hailo::Storage::_build_dbd_options";
+	"Hailo::Storage::initialized";
+}
+subgraph cluster_hailo {
+	label="hailo";
+	"hailo::BEGIN@8";
+	"hailo::BEGIN@6";
+	"hailo::meta";
+}
+subgraph cluster_MouseX_StrictConstructor {
+	label="MouseX::StrictConstructor";
+	"MouseX::StrictConstructor::init_meta";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::BEGIN@11";
+	"Mouse::with";
+	"Mouse::BEGIN@17";
+	"Mouse::has";
+	"Mouse::super";
+	"Mouse::override";
+	"Mouse::around";
+	"Mouse::BEGIN@14";
+	"Mouse::BEGIN@15";
+	"Mouse::extends";
+	"Mouse::BEGIN@2";
+	"Mouse::BEGIN@16";
+	"Mouse::BEGIN@18";
+	"Mouse::BEGIN@4";
+	"Mouse::init_meta";
+	"Mouse::BEGIN@8";
+	"Mouse::BEGIN@13";
+	"Mouse::after";
+	"Mouse::before";
+	"Mouse::BEGIN@9";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::BEGIN@2";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::BEGIN@13";
+	"Mouse::Util::BEGIN@80";
+	"Mouse::Util::apply_all_roles";
+	"Mouse::Util::BEGIN@81";
+	"Mouse::Util::__register_metaclass_storage";
+	"Mouse::Util::_try_load_one_class";
+	"Mouse::Util::BEGIN@14";
+	"Mouse::Util::generate_can_predicate_for";
+	"Mouse::Util::BEGIN@2";
+	"Mouse::Util::BEGIN@142";
+	"Mouse::Util::BEGIN@128";
+	"Mouse::Util::BEGIN@12";
+	"Mouse::Util::BEGIN@20";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::meta";
+}
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@80";
+"Mouse::BEGIN@16" -> "Mouse::Meta::Attribute::BEGIN@4";
+"Mouse::override" -> "Mouse::Meta::Class::add_override_method_modifier";
+"Mouse::BEGIN@16" -> "Mouse::Meta::Attribute::BEGIN@2";
+"Mouse::BEGIN@17" -> "Mouse::Object::BEGIN@2";
+"Mouse::BEGIN@14" -> "Mouse::Meta::Class::BEGIN@2";
+"Mouse::BEGIN@4" -> "Mouse::Meta::Module::BEGIN@5";
+"Mouse::super" -> "Hailo::Storage::initialized";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@18";
+"Mouse::init_meta" -> "Mouse::Meta::Module::add_method";
+"Mouse::Exporter::do_import" -> "Mouse::init_meta";
+"MouseX::StrictConstructor::init_meta" -> "Mouse::init_meta";
+"Mouse::BEGIN@8" -> "Exporter::import";
+"Mouse::BEGIN@9" -> "Exporter::import";
+"Hailo::_new_class" -> "Hailo::Engine::Default::meta";
+"Mouse::around" -> "Mouse::Meta::Class::add_around_method_modifier";
+"Mouse::BEGIN@18" -> "Mouse::Util::TypeConstraints::BEGIN@4";
+"Mouse::BEGIN@18" -> "Mouse::Exporter::setup_import_methods";
+"Mouse::BEGIN@4" -> "Mouse::Util::__register_metaclass_storage";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@2";
+"Mouse::Meta::Attribute::new" -> "MouseX::Getopt::Meta::Attribute::NoGetopt::meta";
+"Mouse::super" -> "Hailo::Storage::_build_dbd_options";
+"Mouse::BEGIN@15" -> "Mouse::Meta::Role::BEGIN@2";
+"hailo::BEGIN@8" -> "Mouse::extends";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::extends";
+"MouseX::Getopt::Basic::BEGIN@14" -> "Mouse::extends";
+"Hailo::_new_class" -> "Mouse::extends";
+"Mouse::init_meta" -> "Mouse::Util::TypeConstraints::class_type";
+"Mouse::BEGIN@14" -> "Mouse::Meta::Class::BEGIN@26";
+"Mouse::BEGIN@14" -> "Mouse::Meta::Class::BEGIN@6";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@9";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@11";
+"hailo::BEGIN@8" -> "Mouse::has";
+"Hailo::_new_class" -> "Mouse::has";
+"Mouse::Util::_try_load_one_class" -> "Mouse::has";
+"Mouse::BEGIN@4" -> "Mouse::Meta::Module::BEGIN@2";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@13";
+"Mouse::Util::_try_load_one_class" -> "Hailo::Storage::meta";
+"Mouse::around" -> "Mouse::Meta::Module::_collect_methods";
+"Mouse::after" -> "Mouse::Meta::Module::_collect_methods";
+"Mouse::before" -> "Mouse::Meta::Module::_collect_methods";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@231";
+"Mouse::after" -> "Mouse::Meta::Class::add_after_method_modifier";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@142";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@13";
+"Mouse::BEGIN@18" -> "Mouse::Util::TypeConstraints::BEGIN@8";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@3";
+"Mouse::BEGIN@4" -> "Mouse::Meta::Module::BEGIN@224";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@15";
+"main::RUNTIME" -> "hailo::meta";
+"Mouse::BEGIN@15" -> "Mouse::Meta::Role::BEGIN@4";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:82]" -> "Mouse::super";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:18]" -> "Mouse::super";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@14";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@20";
+"Mouse::with" -> "Mouse::Util::apply_all_roles";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@2";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@5";
+"Mouse::BEGIN@4" -> "Mouse::Util::generate_can_predicate_for";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@13";
+"hailo::BEGIN@8" -> "Mouse::before";
+"Hailo::_new_class" -> "Mouse::before";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::meta";
+"Mouse::BEGIN@4" -> "Mouse::Meta::Module::BEGIN@303";
+"hailo::BEGIN@8" -> "Mouse::with";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::with";
+"Hailo::_new_class" -> "Mouse::with";
+"MouseX::Getopt::Basic::BEGIN@14" -> "Mouse::with";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@17";
+"Mouse::before" -> "Mouse::Meta::Class::add_before_method_modifier";
+"Hailo::_new_class" -> "Mouse::around";
+"hailo::BEGIN@8" -> "Mouse::override";
+"Hailo::_new_class" -> "Mouse::override";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@12";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@10";
+"Mouse::BEGIN@18" -> "Mouse::Util::TypeConstraints::BEGIN@5";
+"Mouse::BEGIN@4" -> "Mouse::Meta::Module::BEGIN@4";
+"Mouse::init_meta" -> "Mouse::Util::TypeConstraints::find_type_constraint";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@96";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@8";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::import";
+"Hailo::_new_class" -> "Mouse::after";
+"Mouse::has" -> "Mouse::Meta::Class::add_attribute";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@2";
+"Mouse::BEGIN@18" -> "Mouse::Util::TypeConstraints::BEGIN@2";
+"Mouse::BEGIN@16" -> "Mouse::Meta::Attribute::BEGIN@6";
+"Mouse::BEGIN@14" -> "Mouse::Meta::Class::BEGIN@4";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@4";
+"Mouse::init_meta" -> "Mouse::Meta::TypeConstraint::_identity";
+"Hailo::meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::has" -> "Mouse::Meta::Module::initialize";
+"Mouse::around" -> "Mouse::Meta::Module::initialize";
+"Mouse::override" -> "Mouse::Meta::Module::initialize";
+"MouseX::Getopt::Meta::Attribute::NoGetopt::meta" -> "Mouse::Meta::Module::initialize";
+"Hailo::Storage::meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::extends" -> "Mouse::Meta::Module::initialize";
+"hailo::meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::init_meta" -> "Mouse::Meta::Module::initialize";
+"Hailo::Command::meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::before" -> "Mouse::Meta::Module::initialize";
+"Hailo::Tokenizer::Words::meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::after" -> "Mouse::Meta::Module::initialize";
+"Hailo::Engine::Default::meta" -> "Mouse::Meta::Module::initialize";
+"Hailo::Storage::SQLite::meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::BEGIN@18" -> "Mouse::Util::TypeConstraints::BEGIN@7";
+"Mouse::BEGIN@18" -> "Mouse::Meta::TypeConstraint::new";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@128";
+"Mouse::extends" -> "Mouse::Meta::Class::superclasses";
+"Mouse::init_meta" -> "Mouse::Meta::Class::superclasses";
+"Mouse::Util::_try_load_one_class" -> "Hailo::meta";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@81";
+"hailo::BEGIN@6" -> "Mouse::BEGIN@16";
+"Mouse::BEGIN@4" -> "Mouse::Util::BEGIN@14";
+"hailo::BEGIN@8" -> "Hailo::Command::meta";
+"MouseX::Getopt::Basic::new_with_options" -> "Hailo::Command::meta";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "Hailo::Command::meta";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::meta";
+}

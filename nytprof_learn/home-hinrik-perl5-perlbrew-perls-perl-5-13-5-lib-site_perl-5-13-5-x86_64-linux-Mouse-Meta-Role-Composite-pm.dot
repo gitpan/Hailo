@@ -1,0 +1,76 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::do_import";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::create";
+	"Mouse::Meta::Module::add_method";
+}
+subgraph cluster_Mouse_Meta_Role {
+	label="Mouse::Meta::Role";
+	"Mouse::Meta::Role::add_required_methods";
+	"Mouse::Meta::Role::create_anon_role";
+	"Mouse::Meta::Role::combine";
+	"Mouse::Meta::Role::add_attribute";
+	"Mouse::Meta::Role::apply";
+}
+subgraph cluster_Mouse_Meta_Role_Composite {
+	label="Mouse::Meta::Role::Composite";
+	"Mouse::Meta::Role::Composite::BEGIN@2";
+	"Mouse::Meta::Role::Composite::get_method_body";
+	"Mouse::Meta::Role::Composite::add_attribute";
+	"Mouse::Meta::Role::Composite::BEGIN@3";
+	"Mouse::Meta::Role::Composite::add_method";
+	"Mouse::Meta::Role::Composite::get_method_list";
+	"Mouse::Meta::Role::Composite::apply";
+	"Mouse::Meta::Role::Composite::BEGIN@4";
+	"Mouse::Meta::Role::Composite::has_attribute";
+	"Mouse::Meta::Role::Composite::has_method";
+	"Mouse::Meta::Role::Composite::new";
+}
+subgraph cluster_Mouse_Meta_Role_Application_RoleSummation {
+	label="Mouse::Meta::Role::Application::RoleSummation";
+	"Mouse::Meta::Role::Application::RoleSummation::apply_methods";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::BUILDARGS";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::apply_all_roles";
+}
+subgraph cluster_Mouse_Meta_Role_Application {
+	label="Mouse::Meta::Role::Application";
+	"Mouse::Meta::Role::Application::new";
+	"Mouse::Meta::Role::Application::apply";
+	"Mouse::Meta::Role::Application::apply_methods";
+	"Mouse::Meta::Role::Application::apply_attributes";
+}
+"Mouse::Meta::Role::combine" -> "Mouse::Meta::Role::Composite::new";
+"Mouse::Meta::Role::Composite::add_method" -> "Mouse::Meta::Module::add_method";
+"Mouse::Meta::Role::combine" -> "Mouse::Meta::Role::Composite::BEGIN@3";
+"Mouse::Meta::Role::Application::apply_methods" -> "Mouse::Meta::Role::Composite::get_method_body";
+"Mouse::Meta::Role::Application::RoleSummation::apply_methods" -> "Mouse::Meta::Role::Application::apply_methods";
+"Mouse::Meta::Role::Composite::new" -> "Mouse::Meta::Role::create_anon_role";
+"Mouse::Meta::Role::Composite::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Role::Composite::new" -> "Mouse::Object::BUILDARGS";
+"Mouse::Meta::Role::Application::apply_methods" -> "Mouse::Meta::Role::Composite::get_method_list";
+"Mouse::Meta::Role::Composite::add_attribute" -> "Mouse::Meta::Role::add_attribute";
+"Mouse::Meta::Module::create" -> "Mouse::Meta::Role::Composite::add_method";
+"Mouse::Meta::Role::Application::apply_methods" -> "Mouse::Meta::Role::Composite::add_method";
+"Mouse::Util::apply_all_roles" -> "Mouse::Meta::Role::Composite::apply";
+"Mouse::Meta::Role::combine" -> "Mouse::Meta::Role::Composite::BEGIN@2";
+"Mouse::Meta::Role::Composite::apply" -> "Mouse::Meta::Role::Application::apply";
+"Mouse::Meta::Role::Application::apply_attributes" -> "Mouse::Meta::Role::Composite::add_attribute";
+"Mouse::Meta::Role::combine" -> "Mouse::Meta::Role::Composite::BEGIN@4";
+"Mouse::Meta::Role::add_required_methods" -> "Mouse::Meta::Role::Composite::has_method";
+"Mouse::Meta::Role::Application::apply_methods" -> "Mouse::Meta::Role::Composite::has_method";
+"Mouse::Meta::Role::Application::apply" -> "Mouse::Meta::Role::Application::RoleSummation::apply_methods";
+"Mouse::Meta::Role::Application::apply_attributes" -> "Mouse::Meta::Role::Composite::has_attribute";
+"Mouse::Meta::Role::Composite::apply" -> "Mouse::Meta::Role::Application::new";
+"Mouse::Meta::Role::Composite::new" -> "Mouse::Meta::Role::apply";
+}

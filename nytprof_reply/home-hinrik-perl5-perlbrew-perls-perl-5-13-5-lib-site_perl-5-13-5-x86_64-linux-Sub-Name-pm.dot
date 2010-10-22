@@ -1,0 +1,46 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_base {
+	label="base";
+	"base::BEGIN@3";
+	"base::BEGIN@4";
+	"base::import";
+}
+subgraph cluster_Sub_Name {
+	label="Sub::Name";
+	"Sub::Name::BEGIN@45";
+	"Sub::Name::BEGIN@44";
+	"Sub::Name::BEGIN@42";
+	"Sub::Name::BEGIN@50";
+	"Sub::Name::BEGIN@49";
+	"Sub::Name::bootstrap";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::BEGIN@14";
+}
+"Sub::Name::BEGIN@49" -> "base::BEGIN@3";
+"Sub::Name::BEGIN@49" -> "base::BEGIN@4";
+"DynaLoader::bootstrap" -> "Sub::Name::bootstrap";
+"Sub::Name::BEGIN@50" -> "base::import";
+"Sub::Name::BEGIN@49" -> "base::import";
+"Sub::Name::BEGIN@45" -> "warnings::import";
+"namespace::clean::BEGIN@14" -> "Sub::Name::BEGIN@44";
+"namespace::clean::BEGIN@14" -> "Sub::Name::BEGIN@49";
+"namespace::clean::BEGIN@14" -> "Sub::Name::BEGIN@42";
+"namespace::clean::BEGIN@14" -> "Sub::Name::BEGIN@45";
+"Sub::Name::BEGIN@44" -> "strict::import";
+"namespace::clean::BEGIN@14" -> "Sub::Name::BEGIN@50";
+}

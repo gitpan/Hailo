@@ -1,0 +1,214 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_DBI {
+	label="DBI";
+	"DBI::__ANON__[DBI.pm:731]";
+	"DBI::BEGIN@866";
+	"DBI::BEGIN@163";
+	"DBI::BEGIN@160";
+	"DBI::BEGIN@534";
+	"DBI::BEGIN@161";
+	"DBI::BEGIN@159";
+	"DBI::bootstrap";
+	"DBI::BEGIN@803";
+	"DBI::BEGIN@276";
+	"DBI::setup_driver";
+	"DBI::CORE:match";
+	"DBI::BEGIN@1034";
+	"DBI::BEGIN@837";
+	"DBI::_new_handle";
+	"DBI::BEGIN@691";
+	"DBI::BEGIN@963";
+	"DBI::_new_sth";
+	"DBI::BEGIN@272";
+	"DBI::END";
+	"DBI::_install_method";
+	"DBI::_new_dbh";
+	"DBI::install_driver";
+	"DBI::disconnect_all";
+	"DBI::CORE:subst";
+	"DBI::_new_drh";
+	"DBI::connect";
+}
+subgraph cluster_main {
+	label="main";
+	"main::RUNTIME";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+}
+subgraph cluster_DBD_SQLite_dr {
+	label="DBD::SQLite::dr";
+	"DBD::SQLite::dr::connect";
+	"DBD::SQLite::dr::BEGIN@165";
+}
+subgraph cluster_DBI_common {
+	label="DBI::common";
+	"DBI::common::STORE";
+	"DBI::common::FETCH";
+}
+subgraph cluster_DBI_db {
+	label="DBI::db";
+	"DBI::db::connected";
+}
+subgraph cluster_UNIVERSAL {
+	label="UNIVERSAL";
+	"UNIVERSAL::isa";
+}
+subgraph cluster_DBD_SQLite {
+	label="DBD::SQLite";
+	"DBD::SQLite::BEGIN@9";
+	"DBD::SQLite::BEGIN@3";
+	"DBD::SQLite::BEGIN@34";
+	"DBD::SQLite::BEGIN@4";
+	"DBD::SQLite::BEGIN@10";
+	"DBD::SQLite::BEGIN@6";
+	"DBD::SQLite::BEGIN@12";
+	"DBD::SQLite::BEGIN@30";
+	"DBD::SQLite::driver";
+	"DBD::SQLite::BEGIN@8";
+	"DBD::SQLite::BEGIN@5";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::BEGIN@12";
+	"Hailo::Storage::_build_dbh";
+	"Hailo::Storage::BEGIN@11.7";
+}
+subgraph cluster_DBD_SQLite_db {
+	label="DBD::SQLite::db";
+	"DBD::SQLite::db::prepare";
+}
+subgraph cluster_DBD___dr {
+	label="DBD::_::dr";
+	"DBD::_::dr::BEGIN@1449";
+}
+subgraph cluster_DBI_var {
+	label="DBI::var";
+	"DBI::var::TIESCALAR";
+}
+subgraph cluster_DBD___st {
+	label="DBD::_::st";
+	"DBD::_::st::BEGIN@1816";
+}
+subgraph cluster_DBI_DBI_tie {
+	label="DBI::DBI_tie";
+	"DBI::DBI_tie::TIEHASH";
+}
+subgraph cluster_Exporter_Heavy {
+	label="Exporter::Heavy";
+	"Exporter::Heavy::heavy_export_ok_tags";
+}
+subgraph cluster_DBD_SQLite__WriteOnceHash {
+	label="DBD::SQLite::_WriteOnceHash";
+	"DBD::SQLite::_WriteOnceHash::STORE";
+	"DBD::SQLite::_WriteOnceHash::TIEHASH";
+}
+subgraph cluster_DBI_dr {
+	label="DBI::dr";
+	"DBI::dr::disconnect_all";
+	"DBI::dr::connect";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::export_ok_tags";
+}
+subgraph cluster_DBD___common {
+	label="DBD::_::common";
+	"DBD::_::common::BEGIN@1347";
+	"DBD::_::common::CORE:match";
+	"DBD::_::common::trace_msg";
+	"DBD::_::common::install_method";
+}
+subgraph cluster_DBD___db {
+	label="DBD::_::db";
+	"DBD::_::db::BEGIN@1510";
+}
+"Hailo::Storage::BEGIN@12" -> "DBD::_::st::BEGIN@1816";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@160";
+"DBD::_::common::install_method" -> "DBD::_::common::CORE:match";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@803";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::db::connected";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@837";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@963";
+"DBD::SQLite::db::prepare" -> "DBI::_new_sth";
+"main::RUNTIME" -> "DBI::END";
+"Hailo::Storage::BEGIN@12" -> "DBI::DBI_tie::TIEHASH";
+"DBI::connect" -> "DBI::install_driver";
+"DBI::install_driver" -> "DynaLoader::bootstrap";
+"DBI::BEGIN@163" -> "DynaLoader::bootstrap";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@9";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@34";
+"DBI::BEGIN@163" -> "Exporter::Heavy::heavy_export_ok_tags";
+"DBI::BEGIN@866" -> "strict::unimport";
+"DBI::BEGIN@803" -> "strict::unimport";
+"DBI::BEGIN@1034" -> "strict::unimport";
+"DBI::BEGIN@837" -> "strict::unimport";
+"DBI::BEGIN@691" -> "strict::unimport";
+"DBI::BEGIN@963" -> "strict::unimport";
+"DBI::BEGIN@534" -> "strict::unimport";
+"DBI::BEGIN@272" -> "strict::unimport";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@161";
+"DBI::disconnect_all" -> "DBI::dr::disconnect_all";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@12";
+"DBI::setup_driver" -> "UNIVERSAL::isa";
+"Hailo::Storage::BEGIN@12" -> "DBI::var::TIESCALAR";
+"DBI::install_driver" -> "DBD::SQLite::dr::BEGIN@165";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@4";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@272";
+"DBD::SQLite::driver" -> "DBD::_::common::install_method";
+"Hailo::Storage::BEGIN@12" -> "DBI::_install_method";
+"DBD::_::common::install_method" -> "DBI::_install_method";
+"DBD::SQLite::dr::connect" -> "DBI::_new_dbh";
+"DBI::END" -> "DBI::disconnect_all";
+"DBI::install_driver" -> "DBD::SQLite::driver";
+"DBD::SQLite::driver" -> "DBI::_new_drh";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@8";
+"DBI::connect" -> "DBI::__ANON__[DBI.pm:731]";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@163";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@866";
+"DBI::END" -> "DBD::_::common::trace_msg";
+"DynaLoader::bootstrap" -> "DBI::bootstrap";
+"Hailo::Storage::BEGIN@12" -> "DBD::_::common::BEGIN@1347";
+"DBI::BEGIN@163" -> "DBI::CORE:match";
+"DBI::BEGIN@163" -> "Exporter::export_ok_tags";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@1034";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@691";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::common::FETCH";
+"Hailo::Storage::BEGIN@12" -> "Hailo::Storage::BEGIN@11.7";
+"DBI::install_driver" -> "DBI::CORE:subst";
+"DBI::connect" -> "DBI::CORE:subst";
+"DBI::install_driver" -> "DBD::SQLite::_WriteOnceHash::TIEHASH";
+"Hailo::Storage::_build_dbh" -> "DBI::connect";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@5";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@3";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@10";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@534";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::dr::connect";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@6";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@159";
+"DBI::install_driver" -> "DBI::setup_driver";
+"Hailo::Storage::BEGIN@12" -> "DBI::setup_driver";
+"DBD::SQLite::driver" -> "DBI::setup_driver";
+"Hailo::Storage::BEGIN@12" -> "DBI::BEGIN@276";
+"DBI::install_driver" -> "DBD::SQLite::BEGIN@30";
+"DBI::_new_dbh" -> "DBI::_new_handle";
+"DBI::_new_sth" -> "DBI::_new_handle";
+"DBI::_new_drh" -> "DBI::_new_handle";
+"Hailo::Storage::BEGIN@12" -> "DBD::_::db::BEGIN@1510";
+"DBI::install_driver" -> "DBD::SQLite::_WriteOnceHash::STORE";
+"DBD::_::st::BEGIN@1816" -> "strict::import";
+"DBD::_::common::BEGIN@1347" -> "strict::import";
+"DBI::BEGIN@276" -> "strict::import";
+"DBD::_::db::BEGIN@1510" -> "strict::import";
+"DBD::_::dr::BEGIN@1449" -> "strict::import";
+"Hailo::Storage::BEGIN@12" -> "DBD::_::dr::BEGIN@1449";
+"DBI::__ANON__[DBI.pm:731]" -> "DBI::common::STORE";
+"DBI::connect" -> "DBI::common::STORE";
+}

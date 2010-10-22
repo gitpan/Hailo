@@ -1,0 +1,201 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::has_documentation";
+	"Mouse::Meta::Attribute::init_arg";
+	"Mouse::Meta::Attribute::is_required";
+	"Mouse::Meta::Attribute::insertion_order";
+	"Mouse::Meta::Attribute::has_type_constraint";
+	"Mouse::Meta::Attribute::documentation";
+	"Mouse::Meta::Attribute::name";
+	"Mouse::Meta::Attribute::type_constraint";
+}
+subgraph cluster_MouseX_Getopt_Meta_Attribute_NoGetopt {
+	label="MouseX::Getopt::Meta::Attribute::NoGetopt";
+	"MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@10";
+	"MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@15";
+	"MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@5";
+	"MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@2";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::get_all_attributes";
+	"Mouse::Meta::Class::does_role";
+}
+subgraph cluster_MouseX_Getopt_Dashes {
+	label="MouseX::Getopt::Dashes";
+	"MouseX::Getopt::Dashes::__ANON__[MouseX/Getopt/Dashes.pm:24]";
+}
+subgraph cluster_Mouse_Meta_Attribute_Custom_Getopt {
+	label="Mouse::Meta::Attribute::Custom::Getopt";
+	"Mouse::Meta::Attribute::Custom::Getopt::BEGIN@21";
+	"Mouse::Meta::Attribute::Custom::Getopt::BEGIN@24";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::do_import";
+	"Mouse::Exporter::do_unimport";
+}
+subgraph cluster_Mouse_Meta_Attribute_Custom_NoGetopt {
+	label="Mouse::Meta::Attribute::Custom::NoGetopt";
+	"Mouse::Meta::Attribute::Custom::NoGetopt::BEGIN@20";
+	"Mouse::Meta::Attribute::Custom::NoGetopt::BEGIN@23";
+}
+subgraph cluster_Getopt_Long_Descriptive_Usage {
+	label="Getopt::Long::Descriptive::Usage";
+	"Getopt::Long::Descriptive::Usage::text";
+}
+subgraph cluster_Getopt_Long {
+	label="Getopt::Long";
+	"Getopt::Long::VERSION";
+}
+subgraph cluster_MouseX_Getopt_GLD {
+	label="MouseX::Getopt::GLD";
+	"MouseX::Getopt::GLD::__ANON__[MouseX/Getopt/GLD.pm:39]";
+}
+subgraph cluster_main {
+	label="main";
+	"main::RUNTIME";
+}
+subgraph cluster_MouseX_Getopt_Basic {
+	label="MouseX::Getopt::Basic";
+	"MouseX::Getopt::Basic::BEGIN@5";
+	"MouseX::Getopt::Basic::new_with_options";
+	"MouseX::Getopt::Basic::BEGIN@15";
+	"MouseX::Getopt::Basic::_get_cmd_flags_for_attr";
+	"MouseX::Getopt::Basic::BEGIN@14";
+	"MouseX::Getopt::Basic::CORE:sort";
+	"MouseX::Getopt::Basic::_parse_argv";
+	"MouseX::Getopt::Basic::_compute_getopt_attrs";
+	"MouseX::Getopt::Basic::BEGIN@13";
+	"MouseX::Getopt::Basic::BEGIN@235";
+	"MouseX::Getopt::Basic::_usage_format";
+	"MouseX::Getopt::Basic::BEGIN@10";
+	"MouseX::Getopt::Basic::_attrs_to_options";
+	"MouseX::Getopt::Basic::BEGIN@2";
+	"MouseX::Getopt::Basic::BEGIN@12";
+	"MouseX::Getopt::Basic::CORE:match";
+	"MouseX::Getopt::Basic::BEGIN@17";
+}
+subgraph cluster_Mouse_Meta_Class___ANON___2 {
+	label="Mouse::Meta::Class::__ANON__::2";
+	"Mouse::Meta::Class::__ANON__::2::has_cmd_aliases";
+	"Mouse::Meta::Class::__ANON__::2::cmd_aliases";
+	"Mouse::Meta::Class::__ANON__::2::cmd_flag";
+	"Mouse::Meta::Class::__ANON__::2::has_cmd_flag";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::extends";
+	"Mouse::with";
+}
+subgraph cluster_MouseX_Getopt_OptionTypeMap {
+	label="MouseX::Getopt::OptionTypeMap";
+	"MouseX::Getopt::OptionTypeMap::BEGIN@5";
+	"MouseX::Getopt::OptionTypeMap::BEGIN@10";
+	"MouseX::Getopt::OptionTypeMap::has_option_type";
+	"MouseX::Getopt::OptionTypeMap::BEGIN@2";
+	"MouseX::Getopt::OptionTypeMap::get_option_type";
+	"MouseX::Getopt::OptionTypeMap::BEGIN@75";
+	"MouseX::Getopt::OptionTypeMap::BEGIN@11";
+	"MouseX::Getopt::OptionTypeMap::BEGIN@76";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::new";
+}
+subgraph cluster_MouseX_Getopt_Meta_Attribute {
+	label="MouseX::Getopt::Meta::Attribute";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@11";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@10";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@16";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@5";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@2";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::does";
+	"Mouse::Util::_try_load_one_class";
+	"Mouse::Util::does_role";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::_getopt_get_options";
+	"Hailo::Command::meta";
+	"Hailo::Command::_get_cmd_flags_for_attr";
+	"Hailo::Command::_getopt_spec";
+}
+"MouseX::Getopt::Basic::_attrs_to_options" -> "MouseX::Getopt::OptionTypeMap::has_option_type";
+"MouseX::Getopt::Basic::new_with_options" -> "MouseX::Getopt::Basic::_parse_argv";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Meta::Attribute::name";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "Mouse::Meta::Attribute::name";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::name";
+"MouseX::Getopt::Basic::BEGIN@12" -> "MouseX::Getopt::OptionTypeMap::BEGIN@10";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@16";
+"MouseX::Getopt::Dashes::__ANON__[MouseX/Getopt/Dashes.pm:24]" -> "MouseX::Getopt::Basic::_get_cmd_flags_for_attr";
+"MouseX::Getopt::Basic::BEGIN@14" -> "Mouse::Meta::Attribute::Custom::NoGetopt::BEGIN@20";
+"MouseX::Getopt::Basic::BEGIN@17" -> "Getopt::Long::VERSION";
+"MouseX::Getopt::Basic::BEGIN@12" -> "MouseX::Getopt::OptionTypeMap::BEGIN@2";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Util::does";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "Mouse::Util::does";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::Meta::Attribute::Custom::Getopt::BEGIN@21";
+"MouseX::Getopt::Basic::BEGIN@235" -> "Mouse::Exporter::do_unimport";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::extends";
+"MouseX::Getopt::Basic::BEGIN@14" -> "Mouse::extends";
+"main::RUNTIME" -> "MouseX::Getopt::Basic::new_with_options";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::documentation";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Util::does_role";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "Mouse::Util::does_role";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@2";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "MouseX::Getopt::OptionTypeMap::get_option_type";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@2";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@17";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::has_type_constraint";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@15";
+"MouseX::Getopt::Basic::BEGIN@10" -> "Mouse::Exporter::do_import";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::Meta::Attribute::Custom::Getopt::BEGIN@24";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@11";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Meta::Class::__ANON__::2::has_cmd_flag";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Meta::Class::__ANON__::2::cmd_flag";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Meta::Class::__ANON__::2::has_cmd_aliases";
+"MouseX::Getopt::Basic::new_with_options" -> "MouseX::Getopt::Basic::_attrs_to_options";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "MouseX::Getopt::Basic::CORE:match";
+"MouseX::Getopt::Basic::_parse_argv" -> "Hailo::Command::_getopt_get_options";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "MouseX::Getopt::Basic::_compute_getopt_attrs";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@13";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::type_constraint";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Meta::Class::__ANON__::2::cmd_aliases";
+"MouseX::Getopt::Basic::BEGIN@14" -> "MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@5";
+"MouseX::Getopt::Basic::BEGIN@14" -> "MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@10";
+"MouseX::Getopt::Basic::BEGIN@12" -> "MouseX::Getopt::OptionTypeMap::BEGIN@75";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@10";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@10";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Hailo::Command::_get_cmd_flags_for_attr";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::with";
+"MouseX::Getopt::Basic::BEGIN@14" -> "Mouse::with";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "MouseX::Getopt::Basic::CORE:sort";
+"MouseX::Getopt::Basic::BEGIN@14" -> "Mouse::Meta::Attribute::Custom::NoGetopt::BEGIN@23";
+"MouseX::Getopt::Basic::new_with_options" -> "Getopt::Long::Descriptive::Usage::text";
+"MouseX::Getopt::Basic::BEGIN@14" -> "MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@2";
+"MouseX::Getopt::Basic::BEGIN@12" -> "MouseX::Getopt::OptionTypeMap::BEGIN@5";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::has_documentation";
+"MouseX::Getopt::Basic::BEGIN@12" -> "MouseX::Getopt::OptionTypeMap::BEGIN@11";
+"MouseX::Getopt::Basic::CORE:sort" -> "Mouse::Meta::Attribute::insertion_order";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@5";
+"MouseX::Getopt::GLD::__ANON__[MouseX/Getopt/GLD.pm:39]" -> "MouseX::Getopt::Basic::_usage_format";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::is_required";
+"MouseX::Getopt::Basic::new_with_options" -> "Mouse::Object::new";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@12";
+"MouseX::Getopt::Basic::new_with_options" -> "Mouse::Meta::Class::does_role";
+"MouseX::Getopt::Basic::BEGIN@12" -> "MouseX::Getopt::OptionTypeMap::BEGIN@76";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::init_arg";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@5";
+"MouseX::Getopt::Basic::BEGIN@14" -> "MouseX::Getopt::Meta::Attribute::NoGetopt::BEGIN@15";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@14";
+"MouseX::Getopt::Basic::_parse_argv" -> "Hailo::Command::_getopt_spec";
+"Mouse::Util::_try_load_one_class" -> "MouseX::Getopt::Basic::BEGIN@235";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "Mouse::Meta::Class::get_all_attributes";
+"MouseX::Getopt::Basic::new_with_options" -> "Hailo::Command::meta";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "Hailo::Command::meta";
+}

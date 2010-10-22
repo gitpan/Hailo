@@ -1,0 +1,128 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Sub_Exporter {
+	label="Sub::Exporter";
+	"Sub::Exporter::_rewrite_build_config";
+	"Sub::Exporter::_expand_group";
+	"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]";
+}
+subgraph cluster_Config {
+	label="Config";
+	"Config::FETCH";
+}
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::BEGIN@18";
+	"DynaLoader::BEGIN@25";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::BEGIN@214";
+	"Data::OptList::mkopt_hash";
+	"Data::OptList::BEGIN@131";
+	"Data::OptList::mkopt";
+	"Data::OptList::BEGIN@4";
+	"Data::OptList::BEGIN@7";
+	"Data::OptList::BEGIN@3";
+	"Data::OptList::BEGIN@8";
+	"Data::OptList::BEGIN@6";
+	"Data::OptList::__is_a";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Params_Util {
+	label="Params::Util";
+	"Params::Util::_SCALAR0";
+	"Params::Util::_CODELIKE";
+	"Params::Util::_ARRAYLIKE";
+	"Params::Util::BEGIN@65";
+	"Params::Util::_HASHLIKE";
+	"Params::Util::BEGIN@58";
+	"Params::Util::BEGIN@59";
+}
+subgraph cluster_Sub_Install {
+	label="Sub::Install";
+	"Sub::Install::BEGIN@148";
+	"Sub::Install::exporter";
+	"Sub::Install::BEGIN@4";
+	"Sub::Install::BEGIN@3";
+	"Sub::Install::BEGIN@184";
+	"Sub::Install::BEGIN@6";
+	"Sub::Install::BEGIN@287";
+	"Sub::Install::BEGIN@139";
+	"Sub::Install::BEGIN@190";
+	"Sub::Install::BEGIN@7";
+}
+subgraph cluster_AutoLoader {
+	label="AutoLoader";
+	"AutoLoader::BEGIN@138";
+	"AutoLoader::BEGIN@30";
+	"AutoLoader::BEGIN@4";
+	"AutoLoader::BEGIN@186";
+	"AutoLoader::BEGIN@3";
+	"AutoLoader::BEGIN@13";
+}
+subgraph cluster_List_Util {
+	label="List::Util";
+	"List::Util::first";
+}
+subgraph cluster_UNIVERSAL {
+	label="UNIVERSAL";
+	"UNIVERSAL::VERSION";
+}
+subgraph cluster_Sub_Exporter_Util {
+	label="Sub::Exporter::Util";
+	"Sub::Exporter::Util::BEGIN@6";
+}
+"Data::OptList::BEGIN@7" -> "AutoLoader::BEGIN@138";
+"Data::OptList::BEGIN@7" -> "AutoLoader::BEGIN@3";
+"Sub::Exporter::Util::BEGIN@6" -> "Data::OptList::BEGIN@4";
+"Sub::Exporter::Util::BEGIN@6" -> "Data::OptList::BEGIN@8";
+"Data::OptList::BEGIN@7" -> "DynaLoader::bootstrap";
+"Data::OptList::BEGIN@7" -> "Params::Util::BEGIN@59";
+"Data::OptList::BEGIN@214" -> "Sub::Install::exporter";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@4";
+"Data::OptList::__is_a" -> "Params::Util::_HASHLIKE";
+"Sub::Exporter::Util::BEGIN@6" -> "Data::OptList::BEGIN@214";
+"Data::OptList::BEGIN@7" -> "DynaLoader::BEGIN@25";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@190";
+"Data::OptList::mkopt_hash" -> "Data::OptList::mkopt";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]" -> "Data::OptList::mkopt";
+"Sub::Exporter::_expand_group" -> "Data::OptList::mkopt";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@148";
+"Data::OptList::BEGIN@7" -> "AutoLoader::BEGIN@13";
+"List::Util::first" -> "Data::OptList::__is_a";
+"Data::OptList::mkopt" -> "Data::OptList::__is_a";
+"Sub::Exporter::Util::BEGIN@6" -> "Data::OptList::BEGIN@7";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@287";
+"Data::OptList::BEGIN@7" -> "AutoLoader::BEGIN@4";
+"Data::OptList::BEGIN@7" -> "Params::Util::BEGIN@65";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@3";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@6";
+"Sub::Exporter::Util::BEGIN@6" -> "Data::OptList::BEGIN@3";
+"Sub::Exporter::Util::BEGIN@6" -> "Data::OptList::BEGIN@6";
+"Data::OptList::__is_a" -> "Params::Util::_ARRAYLIKE";
+"Data::OptList::BEGIN@7" -> "Params::Util::BEGIN@58";
+"Data::OptList::BEGIN@4" -> "warnings::import";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@7";
+"Data::OptList::BEGIN@7" -> "AutoLoader::BEGIN@186";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@184";
+"Data::OptList::__is_a" -> "Params::Util::_CODELIKE";
+"Data::OptList::BEGIN@8" -> "Sub::Install::BEGIN@139";
+"Data::OptList::BEGIN@7" -> "DynaLoader::BEGIN@18";
+"Sub::Exporter::Util::BEGIN@6" -> "Data::OptList::BEGIN@131";
+"Data::OptList::__is_a" -> "Params::Util::_SCALAR0";
+"Data::OptList::BEGIN@7" -> "Config::FETCH";
+"Sub::Exporter::_rewrite_build_config" -> "Data::OptList::mkopt_hash";
+"Data::OptList::__is_a" -> "List::Util::first";
+"Data::OptList::BEGIN@8" -> "UNIVERSAL::VERSION";
+"Data::OptList::BEGIN@3" -> "strict::import";
+"Data::OptList::BEGIN@7" -> "AutoLoader::BEGIN@30";
+}

@@ -1,0 +1,238 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Regexp_Common_URI_RFC1738 {
+	label="Regexp::Common::URI::RFC1738";
+	"Regexp::Common::URI::RFC1738::BEGIN@6";
+}
+subgraph cluster_Regexp_Common_URI_RFC1808 {
+	label="Regexp::Common::URI::RFC1808";
+	"Regexp::Common::URI::RFC1808::BEGIN@14";
+}
+subgraph cluster_autodie {
+	label="autodie";
+	"autodie::BEGIN@4";
+}
+subgraph cluster_Regexp_Common_URI_news {
+	label="Regexp::Common::URI::news";
+	"Regexp::Common::URI::news::BEGIN@9";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::_bits";
+	"warnings::unimport";
+	"warnings::CORE:regcomp";
+	"warnings::bits";
+	"warnings::_mkMask";
+	"warnings::register_categories";
+	"warnings::CORE:match";
+	"warnings::import";
+}
+subgraph cluster_Regexp_Common_URI_RFC2806 {
+	label="Regexp::Common::URI::RFC2806";
+	"Regexp::Common::URI::RFC2806::BEGIN@7";
+}
+subgraph cluster_Regexp_Common_URI_http {
+	label="Regexp::Common::URI::http";
+	"Regexp::Common::URI::http::BEGIN@8";
+}
+subgraph cluster_Sub_Name {
+	label="Sub::Name";
+	"Sub::Name::BEGIN@45";
+}
+subgraph cluster_Regexp_Common_URI {
+	label="Regexp::Common::URI";
+	"Regexp::Common::URI::BEGIN@6";
+	"Regexp::Common::URI::BEGIN@17";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::BEGIN@4";
+}
+subgraph cluster_Regexp_Common_URI_pop {
+	label="Regexp::Common::URI::pop";
+	"Regexp::Common::URI::pop::BEGIN@9";
+}
+subgraph cluster_main {
+	label="main";
+	"main::BEGIN@4";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::import";
+	"Any::Moose::BEGIN@9";
+}
+subgraph cluster_Regexp_Common_URI_prospero {
+	label="Regexp::Common::URI::prospero";
+	"Regexp::Common::URI::prospero::BEGIN@9";
+}
+subgraph cluster_Variable_Magic {
+	label="Variable::Magic";
+	"Variable::Magic::BEGIN@6";
+}
+subgraph cluster_Regexp_Common_URI_fax {
+	label="Regexp::Common::URI::fax";
+	"Regexp::Common::URI::fax::BEGIN@9";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::BEGIN@6";
+	"Hailo::BEGIN@6.3";
+	"Hailo::BEGIN@44";
+	"Hailo::BEGIN@86";
+	"Hailo::BEGIN@46";
+}
+subgraph cluster_Regexp_Common_URI_ftp {
+	label="Regexp::Common::URI::ftp";
+	"Regexp::Common::URI::ftp::BEGIN@9";
+}
+subgraph cluster_Regexp_Common_URI_gopher {
+	label="Regexp::Common::URI::gopher";
+	"Regexp::Common::URI::gopher::BEGIN@9";
+}
+subgraph cluster_Regexp_Common_URI_RFC2396 {
+	label="Regexp::Common::URI::RFC2396";
+	"Regexp::Common::URI::RFC2396::BEGIN@6";
+}
+subgraph cluster_Regexp_Common {
+	label="Regexp::Common";
+	"Regexp::Common::BEGIN@18";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::BEGIN@13";
+	"Mouse::Util::BEGIN@14";
+}
+subgraph cluster_Regexp_Common_URI_RFC2384 {
+	label="Regexp::Common::URI::RFC2384";
+	"Regexp::Common::URI::RFC2384::BEGIN@8";
+}
+subgraph cluster_Exporter_Heavy {
+	label="Exporter::Heavy";
+	"Exporter::Heavy::BEGIN@197";
+}
+subgraph cluster_Regexp_Common_URI_file {
+	label="Regexp::Common::URI::file";
+	"Regexp::Common::URI::file::BEGIN@8";
+}
+subgraph cluster_Fatal {
+	label="Fatal";
+	"Fatal::BEGIN@6";
+}
+subgraph cluster_Regexp_Common_URI_tel {
+	label="Regexp::Common::URI::tel";
+	"Regexp::Common::URI::tel::BEGIN@9";
+}
+subgraph cluster_Package_Stash {
+	label="Package::Stash";
+	"Package::Stash::BEGIN@108";
+	"Package::Stash::BEGIN@6";
+}
+subgraph cluster_Regexp_Common_URI_tv {
+	label="Regexp::Common::URI::tv";
+	"Regexp::Common::URI::tv::BEGIN@11";
+}
+subgraph cluster_Regexp_Common_URI_telnet {
+	label="Regexp::Common::URI::telnet";
+	"Regexp::Common::URI::telnet::BEGIN@8";
+}
+subgraph cluster_B_Hooks_EndOfScope {
+	label="B::Hooks::EndOfScope";
+	"B::Hooks::EndOfScope::BEGIN@3";
+}
+subgraph cluster_Carp {
+	label="Carp";
+	"Carp::BEGIN@314";
+}
+subgraph cluster_utf8 {
+	label="utf8";
+	"utf8::BEGIN@383";
+	"utf8::BEGIN@3";
+}
+subgraph cluster_Regexp_Common_URI_wais {
+	label="Regexp::Common::URI::wais";
+	"Regexp::Common::URI::wais::BEGIN@9";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::BEGIN@159";
+	"namespace::clean::BEGIN@2.4";
+	"namespace::clean::BEGIN@10";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::BEGIN@13";
+	"Mouse::Exporter::BEGIN@3";
+}
+subgraph cluster_Regexp_Common_URI_RFC1035 {
+	label="Regexp::Common::URI::RFC1035";
+	"Regexp::Common::URI::RFC1035::BEGIN@6";
+}
+subgraph cluster_warnings_register {
+	label="warnings::register";
+	"warnings::register::import";
+}
+subgraph cluster_Sub_Install {
+	label="Sub::Install";
+	"Sub::Install::BEGIN@3";
+}
+subgraph cluster_mro {
+	label="mro";
+	"mro::BEGIN@11";
+}
+"Mouse::Util::BEGIN@13" -> "warnings::unimport";
+"Exporter::Heavy::BEGIN@197" -> "warnings::unimport";
+"Hailo::BEGIN@6" -> "warnings::unimport";
+"Hailo::BEGIN@6.3" -> "warnings::unimport";
+"utf8::BEGIN@383" -> "warnings::unimport";
+"Hailo::BEGIN@44" -> "warnings::unimport";
+"Hailo::BEGIN@86" -> "warnings::unimport";
+"Carp::BEGIN@314" -> "warnings::unimport";
+"namespace::clean::BEGIN@159" -> "warnings::unimport";
+"Package::Stash::BEGIN@108" -> "warnings::unimport";
+"Hailo::BEGIN@46" -> "warnings::unimport";
+"main::BEGIN@4" -> "warnings::CORE:match";
+"warnings::register::import" -> "warnings::register_categories";
+"warnings::register_categories" -> "warnings::_mkMask";
+"Regexp::Common::URI::prospero::BEGIN@9" -> "warnings::import";
+"Regexp::Common::URI::RFC2806::BEGIN@7" -> "warnings::import";
+"Regexp::Common::URI::RFC1035::BEGIN@6" -> "warnings::import";
+"Regexp::Common::URI::BEGIN@17" -> "warnings::import";
+"Regexp::Common::URI::RFC2384::BEGIN@8" -> "warnings::import";
+"mro::BEGIN@11" -> "warnings::import";
+"Regexp::Common::URI::fax::BEGIN@9" -> "warnings::import";
+"Data::OptList::BEGIN@4" -> "warnings::import";
+"Any::Moose::BEGIN@9" -> "warnings::import";
+"Variable::Magic::BEGIN@6" -> "warnings::import";
+"Regexp::Common::URI::pop::BEGIN@9" -> "warnings::import";
+"Regexp::Common::URI::tel::BEGIN@9" -> "warnings::import";
+"Regexp::Common::URI::RFC2396::BEGIN@6" -> "warnings::import";
+"Regexp::Common::URI::tv::BEGIN@11" -> "warnings::import";
+"Regexp::Common::URI::wais::BEGIN@9" -> "warnings::import";
+"Regexp::Common::URI::gopher::BEGIN@9" -> "warnings::import";
+"Fatal::BEGIN@6" -> "warnings::import";
+"Any::Moose::import" -> "warnings::import";
+"Regexp::Common::URI::telnet::BEGIN@8" -> "warnings::import";
+"Sub::Install::BEGIN@3" -> "warnings::import";
+"Regexp::Common::URI::RFC1738::BEGIN@6" -> "warnings::import";
+"Regexp::Common::URI::http::BEGIN@8" -> "warnings::import";
+"Regexp::Common::URI::BEGIN@6" -> "warnings::import";
+"B::Hooks::EndOfScope::BEGIN@3" -> "warnings::import";
+"namespace::clean::BEGIN@10" -> "warnings::import";
+"Regexp::Common::URI::news::BEGIN@9" -> "warnings::import";
+"Regexp::Common::URI::file::BEGIN@8" -> "warnings::import";
+"Mouse::Exporter::BEGIN@3" -> "warnings::import";
+"Regexp::Common::BEGIN@18" -> "warnings::import";
+"Sub::Name::BEGIN@45" -> "warnings::import";
+"autodie::BEGIN@4" -> "warnings::import";
+"namespace::clean::BEGIN@2.4" -> "warnings::import";
+"Regexp::Common::URI::ftp::BEGIN@9" -> "warnings::import";
+"utf8::BEGIN@3" -> "warnings::import";
+"Mouse::Util::BEGIN@14" -> "warnings::import";
+"Regexp::Common::URI::RFC1808::BEGIN@14" -> "warnings::import";
+"Package::Stash::BEGIN@6" -> "warnings::import";
+"main::BEGIN@4" -> "warnings::import";
+"warnings::bits" -> "warnings::_bits";
+"warnings::import" -> "warnings::_bits";
+"Mouse::Exporter::BEGIN@13" -> "warnings::bits";
+"main::BEGIN@4" -> "warnings::CORE:regcomp";
+}

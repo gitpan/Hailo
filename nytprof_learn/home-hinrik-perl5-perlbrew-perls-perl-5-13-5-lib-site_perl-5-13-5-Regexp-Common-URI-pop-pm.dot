@@ -1,0 +1,68 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_Regexp_Common_URI_pop {
+	label="Regexp::Common::URI::pop";
+	"Regexp::Common::URI::pop::BEGIN@6";
+	"Regexp::Common::URI::pop::BEGIN@9";
+	"Regexp::Common::URI::pop::BEGIN@4";
+	"Regexp::Common::URI::pop::BEGIN@11";
+	"Regexp::Common::URI::pop::BEGIN@3";
+	"Regexp::Common::URI::pop::BEGIN@5";
+	"Regexp::Common::URI::pop::BEGIN@8";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_Regexp_Common {
+	label="Regexp::Common";
+	"Regexp::Common::import";
+}
+subgraph cluster_Regexp_Common_URI_RFC2384 {
+	label="Regexp::Common::URI::RFC2384";
+	"Regexp::Common::URI::RFC2384::BEGIN@4";
+	"Regexp::Common::URI::RFC2384::BEGIN@15";
+	"Regexp::Common::URI::RFC2384::BEGIN@7";
+	"Regexp::Common::URI::RFC2384::BEGIN@8";
+	"Regexp::Common::URI::RFC2384::BEGIN@21";
+	"Regexp::Common::URI::RFC2384::BEGIN@5";
+	"Regexp::Common::URI::RFC2384::BEGIN@13";
+	"Regexp::Common::URI::RFC2384::BEGIN@28";
+	"Regexp::Common::URI::RFC2384::BEGIN@10";
+}
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@7";
+"Regexp::Common::import" -> "Regexp::Common::URI::pop::BEGIN@3";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@5";
+"Regexp::Common::URI::pop::BEGIN@3" -> "Regexp::Common::import";
+"Regexp::Common::URI::pop::BEGIN@4" -> "Exporter::import";
+"Regexp::Common::URI::pop::BEGIN@5" -> "Exporter::import";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Exporter::import";
+"Regexp::Common::import" -> "Regexp::Common::URI::pop::BEGIN@5";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@10";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@28";
+"Regexp::Common::import" -> "Regexp::Common::URI::pop::BEGIN@9";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@13";
+"Regexp::Common::import" -> "Regexp::Common::URI::pop::BEGIN@11";
+"Regexp::Common::import" -> "Regexp::Common::URI::pop::BEGIN@4";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@15";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@21";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@4";
+"Regexp::Common::URI::pop::BEGIN@9" -> "warnings::import";
+"Regexp::Common::URI::pop::BEGIN@6" -> "Regexp::Common::URI::RFC2384::BEGIN@8";
+"Regexp::Common::URI::pop::BEGIN@11" -> "vars::import";
+"Regexp::Common::import" -> "Regexp::Common::URI::pop::BEGIN@8";
+"Regexp::Common::import" -> "Regexp::Common::URI::pop::BEGIN@6";
+"Regexp::Common::URI::pop::BEGIN@8" -> "strict::import";
+}

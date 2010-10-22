@@ -1,0 +1,69 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Encode {
+	label="Encode";
+	"Encode::define_encoding";
+	"Encode::PERLQQ";
+}
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::BEGIN@92";
+}
+subgraph cluster_Sub_Identify {
+	label="Sub::Identify";
+	"Sub::Identify::BEGIN@6";
+}
+subgraph cluster_Variable_Magic {
+	label="Variable::Magic";
+	"Variable::Magic::BEGIN@202";
+}
+subgraph cluster_XSLoader {
+	label="XSLoader";
+	"XSLoader::load";
+}
+subgraph cluster_IO_Handle {
+	label="IO::Handle";
+	"IO::Handle::BEGIN@266";
+}
+subgraph cluster_Params_Validate {
+	label="Params::Validate";
+	"Params::Validate::BEGIN@5";
+}
+subgraph cluster_File_Spec_Unix {
+	label="File::Spec::Unix";
+	"File::Spec::Unix::_cwd";
+}
+subgraph cluster_PerlIO {
+	label="PerlIO";
+	"PerlIO::import";
+}
+subgraph cluster_Fcntl {
+	label="Fcntl";
+	"Fcntl::BEGIN@214";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::BEGIN@81";
+	"Mouse::Util::BEGIN@128";
+	"Mouse::Util::BEGIN@20";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::BEGIN@374";
+}
+"XSLoader::load" -> "DynaLoader::BEGIN@92";
+"File::Spec::Unix::_cwd" -> "XSLoader::load";
+"DynaLoader::BEGIN@92" -> "XSLoader::load";
+"IO::Handle::BEGIN@266" -> "XSLoader::load";
+"Mouse::Util::BEGIN@81" -> "XSLoader::load";
+"Fcntl::BEGIN@214" -> "XSLoader::load";
+"Params::Validate::BEGIN@5" -> "XSLoader::load";
+"PerlIO::import" -> "XSLoader::load";
+"Variable::Magic::BEGIN@202" -> "XSLoader::load";
+"Sub::Identify::BEGIN@6" -> "XSLoader::load";
+"Mouse::Util::BEGIN@128" -> "XSLoader::load";
+"Mouse::Util::BEGIN@20" -> "XSLoader::load";
+"Hailo::Command::BEGIN@374" -> "XSLoader::load";
+"XSLoader::load" -> "Encode::PERLQQ";
+"XSLoader::load" -> "Encode::define_encoding";
+}

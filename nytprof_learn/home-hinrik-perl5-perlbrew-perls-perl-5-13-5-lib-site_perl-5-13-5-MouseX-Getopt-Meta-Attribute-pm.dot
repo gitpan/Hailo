@@ -1,0 +1,35 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute_Custom_Getopt {
+	label="Mouse::Meta::Attribute::Custom::Getopt";
+	"Mouse::Meta::Attribute::Custom::Getopt::BEGIN@21";
+	"Mouse::Meta::Attribute::Custom::Getopt::BEGIN@24";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::do_import";
+	"Mouse::Exporter::do_unimport";
+}
+subgraph cluster_MouseX_Getopt_Basic {
+	label="MouseX::Getopt::Basic";
+	"MouseX::Getopt::Basic::BEGIN@13";
+}
+subgraph cluster_MouseX_Getopt_Meta_Attribute {
+	label="MouseX::Getopt::Meta::Attribute";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@11";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@10";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@16";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@5";
+	"MouseX::Getopt::Meta::Attribute::BEGIN@2";
+}
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@16";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::Meta::Attribute::Custom::Getopt::BEGIN@21";
+"MouseX::Getopt::Meta::Attribute::BEGIN@16" -> "Mouse::Exporter::do_unimport";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@2";
+"MouseX::Getopt::Meta::Attribute::BEGIN@10" -> "Mouse::Exporter::do_import";
+"MouseX::Getopt::Meta::Attribute::BEGIN@11" -> "Mouse::Exporter::do_import";
+"MouseX::Getopt::Basic::BEGIN@13" -> "Mouse::Meta::Attribute::Custom::Getopt::BEGIN@24";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@11";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@10";
+"MouseX::Getopt::Basic::BEGIN@13" -> "MouseX::Getopt::Meta::Attribute::BEGIN@5";
+}

@@ -1,0 +1,35 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_List_MoreUtils {
+	label="List::MoreUtils";
+	"List::MoreUtils::BEGIN@4";
+	"List::MoreUtils::BEGIN@3";
+	"List::MoreUtils::uniq";
+	"List::MoreUtils::BEGIN@8";
+	"List::MoreUtils::bootstrap";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Hailo_Engine_Default {
+	label="Hailo::Engine::Default";
+	"Hailo::Engine::Default::learn";
+	"Hailo::Engine::Default::BEGIN@6";
+}
+"Hailo::Engine::Default::BEGIN@6" -> "List::MoreUtils::BEGIN@4";
+"Hailo::Engine::Default::BEGIN@6" -> "List::MoreUtils::BEGIN@8";
+"DynaLoader::bootstrap" -> "List::MoreUtils::bootstrap";
+"Hailo::Engine::Default::learn" -> "List::MoreUtils::uniq";
+"List::MoreUtils::BEGIN@8" -> "vars::import";
+"Hailo::Engine::Default::BEGIN@6" -> "List::MoreUtils::BEGIN@3";
+"List::MoreUtils::BEGIN@4" -> "strict::import";
+}

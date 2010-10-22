@@ -1,0 +1,38 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Regexp_Common_Entry {
+	label="Regexp::Common::Entry";
+	"Regexp::Common::Entry::BEGIN@257";
+}
+subgraph cluster_Getopt_Long_Descriptive_Usage {
+	label="Getopt::Long::Descriptive::Usage";
+	"Getopt::Long::Descriptive::Usage::BEGIN@142";
+}
+subgraph cluster_Getopt_Long_CallBack {
+	label="Getopt::Long::CallBack";
+	"Getopt::Long::CallBack::BEGIN@1489";
+}
+subgraph cluster_overload {
+	label="overload";
+	"overload::OVERLOAD";
+	"overload::BEGIN@145";
+	"overload::import";
+	"overload::CORE:match";
+}
+subgraph cluster_Regexp_Common {
+	label="Regexp::Common";
+	"Regexp::Common::BEGIN@163";
+}
+subgraph cluster_warnings_register {
+	label="warnings::register";
+	"warnings::register::import";
+}
+"overload::BEGIN@145" -> "warnings::register::import";
+"overload::import" -> "overload::OVERLOAD";
+"Getopt::Long::Descriptive::Usage::BEGIN@142" -> "overload::import";
+"Regexp::Common::BEGIN@163" -> "overload::import";
+"Getopt::Long::CallBack::BEGIN@1489" -> "overload::import";
+"Regexp::Common::Entry::BEGIN@257" -> "overload::import";
+"Getopt::Long::CallBack::BEGIN@1489" -> "overload::BEGIN@145";
+"overload::OVERLOAD" -> "overload::CORE:match";
+}

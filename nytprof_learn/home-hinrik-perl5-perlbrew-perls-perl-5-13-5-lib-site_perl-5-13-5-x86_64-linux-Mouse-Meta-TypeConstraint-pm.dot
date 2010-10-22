@@ -1,0 +1,135 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::_process_options";
+	"Mouse::Meta::Attribute::BEGIN@6";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::_initialize_object";
+}
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::coerce";
+	"Mouse::Util::TypeConstraints::_find_or_create_parameterized_type";
+	"Mouse::Util::TypeConstraints::_parameterize_HashRef_for";
+	"Mouse::Util::TypeConstraints::_define_type";
+	"Mouse::Util::TypeConstraints::find_or_create_isa_type_constraint";
+	"Mouse::Util::TypeConstraints::find_or_parse_type_constraint";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::do_import";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::__ANON__[Mouse/Meta/TypeConstraint.pm:119]";
+	"Mouse::Meta::TypeConstraint::parent";
+	"Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+	"Mouse::Meta::TypeConstraint::_compile_type_coercion";
+	"Mouse::Meta::TypeConstraint::compile_type_constraint";
+	"Mouse::Meta::TypeConstraint::CORE:subst";
+	"Mouse::Meta::TypeConstraint::BEGIN@2";
+	"Mouse::Meta::TypeConstraint::has_coercion";
+	"Mouse::Meta::TypeConstraint::_identity";
+	"Mouse::Meta::TypeConstraint::name";
+	"Mouse::Meta::TypeConstraint::is_a_type_of";
+	"Mouse::Meta::TypeConstraint::check";
+	"Mouse::Meta::TypeConstraint::coerce";
+	"Mouse::Meta::TypeConstraint::parameterize";
+	"Mouse::Meta::TypeConstraint::new";
+	"Mouse::Meta::TypeConstraint::_add_type_coercions";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::_engine";
+	"Hailo::_tokenizer";
+	"Hailo::_storage";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::dbd_options";
+	"Hailo::Storage::dbh";
+	"Hailo::Storage::sth";
+	"Hailo::Storage::_boundary_token_id";
+	"Hailo::Storage::dbi_options";
+	"Hailo::Storage::dbd";
+}
+subgraph cluster_Mouse_Meta_Method_Accessor_XS {
+	label="Mouse::Meta::Method::Accessor::XS";
+	"Mouse::Meta::Method::Accessor::XS::_generate_reader";
+	"Mouse::Meta::Method::Accessor::XS::_generate_accessor";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::BEGIN@18";
+	"Mouse::init_meta";
+}
+subgraph cluster_MouseX_Getopt_OptionTypeMap {
+	label="MouseX::Getopt::OptionTypeMap";
+	"MouseX::Getopt::OptionTypeMap::has_option_type";
+	"MouseX::Getopt::OptionTypeMap::get_option_type";
+}
+subgraph cluster_MouseX_Getopt_Meta_Attribute_Trait {
+	label="MouseX::Getopt::Meta::Attribute::Trait";
+	"MouseX::Getopt::Meta::Attribute::Trait::__ANON__[MouseX/Getopt/Meta/Attribute/Trait.pm:25]";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::new";
+}
+subgraph cluster_Mouse_Role {
+	label="Mouse::Role";
+	"Mouse::Role::init_meta";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::brain";
+}
+"Mouse::Meta::Class::_initialize_object" -> "Mouse::Meta::TypeConstraint::coerce";
+"Mouse::Util::TypeConstraints::_find_or_create_parameterized_type" -> "Mouse::Meta::TypeConstraint::parameterize";
+"Mouse::Meta::Class::_initialize_object" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::Storage::sth" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::Storage::dbh" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::Storage::_boundary_token_id" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::Storage::dbd" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::Storage::dbi_options" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Mouse::Object::new" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Mouse::Util::TypeConstraints::_parameterize_HashRef_for" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::Storage::dbd_options" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::Command::brain" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::_storage" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::_tokenizer" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::_engine" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Mouse::Meta::Attribute::BEGIN@6" -> "Mouse::Meta::TypeConstraint::BEGIN@2";
+"Mouse::Meta::TypeConstraint::coerce" -> "Mouse::Meta::TypeConstraint::__ANON__[Mouse/Meta/TypeConstraint.pm:119]";
+"Mouse::Meta::TypeConstraint::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Util::TypeConstraints::coerce" -> "Mouse::Meta::TypeConstraint::_add_type_coercions";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::TypeConstraint::has_coercion";
+"Mouse::Meta::TypeConstraint::__ANON__[Mouse/Meta/TypeConstraint.pm:119]" -> "MouseX::Getopt::Meta::Attribute::Trait::__ANON__[MouseX/Getopt/Meta/Attribute/Trait.pm:25]";
+"Mouse::Meta::TypeConstraint::new" -> "Mouse::Meta::TypeConstraint::compile_type_constraint";
+"Mouse::Meta::TypeConstraint::is_a_type_of" -> "Mouse::Meta::TypeConstraint::CORE:subst";
+"Mouse::Meta::TypeConstraint::_add_type_coercions" -> "Mouse::Meta::TypeConstraint::_compile_type_coercion";
+"Mouse::Meta::TypeConstraint::is_a_type_of" -> "Mouse::Meta::TypeConstraint::parent";
+"Mouse::Meta::TypeConstraint::__ANON__[Mouse/Meta/TypeConstraint.pm:119]" -> "Mouse::Meta::TypeConstraint::check";
+"Mouse::Meta::TypeConstraint::coerce" -> "Mouse::Meta::TypeConstraint::check";
+"Mouse::Meta::TypeConstraint::_add_type_coercions" -> "Mouse::Util::TypeConstraints::find_or_parse_type_constraint";
+"Mouse::Util::TypeConstraints::_find_or_create_parameterized_type" -> "Mouse::Meta::TypeConstraint::name";
+"Mouse::Meta::TypeConstraint::is_a_type_of" -> "Mouse::Meta::TypeConstraint::name";
+"MouseX::Getopt::OptionTypeMap::get_option_type" -> "Mouse::Meta::TypeConstraint::name";
+"MouseX::Getopt::OptionTypeMap::has_option_type" -> "Mouse::Meta::TypeConstraint::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::TypeConstraint::is_a_type_of";
+"Mouse::Meta::Attribute::_process_options" -> "Mouse::Meta::TypeConstraint::is_a_type_of";
+"Mouse::Meta::TypeConstraint::new" -> "Mouse::Util::TypeConstraints::_parameterize_HashRef_for";
+"Mouse::Util::TypeConstraints::coerce" -> "Mouse::Meta::TypeConstraint::_identity";
+"Mouse::Role::init_meta" -> "Mouse::Meta::TypeConstraint::_identity";
+"Mouse::Util::TypeConstraints::find_or_create_isa_type_constraint" -> "Mouse::Meta::TypeConstraint::_identity";
+"Mouse::Meta::TypeConstraint::new" -> "Mouse::Meta::TypeConstraint::_identity";
+"Mouse::Util::TypeConstraints::find_or_parse_type_constraint" -> "Mouse::Meta::TypeConstraint::_identity";
+"Mouse::Meta::TypeConstraint::_add_type_coercions" -> "Mouse::Meta::TypeConstraint::_identity";
+"Mouse::init_meta" -> "Mouse::Meta::TypeConstraint::_identity";
+"Mouse::Util::TypeConstraints::_define_type" -> "Mouse::Meta::TypeConstraint::new";
+"Mouse::Meta::TypeConstraint::parameterize" -> "Mouse::Meta::TypeConstraint::new";
+"Mouse::BEGIN@18" -> "Mouse::Meta::TypeConstraint::new";
+}

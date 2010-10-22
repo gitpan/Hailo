@@ -1,0 +1,85 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::trigger";
+	"Mouse::Meta::Attribute::new";
+	"Mouse::Meta::Attribute::default";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::strict_constructor";
+	"Mouse::Meta::Class::is_anon_class";
+	"Mouse::Meta::Class::_calculate_all_attributes";
+	"Mouse::Meta::Class::is_immutable";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+}
+subgraph cluster_main {
+	label="main";
+	"main::NULL";
+	"main::RUNTIME";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::__ANON__[Hailo.pm:71]";
+	"Hailo::DEMOLISH";
+	"Hailo::__ANON__[Hailo.pm:117]";
+	"Hailo::_new_class";
+}
+subgraph cluster_Mouse_Meta_Role_Composite {
+	label="Mouse::Meta::Role::Composite";
+	"Mouse::Meta::Role::Composite::new";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::BEGIN@17";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::BUILDARGS";
+	"Mouse::Object::new";
+	"Mouse::Object::BEGIN@2";
+	"Mouse::Object::DESTROY";
+}
+subgraph cluster_Mouse_Meta_Role_Application {
+	label="Mouse::Meta::Role::Application";
+	"Mouse::Meta::Role::Application::new";
+}
+subgraph cluster_Hailo_Role_Tokenizer {
+	label="Hailo::Role::Tokenizer";
+	"Hailo::Role::Tokenizer::__ANON__[Hailo/Role/Tokenizer.pm:21]";
+	"Hailo::Role::Tokenizer::BUILD";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::do_import";
+}
+subgraph cluster_Hailo_Engine_Default {
+	label="Hailo::Engine::Default";
+	"Hailo::Engine::Default::BUILD";
+}
+"Mouse::Object::new" -> "Hailo::__ANON__[Hailo.pm:71]";
+"Mouse::Object::new" -> "Mouse::Meta::Attribute::trigger";
+"Mouse::Object::new" -> "Mouse::Meta::Attribute::default";
+"Mouse::BEGIN@17" -> "Mouse::Object::BEGIN@2";
+"Mouse::Object::new" -> "Hailo::Engine::Default::BUILD";
+"Mouse::Object::new" -> "Mouse::Meta::Class::is_immutable";
+"Mouse::Object::new" -> "Hailo::Role::Tokenizer::BUILD";
+"Mouse::Object::new" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Mouse::Object::DESTROY" -> "Hailo::DEMOLISH";
+"main::NULL" -> "Mouse::Object::DESTROY";
+"Mouse::Object::new" -> "Mouse::Meta::Class::strict_constructor";
+"Mouse::Object::new" -> "Hailo::__ANON__[Hailo.pm:117]";
+"Mouse::Object::new" -> "Mouse::Meta::Class::_calculate_all_attributes";
+"Mouse::Object::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Role::Application::new" -> "Mouse::Object::BUILDARGS";
+"Mouse::Meta::Attribute::new" -> "Mouse::Object::BUILDARGS";
+"Mouse::Meta::Role::Composite::new" -> "Mouse::Object::BUILDARGS";
+"Hailo::_new_class" -> "Mouse::Object::new";
+"main::RUNTIME" -> "Mouse::Object::new";
+"Mouse::Object::new" -> "Hailo::Role::Tokenizer::__ANON__[Hailo/Role/Tokenizer.pm:21]";
+"Mouse::Object::new" -> "Mouse::Meta::Class::is_anon_class";
+}

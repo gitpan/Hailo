@@ -1,0 +1,46 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::__is_a";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Getopt_Long_Descriptive_Usage {
+	label="Getopt::Long::Descriptive::Usage";
+	"Getopt::Long::Descriptive::Usage::option_text";
+}
+subgraph cluster_List_Util {
+	label="List::Util";
+	"List::Util::max";
+	"List::Util::BEGIN@11";
+	"List::Util::first";
+	"List::Util::BEGIN@12";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::CORE:match";
+	"Hailo::_new_class";
+	"Hailo::CORE:regcomp";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::BEGIN@81";
+}
+"Mouse::Util::BEGIN@81" -> "List::Util::BEGIN@11";
+"List::Util::first" -> "Hailo::CORE:regcomp";
+"List::Util::first" -> "Data::OptList::__is_a";
+"Mouse::Util::BEGIN@81" -> "List::Util::BEGIN@12";
+"Getopt::Long::Descriptive::Usage::option_text" -> "List::Util::max";
+"List::Util::first" -> "Hailo::CORE:match";
+"List::Util::BEGIN@12" -> "vars::import";
+"Hailo::_new_class" -> "List::Util::first";
+"Data::OptList::__is_a" -> "List::Util::first";
+"List::Util::BEGIN@11" -> "strict::import";
+}

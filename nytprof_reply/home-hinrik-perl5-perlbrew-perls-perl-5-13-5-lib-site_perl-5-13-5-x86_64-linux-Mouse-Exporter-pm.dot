@@ -1,0 +1,145 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::BEGIN@2";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::BEGIN@2";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::BEGIN@2";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::bits";
+	"warnings::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+	"strict::bits";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::_install_module";
+}
+subgraph cluster_Mouse_Meta_Role {
+	label="Mouse::Meta::Role";
+	"Mouse::Meta::Role::BEGIN@2";
+}
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::BEGIN@5";
+	"Mouse::Util::TypeConstraints::BEGIN@2";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::BEGIN@11";
+}
+subgraph cluster_UNIVERSAL {
+	label="UNIVERSAL";
+	"UNIVERSAL::can";
+}
+subgraph cluster_Mouse_Meta_Role_Composite {
+	label="Mouse::Meta::Role::Composite";
+	"Mouse::Meta::Role::Composite::BEGIN@2";
+}
+subgraph cluster_MouseX_StrictConstructor {
+	label="MouseX::StrictConstructor";
+	"MouseX::StrictConstructor::BEGIN@5";
+	"MouseX::StrictConstructor::init_meta";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::BEGIN@18";
+	"Mouse::BEGIN@4";
+	"Mouse::init_meta";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::BEGIN@2";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::get_code_info";
+	"Mouse::Util::install_subroutines";
+	"Mouse::Util::BEGIN@2";
+	"Mouse::Util::BEGIN@20";
+}
+subgraph cluster_Mouse_Meta_Role_Application {
+	label="Mouse::Meta::Role::Application";
+	"Mouse::Meta::Role::Application::BEGIN@2";
+}
+subgraph cluster_Mouse_Role {
+	label="Mouse::Role";
+	"Mouse::Role::BEGIN@2";
+	"Mouse::Role::init_meta";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::BEGIN@10";
+	"Mouse::Exporter::setup_import_methods";
+	"Mouse::Exporter::BEGIN@231";
+	"Mouse::Exporter::BEGIN@2";
+	"Mouse::Exporter::BEGIN@96";
+	"Mouse::Exporter::BEGIN@5";
+	"Mouse::Exporter::CORE:subst";
+	"Mouse::Exporter::do_import";
+	"Mouse::Exporter::BEGIN@13";
+	"Mouse::Exporter::build_import_methods";
+	"Mouse::Exporter::import";
+	"Mouse::Exporter::BEGIN@3";
+	"Mouse::Exporter::_get_caller_package";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::BEGIN@2";
+}
+"Mouse::Exporter::do_import" -> "Mouse::Exporter::CORE:subst";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@5";
+"Mouse::Exporter::BEGIN@10" -> "strict::bits";
+"Mouse::Exporter::do_import" -> "Mouse::init_meta";
+"Mouse::Exporter::build_import_methods" -> "UNIVERSAL::can";
+"Any::Moose::_install_module" -> "Mouse::Exporter::setup_import_methods";
+"Mouse::BEGIN@18" -> "Mouse::Exporter::setup_import_methods";
+"Mouse::Util::BEGIN@20" -> "Mouse::Exporter::setup_import_methods";
+"Hailo::BEGIN@11" -> "Mouse::Exporter::setup_import_methods";
+"Mouse::Exporter::BEGIN@231" -> "strict::unimport";
+"Mouse::Exporter::BEGIN@96" -> "strict::unimport";
+"Mouse::Exporter::do_import" -> "MouseX::StrictConstructor::init_meta";
+"Mouse::Exporter::setup_import_methods" -> "Mouse::Exporter::build_import_methods";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@10";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@96";
+"Mouse::Exporter::BEGIN@3" -> "warnings::import";
+"Mouse::Util::TypeConstraints::BEGIN@5" -> "Mouse::Exporter::import";
+"Mouse::Role::BEGIN@2" -> "Mouse::Exporter::import";
+"Mouse::Util::BEGIN@2" -> "Mouse::Exporter::import";
+"MouseX::StrictConstructor::BEGIN@5" -> "Mouse::Exporter::import";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::import";
+"Mouse::Exporter::do_import" -> "Mouse::Exporter::_get_caller_package";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@2";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@13";
+"Mouse::Exporter::do_import" -> "Mouse::Role::init_meta";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@231";
+"Mouse::Meta::Role::Composite::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Role::Application::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::TypeConstraint::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Util::TypeConstraints::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Attribute::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Module::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Any::Moose::_install_module" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Class::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Object::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Role::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Util::BEGIN@20" -> "Mouse::Exporter::do_import";
+"Mouse::Exporter::build_import_methods" -> "Mouse::Util::get_code_info";
+"Mouse::BEGIN@4" -> "Mouse::Exporter::BEGIN@3";
+"Mouse::Exporter::setup_import_methods" -> "Mouse::Util::install_subroutines";
+"Mouse::Exporter::do_import" -> "Mouse::Util::install_subroutines";
+"Mouse::Exporter::BEGIN@13" -> "warnings::bits";
+"Mouse::Exporter::BEGIN@2" -> "strict::import";
+}

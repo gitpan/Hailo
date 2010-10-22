@@ -1,0 +1,96 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Sub_Exporter {
+	label="Sub::Exporter";
+	"Sub::Exporter::__ANON__[Sub/Exporter.pm:756]";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Variable_Magic {
+	label="Variable::Magic";
+	"Variable::Magic::BEGIN@5";
+	"Variable::Magic::BEGIN@3";
+	"Variable::Magic::BEGIN@576";
+	"Variable::Magic::BEGIN@6";
+	"Variable::Magic::BEGIN@19";
+	"Variable::Magic::BEGIN@202";
+	"Variable::Magic::getdata";
+	"Variable::Magic::cast";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_B_Hooks_EndOfScope {
+	label="B::Hooks::EndOfScope";
+	"B::Hooks::EndOfScope::BEGIN@16";
+	"B::Hooks::EndOfScope::BEGIN@8";
+	"B::Hooks::EndOfScope::BEGIN@14";
+	"B::Hooks::EndOfScope::on_scope_end";
+	"B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+	"B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:25]";
+	"B::Hooks::EndOfScope::BEGIN@13";
+	"B::Hooks::EndOfScope::BEGIN@5";
+}
+subgraph cluster_main {
+	label="main";
+	"main::RUNTIME";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::_new_class";
+}
+subgraph cluster_UNIVERSAL {
+	label="UNIVERSAL";
+	"UNIVERSAL::VERSION";
+}
+subgraph cluster_hailo {
+	label="hailo";
+	"hailo::BEGIN@8";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::_try_load_one_class";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::BEGIN@2.7";
+	"namespace::clean::import";
+	"namespace::clean::BEGIN@1";
+	"namespace::clean::BEGIN@17";
+	"namespace::clean::__ANON__[namespace/clean.pm:110]";
+}
+"B::Hooks::EndOfScope::BEGIN@14" -> "Variable::Magic::BEGIN@5";
+"B::Hooks::EndOfScope::BEGIN@14" -> "Variable::Magic::BEGIN@576";
+"B::Hooks::EndOfScope::BEGIN@14" -> "Exporter::import";
+"B::Hooks::EndOfScope::BEGIN@14" -> "Variable::Magic::BEGIN@202";
+"B::Hooks::EndOfScope::BEGIN@16" -> "Sub::Exporter::__ANON__[Sub/Exporter.pm:756]";
+"namespace::clean::BEGIN@17" -> "B::Hooks::EndOfScope::BEGIN@8";
+"namespace::clean::BEGIN@17" -> "namespace::clean::BEGIN@2.7";
+"namespace::clean::import" -> "B::Hooks::EndOfScope::on_scope_end";
+"B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]" -> "namespace::clean::__ANON__[namespace/clean.pm:110]";
+"Variable::Magic::cast" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:25]";
+"B::Hooks::EndOfScope::on_scope_end" -> "Variable::Magic::getdata";
+"B::Hooks::EndOfScope::BEGIN@14" -> "Variable::Magic::BEGIN@3";
+"namespace::clean::BEGIN@17" -> "B::Hooks::EndOfScope::BEGIN@13";
+"B::Hooks::EndOfScope::on_scope_end" -> "Variable::Magic::cast";
+"B::Hooks::EndOfScope::BEGIN@14" -> "Variable::Magic::BEGIN@6";
+"B::Hooks::EndOfScope::BEGIN@14" -> "Variable::Magic::BEGIN@19";
+"namespace::clean::BEGIN@17" -> "namespace::clean::BEGIN@1";
+"namespace::clean::BEGIN@2.7" -> "warnings::import";
+"namespace::clean::BEGIN@17" -> "B::Hooks::EndOfScope::BEGIN@16";
+"hailo::BEGIN@8" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+"Hailo::_new_class" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+"main::RUNTIME" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+"Mouse::Util::_try_load_one_class" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+"namespace::clean::BEGIN@17" -> "B::Hooks::EndOfScope::BEGIN@5";
+"namespace::clean::BEGIN@17" -> "B::Hooks::EndOfScope::BEGIN@14";
+"B::Hooks::EndOfScope::BEGIN@14" -> "UNIVERSAL::VERSION";
+"namespace::clean::BEGIN@1" -> "strict::import";
+}

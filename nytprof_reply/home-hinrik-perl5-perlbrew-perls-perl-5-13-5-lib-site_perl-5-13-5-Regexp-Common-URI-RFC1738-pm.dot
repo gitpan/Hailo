@@ -1,0 +1,48 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Regexp_Common_URI_RFC1738 {
+	label="Regexp::Common::URI::RFC1738";
+	"Regexp::Common::URI::RFC1738::BEGIN@8";
+	"Regexp::Common::URI::RFC1738::BEGIN@19";
+	"Regexp::Common::URI::RFC1738::BEGIN@3";
+	"Regexp::Common::URI::RFC1738::BEGIN@6";
+	"Regexp::Common::URI::RFC1738::BEGIN@33";
+	"Regexp::Common::URI::RFC1738::BEGIN@5";
+	"Regexp::Common::URI::RFC1738::BEGIN@11";
+	"Regexp::Common::URI::RFC1738::BEGIN@13";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Regexp_Common {
+	label="Regexp::Common";
+	"Regexp::Common::import";
+}
+subgraph cluster_Regexp_Common_URI_file {
+	label="Regexp::Common::URI::file";
+	"Regexp::Common::URI::file::BEGIN@5";
+}
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@8";
+"Regexp::Common::URI::RFC1738::BEGIN@3" -> "Regexp::Common::import";
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@33";
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@6";
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@5";
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@19";
+"Regexp::Common::URI::RFC1738::BEGIN@6" -> "warnings::import";
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@13";
+"Regexp::Common::URI::RFC1738::BEGIN@8" -> "vars::import";
+"Regexp::Common::URI::RFC1738::BEGIN@33" -> "vars::import";
+"Regexp::Common::URI::RFC1738::BEGIN@11" -> "vars::import";
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@11";
+"Regexp::Common::URI::file::BEGIN@5" -> "Regexp::Common::URI::RFC1738::BEGIN@3";
+"Regexp::Common::URI::RFC1738::BEGIN@5" -> "strict::import";
+}

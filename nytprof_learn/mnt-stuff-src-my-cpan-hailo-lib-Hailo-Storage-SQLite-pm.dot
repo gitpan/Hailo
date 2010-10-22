@@ -1,0 +1,119 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::__ANON__[Mouse/Meta/Class.pm:379]";
+}
+subgraph cluster_Hailo_Storage_SQLite {
+	label="Hailo::Storage::SQLite";
+	"Hailo::Storage::SQLite::brain";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:36]";
+	"Hailo::Storage::SQLite::CORE:ftis";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:18]";
+	"Hailo::Storage::SQLite::BEGIN@5";
+	"Hailo::Storage::SQLite::_set_pragmas";
+	"Hailo::Storage::SQLite::BEGIN@4";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:66]";
+	"Hailo::Storage::SQLite::BEGIN@6";
+	"Hailo::Storage::SQLite::order";
+	"Hailo::Storage::SQLite::_backup_memory_to_disk";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:59]";
+	"Hailo::Storage::SQLite::ready";
+	"Hailo::Storage::SQLite::save";
+	"Hailo::Storage::SQLite::start_training";
+	"Hailo::Storage::SQLite::_engage";
+	"Hailo::Storage::SQLite::initialized";
+	"Hailo::Storage::SQLite::tokenizer_class";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:82]";
+	"Hailo::Storage::SQLite::BEGIN@3";
+	"Hailo::Storage::SQLite::_build_dbd";
+	"Hailo::Storage::SQLite::BEGIN@3.11";
+	"Hailo::Storage::SQLite::arguments";
+	"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:73]";
+	"Hailo::Storage::SQLite::stop_training";
+	"Hailo::Storage::SQLite::_build_dbd_options";
+}
+subgraph cluster_feature {
+	label="feature";
+	"feature::import";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::import";
+}
+subgraph cluster_DBI_db {
+	label="DBI::db";
+	"DBI::db::do";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::_new_class";
+	"Hailo::save";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::_engage";
+	"Hailo::Storage::dbh";
+	"Hailo::Storage::_build_dbi_options";
+	"Hailo::Storage::dbd";
+	"Hailo::Storage::_build_sth";
+	"Hailo::Storage::_engaged";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::super";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::import";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::__ANON__[lib/Hailo/Command.pm:234]";
+	"Hailo::Command::run";
+}
+"Mouse::Meta::Class::__ANON__[Mouse/Meta/Class.pm:379]" -> "Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:36]";
+"Hailo::Storage::SQLite::initialized" -> "Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:82]";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@3";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@5";
+"Hailo::Storage::SQLite::_build_dbd_options" -> "Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:18]";
+"Hailo::Storage::SQLite::_engage" -> "Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:59]";
+"Hailo::Storage::SQLite::save" -> "Hailo::Storage::_engaged";
+"Hailo::save" -> "Hailo::Storage::SQLite::save";
+"Hailo::Storage::SQLite::stop_training" -> "Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:73]";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:82]" -> "Mouse::super";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:18]" -> "Mouse::super";
+"Hailo::Storage::_engage" -> "Hailo::Storage::SQLite::tokenizer_class";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:36]" -> "Hailo::Storage::_build_dbi_options";
+"Hailo::Storage::_build_dbi_options" -> "Hailo::Storage::SQLite::brain";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:82]" -> "Hailo::Storage::SQLite::brain";
+"Hailo::Storage::SQLite::_backup_memory_to_disk" -> "Hailo::Storage::SQLite::brain";
+"Hailo::Storage::SQLite::save" -> "Hailo::Storage::SQLite::brain";
+"Hailo::Storage::SQLite::ready" -> "Hailo::Storage::SQLite::brain";
+"Hailo::Storage::SQLite::BEGIN@5" -> "Any::Moose::import";
+"Hailo::Storage::SQLite::BEGIN@4" -> "Any::Moose::import";
+"Hailo::Storage::SQLite::BEGIN@3" -> "Hailo::Storage::SQLite::BEGIN@3.11";
+"Hailo::Storage::SQLite::BEGIN@3.11" -> "feature::import";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:66]" -> "DBI::db::do";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:73]" -> "DBI::db::do";
+"Hailo::Storage::SQLite::_set_pragmas" -> "DBI::db::do";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:82]" -> "Hailo::Storage::SQLite::CORE:ftis";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:59]" -> "Hailo::Storage::SQLite::_set_pragmas";
+"Hailo::Storage::SQLite::start_training" -> "Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:66]";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:36]" -> "Hailo::Storage::SQLite::_backup_memory_to_disk";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:59]" -> "Hailo::Storage::SQLite::_backup_memory_to_disk";
+"Hailo::Storage::SQLite::save" -> "Hailo::Storage::SQLite::_backup_memory_to_disk";
+"Hailo::Storage::_engage" -> "Hailo::Storage::SQLite::order";
+"Hailo::Storage::_build_sth" -> "Hailo::Storage::SQLite::order";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:234]" -> "Hailo::Storage::SQLite::ready";
+"Hailo::Command::run" -> "Hailo::Storage::SQLite::ready";
+"Hailo::Storage::SQLite::_set_pragmas" -> "Hailo::Storage::dbh";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:66]" -> "Hailo::Storage::dbh";
+"Hailo::Storage::SQLite::__ANON__[lib/Hailo/Storage/SQLite.pm:73]" -> "Hailo::Storage::dbh";
+"Hailo::Storage::SQLite::_backup_memory_to_disk" -> "Hailo::Storage::SQLite::arguments";
+"Hailo::Storage::SQLite::_set_pragmas" -> "Hailo::Storage::SQLite::arguments";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@4";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@6";
+"Hailo::Storage::dbd" -> "Hailo::Storage::SQLite::_build_dbd";
+"Hailo::Storage::SQLite::BEGIN@6" -> "namespace::clean::import";
+}

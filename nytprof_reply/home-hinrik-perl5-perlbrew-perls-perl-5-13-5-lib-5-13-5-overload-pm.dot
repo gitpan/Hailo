@@ -1,0 +1,30 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_overload {
+	label="overload";
+	"overload::OVERLOAD";
+	"overload::BEGIN@145";
+	"overload::import";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::BEGIN@7";
+}
+subgraph cluster_Regexp_Common {
+	label="Regexp::Common";
+	"Regexp::Common::BEGIN@163";
+}
+subgraph cluster_warnings_register {
+	label="warnings::register";
+	"warnings::register::import";
+}
+subgraph cluster_Regexp_Common_Entry {
+	label="Regexp::Common::Entry";
+	"Regexp::Common::Entry::BEGIN@257";
+}
+"overload::import" -> "overload::OVERLOAD";
+"Regexp::Common::BEGIN@163" -> "overload::import";
+"Regexp::Common::Entry::BEGIN@257" -> "overload::import";
+"Data::OptList::BEGIN@7" -> "overload::BEGIN@145";
+"overload::BEGIN@145" -> "warnings::register::import";
+}

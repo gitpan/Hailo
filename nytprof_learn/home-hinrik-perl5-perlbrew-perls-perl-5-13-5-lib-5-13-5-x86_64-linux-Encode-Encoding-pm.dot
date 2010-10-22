@@ -1,0 +1,60 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Encode {
+	label="Encode";
+	"Encode::predefine_encodings";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_open {
+	label="open";
+	"open::CORE:binmode";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Encode_Encoding {
+	label="Encode::Encoding";
+	"Encode::Encoding::BEGIN@4";
+	"Encode::Encoding::needs_lines";
+	"Encode::Encoding::BEGIN@5";
+	"Encode::Encoding::CORE:match";
+	"Encode::Encoding::DEBUG";
+	"Encode::Encoding::renew";
+	"Encode::Encoding::renewed";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::CORE:open";
+}
+subgraph cluster_Encode_utf8 {
+	label="Encode::utf8";
+	"Encode::utf8::decode_xs";
+}
+subgraph cluster_hailo {
+	label="hailo";
+	"hailo::BEGIN@8";
+	"hailo::BEGIN@5";
+	"hailo::BEGIN@6";
+}
+"open::CORE:binmode" -> "Encode::Encoding::needs_lines";
+"hailo::BEGIN@5" -> "Encode::Encoding::needs_lines";
+"hailo::BEGIN@8" -> "Encode::Encoding::needs_lines";
+"hailo::BEGIN@6" -> "Encode::Encoding::needs_lines";
+"Hailo::CORE:open" -> "Encode::Encoding::needs_lines";
+"Encode::utf8::decode_xs" -> "Encode::Encoding::renewed";
+"open::CORE:binmode" -> "Encode::Encoding::renew";
+"hailo::BEGIN@5" -> "Encode::Encoding::renew";
+"hailo::BEGIN@8" -> "Encode::Encoding::renew";
+"hailo::BEGIN@6" -> "Encode::Encoding::renew";
+"Hailo::CORE:open" -> "Encode::Encoding::renew";
+"Encode::predefine_encodings" -> "Encode::Encoding::BEGIN@4";
+"Encode::Encoding::renew" -> "Encode::Encoding::DEBUG";
+"Encode::Encoding::BEGIN@5" -> "warnings::import";
+"Encode::predefine_encodings" -> "Encode::Encoding::CORE:match";
+"Encode::predefine_encodings" -> "Encode::Encoding::BEGIN@5";
+"Encode::Encoding::BEGIN@4" -> "strict::import";
+}

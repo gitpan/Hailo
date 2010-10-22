@@ -1,0 +1,60 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Encode {
+	label="Encode";
+	"Encode::BEGIN@13";
+}
+subgraph cluster_base {
+	label="base";
+	"base::BEGIN@3";
+	"base::BEGIN@4";
+	"base::has_fields";
+	"base::has_version";
+	"base::has_attr";
+	"base::import";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::BEGIN@3";
+	"vars::BEGIN@8";
+	"vars::import";
+	"vars::BEGIN@7";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Variable_Magic {
+	label="Variable::Magic";
+	"Variable::Magic::BEGIN@576";
+}
+subgraph cluster_Sub_Name {
+	label="Sub::Name";
+	"Sub::Name::BEGIN@50";
+	"Sub::Name::BEGIN@49";
+}
+subgraph cluster_UNIVERSAL {
+	label="UNIVERSAL";
+	"UNIVERSAL::isa";
+}
+subgraph cluster_Encode_Alias {
+	label="Encode::Alias";
+	"Encode::Alias::BEGIN@8";
+}
+"base::import" -> "base::has_version";
+"base::BEGIN@4" -> "vars::BEGIN@8";
+"base::BEGIN@4" -> "vars::BEGIN@3";
+"Encode::BEGIN@13" -> "base::BEGIN@3";
+"Encode::BEGIN@13" -> "base::BEGIN@4";
+"Encode::BEGIN@13" -> "base::import";
+"Encode::Alias::BEGIN@8" -> "base::import";
+"Variable::Magic::BEGIN@576" -> "base::import";
+"Sub::Name::BEGIN@49" -> "base::import";
+"Sub::Name::BEGIN@50" -> "base::import";
+"base::import" -> "UNIVERSAL::isa";
+"base::import" -> "base::has_fields";
+"base::BEGIN@4" -> "vars::import";
+"base::import" -> "base::has_attr";
+"base::BEGIN@3" -> "strict::import";
+"base::BEGIN@4" -> "vars::BEGIN@7";
+}

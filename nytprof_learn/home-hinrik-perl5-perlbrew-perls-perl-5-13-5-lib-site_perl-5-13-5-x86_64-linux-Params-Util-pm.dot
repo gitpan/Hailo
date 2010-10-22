@@ -1,0 +1,53 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Sub_Exporter {
+	label="Sub::Exporter";
+	"Sub::Exporter::default_generator";
+	"Sub::Exporter::_expand_group";
+	"Sub::Exporter::__ANON__[Sub/Exporter.pm:544]";
+	"Sub::Exporter::_do_import";
+}
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_Data_OptList {
+	label="Data::OptList";
+	"Data::OptList::__is_a";
+	"Data::OptList::BEGIN@7";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Params_Util {
+	label="Params::Util";
+	"Params::Util::bootstrap";
+	"Params::Util::_ARRAYLIKE";
+	"Params::Util::BEGIN@65";
+	"Params::Util::BEGIN@58";
+	"Params::Util::_CODELIKE";
+	"Params::Util::_SCALAR0";
+	"Params::Util::_HASHLIKE";
+	"Params::Util::BEGIN@59";
+}
+"DynaLoader::bootstrap" -> "Params::Util::bootstrap";
+"Data::OptList::BEGIN@7" -> "Params::Util::BEGIN@59";
+"Data::OptList::__is_a" -> "Params::Util::_HASHLIKE";
+"Data::OptList::BEGIN@7" -> "Params::Util::BEGIN@65";
+"Data::OptList::__is_a" -> "Params::Util::_ARRAYLIKE";
+"Data::OptList::BEGIN@7" -> "Params::Util::BEGIN@58";
+"Sub::Exporter::default_generator" -> "Params::Util::_CODELIKE";
+"Sub::Exporter::_expand_group" -> "Params::Util::_CODELIKE";
+"Data::OptList::__is_a" -> "Params::Util::_CODELIKE";
+"Sub::Exporter::_do_import" -> "Params::Util::_CODELIKE";
+"Params::Util::BEGIN@65" -> "vars::import";
+"Sub::Exporter::_expand_group" -> "Params::Util::_SCALAR0";
+"Sub::Exporter::__ANON__[Sub/Exporter.pm:544]" -> "Params::Util::_SCALAR0";
+"Data::OptList::__is_a" -> "Params::Util::_SCALAR0";
+"Params::Util::BEGIN@59" -> "strict::import";
+}

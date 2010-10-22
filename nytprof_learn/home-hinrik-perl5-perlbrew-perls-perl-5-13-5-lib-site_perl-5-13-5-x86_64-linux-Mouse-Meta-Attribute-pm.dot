@@ -1,0 +1,207 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::is_weak_ref";
+	"Mouse::Meta::Attribute::illegal_options_for_inheritance";
+	"Mouse::Meta::Attribute::BEGIN@4";
+	"Mouse::Meta::Attribute::init_arg";
+	"Mouse::Meta::Attribute::accessor_metaclass";
+	"Mouse::Meta::Attribute::_process_options";
+	"Mouse::Meta::Attribute::insertion_order";
+	"Mouse::Meta::Attribute::interpolate_class";
+	"Mouse::Meta::Attribute::BEGIN@2";
+	"Mouse::Meta::Attribute::builder";
+	"Mouse::Meta::Attribute::install_accessors";
+	"Mouse::Meta::Attribute::trigger";
+	"Mouse::Meta::Attribute::new";
+	"Mouse::Meta::Attribute::name";
+	"Mouse::Meta::Attribute::BEGIN@6";
+	"Mouse::Meta::Attribute::default";
+	"Mouse::Meta::Attribute::associate_method";
+	"Mouse::Meta::Attribute::should_auto_deref";
+	"Mouse::Meta::Attribute::has_default";
+	"Mouse::Meta::Attribute::associated_class";
+	"Mouse::Meta::Attribute::has_trigger";
+	"Mouse::Meta::Attribute::should_coerce";
+	"Mouse::Meta::Attribute::is_required";
+	"Mouse::Meta::Attribute::clone_and_inherit_options";
+	"Mouse::Meta::Attribute::documentation";
+	"Mouse::Meta::Attribute::has_type_constraint";
+	"Mouse::Meta::Attribute::is_lazy";
+	"Mouse::Meta::Attribute::has_documentation";
+	"Mouse::Meta::Attribute::CORE:match";
+	"Mouse::Meta::Attribute::type_constraint";
+	"Mouse::Meta::Attribute::has_builder";
+}
+subgraph cluster_MouseX_Getopt_Meta_Attribute_NoGetopt {
+	label="MouseX::Getopt::Meta::Attribute::NoGetopt";
+	"MouseX::Getopt::Meta::Attribute::NoGetopt::meta";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::_initialize_object";
+	"Mouse::Meta::Class::get_all_attributes";
+	"Mouse::Meta::Class::create_anon_class";
+	"Mouse::Meta::Class::add_attribute";
+	"Mouse::Meta::Class::_calculate_all_attributes";
+	"Mouse::Meta::Class::find_attribute_by_name";
+}
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::find_or_create_does_type_constraint";
+	"Mouse::Util::TypeConstraints::find_or_create_isa_type_constraint";
+}
+subgraph cluster_Mouse_Meta_Class___ANON___1 {
+	label="Mouse::Meta::Class::__ANON__::1";
+	"Mouse::Meta::Class::__ANON__::1::meta";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::do_import";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::name";
+	"Mouse::Meta::Module::add_method";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::is_a_type_of";
+	"Mouse::Meta::TypeConstraint::BEGIN@2";
+}
+subgraph cluster_MouseX_Getopt_Basic {
+	label="MouseX::Getopt::Basic";
+	"MouseX::Getopt::Basic::_attrs_to_options";
+	"MouseX::Getopt::Basic::_get_cmd_flags_for_attr";
+	"MouseX::Getopt::Basic::CORE:sort";
+	"MouseX::Getopt::Basic::_compute_getopt_attrs";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::_storage";
+	"Hailo::_tokenizer";
+	"Hailo::_engine";
+}
+subgraph cluster_Mouse_Meta_Class___ANON___2 {
+	label="Mouse::Meta::Class::__ANON__::2";
+	"Mouse::Meta::Class::__ANON__::2::meta";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::dbd_options";
+	"Hailo::Storage::dbh";
+	"Hailo::Storage::sth";
+	"Hailo::Storage::dbi_options";
+	"Hailo::Storage::dbd";
+}
+subgraph cluster_Mouse_Meta_Method_Accessor_XS {
+	label="Mouse::Meta::Method::Accessor::XS";
+	"Mouse::Meta::Method::Accessor::XS::_generate_reader";
+	"Mouse::Meta::Method::Accessor::XS::_generate_accessor";
+	"Mouse::Meta::Method::Accessor::XS::_generate_predicate";
+	"Mouse::Meta::Method::Accessor::XS::_generate_clearer";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::BEGIN@16";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::BUILDARGS";
+	"Mouse::Object::new";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::does";
+	"Mouse::Util::resolve_metaclass_alias";
+	"Mouse::Util::does_role";
+}
+"Mouse::BEGIN@16" -> "Mouse::Meta::Attribute::BEGIN@4";
+"Mouse::Meta::Attribute::new" -> "Mouse::Meta::Class::_initialize_object";
+"Mouse::BEGIN@16" -> "Mouse::Meta::Attribute::BEGIN@2";
+"Mouse::Meta::Attribute::clone_and_inherit_options" -> "Mouse::Meta::Attribute::name";
+"MouseX::Getopt::Basic::_get_cmd_flags_for_attr" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_clearer" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Class::find_attribute_by_name" -> "Mouse::Meta::Attribute::name";
+"MouseX::Getopt::Basic::_compute_getopt_attrs" -> "Mouse::Meta::Attribute::name";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_predicate" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Class::_calculate_all_attributes" -> "Mouse::Meta::Attribute::name";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::should_auto_deref";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::should_auto_deref";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_default";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_default";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Module::add_method";
+"Mouse::Meta::Attribute::clone_and_inherit_options" -> "Mouse::Meta::Attribute::illegal_options_for_inheritance";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::is_weak_ref";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::is_weak_ref";
+"Mouse::Meta::Attribute::new" -> "Mouse::Meta::Attribute::_process_options";
+"Mouse::Meta::Attribute::interpolate_class" -> "Mouse::Meta::Module::name";
+"Mouse::Meta::Attribute::interpolate_class" -> "Mouse::Util::does";
+"Mouse::Meta::Attribute::new" -> "MouseX::Getopt::Meta::Attribute::NoGetopt::meta";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::documentation";
+"Mouse::Meta::Attribute::interpolate_class" -> "Mouse::Util::does_role";
+"Mouse::Meta::Attribute::clone_and_inherit_options" -> "Mouse::Meta::Attribute::CORE:match";
+"Mouse::Meta::Attribute::BEGIN@6" -> "Mouse::Meta::TypeConstraint::BEGIN@2";
+"Mouse::Meta::Attribute::_process_options" -> "Mouse::Util::TypeConstraints::find_or_create_isa_type_constraint";
+"Mouse::Meta::Class::add_attribute" -> "Mouse::Meta::Attribute::install_accessors";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Attribute::associated_class";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_type_constraint";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::has_type_constraint";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_type_constraint";
+"Mouse::Meta::Attribute::interpolate_class" -> "Mouse::Util::resolve_metaclass_alias";
+"Mouse::Meta::Attribute::BEGIN@2" -> "Mouse::Exporter::do_import";
+"Mouse::Meta::Attribute::clone_and_inherit_options" -> "Mouse::Object::BUILDARGS";
+"Mouse::Meta::Attribute::new" -> "Mouse::Object::BUILDARGS";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Attribute::accessor_metaclass";
+"Mouse::Meta::Attribute::clone_and_inherit_options" -> "Mouse::Meta::Attribute::interpolate_class";
+"Mouse::Meta::Class::add_attribute" -> "Mouse::Meta::Attribute::interpolate_class";
+"Hailo::Storage::sth" -> "Mouse::Meta::Attribute::builder";
+"Hailo::Storage::dbh" -> "Mouse::Meta::Attribute::builder";
+"Hailo::Storage::dbd" -> "Mouse::Meta::Attribute::builder";
+"Hailo::Storage::dbi_options" -> "Mouse::Meta::Attribute::builder";
+"Hailo::Storage::dbd_options" -> "Mouse::Meta::Attribute::builder";
+"Hailo::_engine" -> "Mouse::Meta::Attribute::builder";
+"Hailo::_tokenizer" -> "Mouse::Meta::Attribute::builder";
+"Hailo::_storage" -> "Mouse::Meta::Attribute::builder";
+"Mouse::Meta::Attribute::_process_options" -> "Mouse::Util::TypeConstraints::find_or_create_does_type_constraint";
+"Mouse::Meta::Class::add_attribute" -> "Mouse::Meta::Attribute::clone_and_inherit_options";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_predicate";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::type_constraint";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::type_constraint";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::type_constraint";
+"Mouse::Meta::Attribute::new" -> "Mouse::Meta::Class::__ANON__::1::meta";
+"Mouse::Object::new" -> "Mouse::Meta::Attribute::trigger";
+"Mouse::Object::new" -> "Mouse::Meta::Attribute::default";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Attribute::associate_method";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::should_coerce";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::should_coerce";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::is_lazy";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::is_lazy";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_reader";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::has_documentation";
+"Mouse::Meta::Attribute::_process_options" -> "Mouse::Meta::TypeConstraint::is_a_type_of";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_accessor";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_builder";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_builder";
+"Mouse::Meta::Attribute::interpolate_class" -> "Mouse::Meta::Class::create_anon_class";
+"MouseX::Getopt::Basic::CORE:sort" -> "Mouse::Meta::Attribute::insertion_order";
+"Mouse::Meta::Attribute::clone_and_inherit_options" -> "Mouse::Meta::Attribute::new";
+"Mouse::Meta::Class::add_attribute" -> "Mouse::Meta::Attribute::new";
+"Mouse::BEGIN@16" -> "Mouse::Meta::Attribute::BEGIN@6";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::has_trigger";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::has_trigger";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::is_required";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::is_required";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::is_required";
+"Mouse::Meta::Attribute::new" -> "Mouse::Meta::Class::__ANON__::2::meta";
+"Mouse::Meta::Method::Accessor::XS::_generate_reader" -> "Mouse::Meta::Attribute::init_arg";
+"MouseX::Getopt::Basic::_attrs_to_options" -> "Mouse::Meta::Attribute::init_arg";
+"Mouse::Meta::Method::Accessor::XS::_generate_accessor" -> "Mouse::Meta::Attribute::init_arg";
+"Mouse::Meta::Attribute::new" -> "Mouse::Meta::Attribute::init_arg";
+"Mouse::Meta::Attribute::new" -> "Mouse::Meta::Class::get_all_attributes";
+"Mouse::Meta::Attribute::install_accessors" -> "Mouse::Meta::Method::Accessor::XS::_generate_clearer";
+}

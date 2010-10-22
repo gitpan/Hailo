@@ -1,0 +1,336 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Attribute {
+	label="Mouse::Meta::Attribute";
+	"Mouse::Meta::Attribute::builder";
+}
+subgraph cluster_Hailo_Tokenizer_Words {
+	label="Hailo::Tokenizer::Words";
+	"Hailo::Tokenizer::Words::BEGIN@7";
+	"Hailo::Tokenizer::Words::make_tokens";
+	"Hailo::Tokenizer::Words::CORE:regcomp";
+	"Hailo::Tokenizer::Words::BEGIN@8";
+	"Hailo::Tokenizer::Words::BEGIN@9";
+	"Hailo::Tokenizer::Words::BEGIN@6";
+	"Hailo::Tokenizer::Words::BEGIN@5";
+	"Hailo::Tokenizer::Words::meta";
+	"Hailo::Tokenizer::Words::CORE:qr";
+	"Hailo::Tokenizer::Words::BEGIN@4";
+	"Hailo::Tokenizer::Words::BEGIN@3";
+}
+subgraph cluster_Encode {
+	label="Encode";
+	"Encode::find_encoding";
+}
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::make_immutable";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::unimport";
+}
+subgraph cluster_Encode_Encoding {
+	label="Encode::Encoding";
+	"Encode::Encoding::needs_lines";
+	"Encode::Encoding::renew";
+}
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::__ANON__[Mouse/Util/TypeConstraints.pm:217]";
+}
+subgraph cluster_version {
+	label="version";
+	"version::__ANON__[version.pm:151]";
+}
+subgraph cluster_constant {
+	label="constant";
+	"constant::import";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_B_Hooks_EndOfScope {
+	label="B::Hooks::EndOfScope";
+	"B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+}
+subgraph cluster_Hailo_Engine_Default {
+	label="Hailo::Engine::Default";
+	"Hailo::Engine::Default::learn";
+	"Hailo::Engine::Default::BEGIN@6";
+	"Hailo::Engine::Default::BEGIN@4";
+	"Hailo::Engine::Default::meta";
+	"Hailo::Engine::Default::BEGIN@3";
+	"Hailo::Engine::Default::BEGIN@5";
+}
+subgraph cluster_Hailo_Storage_SQLite {
+	label="Hailo::Storage::SQLite";
+	"Hailo::Storage::SQLite::BEGIN@3";
+	"Hailo::Storage::SQLite::BEGIN@5";
+	"Hailo::Storage::SQLite::BEGIN@4";
+	"Hailo::Storage::SQLite::stop_training";
+	"Hailo::Storage::SQLite::BEGIN@6";
+	"Hailo::Storage::SQLite::save";
+	"Hailo::Storage::SQLite::meta";
+	"Hailo::Storage::SQLite::start_training";
+}
+subgraph cluster_List_Util {
+	label="List::Util";
+	"List::Util::first";
+}
+subgraph cluster_feature {
+	label="feature";
+	"feature::import";
+}
+subgraph cluster_autodie {
+	label="autodie";
+	"autodie::BEGIN@6";
+	"autodie::BEGIN@3";
+	"autodie::BEGIN@4";
+	"autodie::BEGIN@35";
+	"autodie::import";
+	"autodie::BEGIN@2";
+	"autodie::BEGIN@10";
+	"autodie::BEGIN@14";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+}
+subgraph cluster_IO_Interactive {
+	label="IO::Interactive";
+	"IO::Interactive::BEGIN@37";
+	"IO::Interactive::BEGIN@3";
+	"IO::Interactive::BEGIN@6";
+	"IO::Interactive::BEGIN@76";
+	"IO::Interactive::is_interactive";
+	"IO::Interactive::BEGIN@115";
+	"IO::Interactive::BEGIN@8";
+	"IO::Interactive::BEGIN@123";
+	"IO::Interactive::BEGIN@7";
+	"IO::Interactive::BEGIN@5";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::import";
+	"Any::Moose::moose_is_preferred";
+}
+subgraph cluster_Scalar_Util {
+	label="Scalar::Util";
+	"Scalar::Util::blessed";
+	"Scalar::Util::weaken";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::BEGIN@7";
+	"Hailo::CORE:regcomp";
+	"Hailo::engine_args";
+	"Hailo::__ANON__[lib/Hailo.pm:111]";
+	"Hailo::CORE:open";
+	"Hailo::__ANON__[(eval 29)[Fatal.pm:1102]:127]";
+	"Hailo::PLUGINS";
+	"Hailo::BEGIN@123";
+	"Hailo::__ANON__[lib/Hailo.pm:170]";
+	"Hailo::BEGIN@3.8";
+	"Hailo::_learn_one";
+	"Hailo::CORE:sort";
+	"Hailo::train";
+	"Hailo::storage_args";
+	"Hailo::BEGIN@178";
+	"Hailo::_is_interactive";
+	"Hailo::tokenizer_args";
+	"Hailo::BEGIN@6.10";
+	"Hailo::BEGIN@9";
+	"Hailo::BEGIN@11";
+	"Hailo::_storage";
+	"Hailo::DEMOLISH";
+	"Hailo::BEGIN@8";
+	"Hailo::BEGIN@4";
+	"Hailo::__ANON__[(eval 30)[Fatal.pm:1188]:47]";
+	"Hailo::_new_class";
+	"Hailo::_tokenizer";
+	"Hailo::_engine";
+	"Hailo::BEGIN@5";
+	"Hailo::save";
+	"Hailo::BEGIN@3";
+	"Hailo::CORE:match";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::extends";
+	"Mouse::override";
+	"Mouse::around";
+	"Mouse::with";
+	"Mouse::after";
+	"Mouse::before";
+	"Mouse::has";
+}
+subgraph cluster_Mouse_Object {
+	label="Mouse::Object";
+	"Mouse::Object::new";
+	"Mouse::Object::DESTROY";
+}
+subgraph cluster_Tie_Hash_NamedCapture {
+	label="Tie::Hash::NamedCapture";
+	"Tie::Hash::NamedCapture::TIEHASH";
+	"Tie::Hash::NamedCapture::flags";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::_try_load_one_class";
+}
+subgraph cluster_Fatal {
+	label="Fatal";
+	"Fatal::import";
+}
+subgraph cluster_namespace_clean {
+	label="namespace::clean";
+	"namespace::clean::import";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::__ANON__[lib/Hailo/Command.pm:59]";
+	"Hailo::Command::storage_class";
+	"Hailo::Command::order";
+	"Hailo::Command::__ANON__[lib/Hailo/Command.pm:234]";
+	"Hailo::Command::_train_fh";
+	"Hailo::Command::tokenizer_class";
+	"Hailo::Command::train_progress";
+	"Hailo::Command::engine_class";
+	"Hailo::Command::__ANON__[lib/Hailo/Command.pm:298]";
+	"Hailo::Command::save_on_exit";
+	"Hailo::Command::brain";
+	"Hailo::Command::run";
+}
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@8";
+"Hailo::BEGIN@178" -> "Tie::Hash::NamedCapture::flags";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@123";
+"Hailo::_storage" -> "Hailo::__ANON__[lib/Hailo.pm:170]";
+"Hailo::_tokenizer" -> "Hailo::__ANON__[lib/Hailo.pm:170]";
+"Hailo::_engine" -> "Hailo::__ANON__[lib/Hailo.pm:170]";
+"Hailo::Command::run" -> "Hailo::train";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@3";
+"Hailo::BEGIN@4" -> "autodie::BEGIN@3";
+"Hailo::BEGIN@7" -> "Exporter::import";
+"Hailo::BEGIN@8" -> "Exporter::import";
+"Hailo::CORE:open" -> "Encode::Encoding::needs_lines";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::BEGIN@5";
+"Hailo::_new_class" -> "Hailo::Engine::Default::meta";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::BEGIN@4";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::_storage";
+"Hailo::train" -> "Hailo::_storage";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:234]" -> "Hailo::_storage";
+"Hailo::Command::run" -> "Hailo::_storage";
+"Hailo::save" -> "Hailo::_storage";
+"Hailo::_storage" -> "Mouse::Util::TypeConstraints::__ANON__[Mouse/Util/TypeConstraints.pm:217]";
+"Hailo::_tokenizer" -> "Mouse::Util::TypeConstraints::__ANON__[Mouse/Util/TypeConstraints.pm:217]";
+"Hailo::_engine" -> "Mouse::Util::TypeConstraints::__ANON__[Mouse/Util/TypeConstraints.pm:217]";
+"Hailo::_engine" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::_tokenizer" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::_storage" -> "Mouse::Meta::TypeConstraint::_compiled_type_constraint";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@5";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@76";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::BEGIN@8";
+"Hailo::BEGIN@4" -> "autodie::BEGIN@14";
+"Hailo::_new_class" -> "Mouse::extends";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@6";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@5";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@3";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::BEGIN@3";
+"Hailo::BEGIN@4" -> "autodie::BEGIN@6";
+"Hailo::_new_class" -> "Mouse::has";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@5";
+"Hailo::_learn_one" -> "Hailo::Tokenizer::Words::make_tokens";
+"Hailo::CORE:open" -> "Encode::Encoding::renew";
+"Hailo::__ANON__[(eval 29)[Fatal.pm:1102]:127]" -> "Hailo::CORE:open";
+"Hailo::DEMOLISH" -> "Scalar::Util::blessed";
+"Hailo::_new_class" -> "Mouse::Meta::Class::make_immutable";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@5";
+"Hailo::_new_class" -> "Hailo::PLUGINS";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@7";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@178";
+"Hailo::_is_interactive" -> "version::__ANON__[version.pm:151]";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:59]" -> "Hailo::_is_interactive";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:298]" -> "Hailo::_is_interactive";
+"Hailo::Command::run" -> "Hailo::_is_interactive";
+"Hailo::BEGIN@4" -> "autodie::BEGIN@35";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::tokenizer_args";
+"Hailo::BEGIN@4" -> "autodie::BEGIN@10";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@123";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@3";
+"Hailo::BEGIN@178" -> "Tie::Hash::NamedCapture::TIEHASH";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@8";
+"Hailo::_engine" -> "Mouse::Meta::Attribute::builder";
+"Hailo::_tokenizer" -> "Mouse::Meta::Attribute::builder";
+"Hailo::_storage" -> "Mouse::Meta::Attribute::builder";
+"Hailo::train" -> "Hailo::__ANON__[(eval 30)[Fatal.pm:1188]:47]";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::BEGIN@9";
+"Hailo::save" -> "Hailo::Storage::SQLite::save";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::CORE:qr";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@3";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@7";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::Command::tokenizer_class";
+"List::Util::first" -> "Hailo::CORE:regcomp";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::engine_args";
+"Hailo::CORE:open" -> "Encode::find_encoding";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Scalar::Util::weaken";
+"Hailo::train" -> "Hailo::Storage::SQLite::start_training";
+"Hailo::DEMOLISH" -> "Hailo::Command::save_on_exit";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::Command::order";
+"Hailo::_new_class" -> "Hailo::CORE:sort";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::storage_args";
+"Hailo::BEGIN@4" -> "autodie::BEGIN@2";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::CORE:regcomp";
+"Hailo::train" -> "Hailo::Storage::SQLite::stop_training";
+"Hailo::_new_class" -> "Mouse::before";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::meta";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@11";
+"Hailo::BEGIN@11" -> "constant::import";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::Command::storage_class";
+"Mouse::Object::DESTROY" -> "Hailo::DEMOLISH";
+"Hailo::BEGIN@5" -> "Any::Moose::import";
+"Hailo::BEGIN@6.10" -> "Any::Moose::import";
+"Hailo::BEGIN@123" -> "strict::unimport";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@115";
+"Hailo::_new_class" -> "Mouse::with";
+"Hailo::_new_class" -> "Any::Moose::moose_is_preferred";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@4";
+"Hailo::_new_class" -> "Mouse::around";
+"Hailo::_new_class" -> "Mouse::override";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::BEGIN@6";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::_new_class";
+"Hailo::_learn_one" -> "Hailo::_tokenizer";
+"Hailo::_learn_one" -> "Hailo::_engine";
+"Hailo::BEGIN@4" -> "autodie::BEGIN@4";
+"Hailo::_new_class" -> "Hailo::Tokenizer::Words::BEGIN@7";
+"Hailo::_is_interactive" -> "IO::Interactive::is_interactive";
+"Hailo::BEGIN@4" -> "Fatal::import";
+"Hailo::BEGIN@3.8" -> "feature::import";
+"List::Util::first" -> "Hailo::CORE:match";
+"Hailo::__ANON__[(eval 30)[Fatal.pm:1188]:47]" -> "Hailo::CORE:match";
+"Hailo::_new_class" -> "Hailo::CORE:match";
+"Hailo::_new_class" -> "Mouse::after";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@4";
+"Mouse::Object::new" -> "Hailo::__ANON__[lib/Hailo.pm:111]";
+"Hailo::train" -> "Hailo::__ANON__[(eval 29)[Fatal.pm:1102]:127]";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::Command::brain";
+"Hailo::Command::train_progress" -> "Hailo::_learn_one";
+"Hailo::BEGIN@3" -> "Hailo::BEGIN@3.8";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Hailo::Command::engine_class";
+"Hailo::_new_class" -> "Mouse::Object::new";
+"Hailo::_new_class" -> "Hailo::Engine::Default::BEGIN@6";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@6.10";
+"Mouse::Util::_try_load_one_class" -> "Hailo::BEGIN@9";
+"Hailo::train" -> "Hailo::Command::_train_fh";
+"Hailo::_new_class" -> "B::Hooks::EndOfScope::__ANON__[B/Hooks/EndOfScope.pm:26]";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@4";
+"Hailo::_learn_one" -> "Hailo::Engine::Default::learn";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::BEGIN@6";
+"Hailo::_is_interactive" -> "IO::Interactive::BEGIN@37";
+"Hailo::BEGIN@4" -> "autodie::import";
+"Hailo::DEMOLISH" -> "Hailo::save";
+"Hailo::BEGIN@9" -> "namespace::clean::import";
+"Hailo::_new_class" -> "List::Util::first";
+"Hailo::_new_class" -> "Hailo::Storage::SQLite::meta";
+}

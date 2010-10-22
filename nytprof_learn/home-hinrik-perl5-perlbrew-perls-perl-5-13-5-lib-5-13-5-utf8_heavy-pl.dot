@@ -1,0 +1,59 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Hailo_Tokenizer_Words {
+	label="Hailo::Tokenizer::Words";
+	"Hailo::Tokenizer::Words::make_tokens";
+	"Hailo::Tokenizer::Words::CORE:match";
+	"Hailo::Tokenizer::Words::CORE:subst";
+}
+subgraph cluster_DBI {
+	label="DBI";
+	"DBI::CORE:subst";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::unimport";
+	"warnings::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+}
+subgraph cluster_utf8 {
+	label="utf8";
+	"utf8::AUTOLOAD";
+	"utf8::CORE:match";
+	"utf8::CORE:sort";
+	"utf8::BEGIN@2";
+	"utf8::BEGIN@383";
+	"utf8::SWASHNEW";
+	"utf8::BEGIN@3";
+	"utf8::BEGIN@325";
+	"utf8::BEGIN@89";
+	"utf8::CORE:subst";
+}
+subgraph cluster_Getopt_Long {
+	label="Getopt::Long";
+	"Getopt::Long::FindOption";
+}
+"utf8::SWASHNEW" -> "utf8::CORE:sort";
+"utf8::BEGIN@383" -> "warnings::unimport";
+"utf8::SWASHNEW" -> "utf8::CORE:match";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@3";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@89";
+"utf8::BEGIN@325" -> "strict::unimport";
+"utf8::BEGIN@89" -> "strict::unimport";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@383";
+"utf8::BEGIN@3" -> "warnings::import";
+"utf8::SWASHNEW" -> "utf8::CORE:subst";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@2";
+"Getopt::Long::FindOption" -> "utf8::SWASHNEW";
+"DBI::CORE:subst" -> "utf8::SWASHNEW";
+"utf8::SWASHNEW" -> "utf8::SWASHNEW";
+"Hailo::Tokenizer::Words::CORE:subst" -> "utf8::SWASHNEW";
+"Hailo::Tokenizer::Words::CORE:match" -> "utf8::SWASHNEW";
+"Hailo::Tokenizer::Words::make_tokens" -> "utf8::SWASHNEW";
+"utf8::AUTOLOAD" -> "utf8::BEGIN@325";
+"utf8::BEGIN@2" -> "strict::import";
+}

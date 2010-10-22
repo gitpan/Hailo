@@ -1,0 +1,89 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::add_attribute";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Tie_RefHash {
+	label="Tie::RefHash";
+	"Tie::RefHash::STORE";
+}
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::__ANON__[Mouse/Util/TypeConstraints.pm:217]";
+}
+subgraph cluster_Package_Stash {
+	label="Package::Stash";
+	"Package::Stash::_valid_for_type";
+	"Package::Stash::has_package_symbol";
+}
+subgraph cluster_Sub_Install {
+	label="Sub::Install";
+	"Sub::Install::_CODELIKE";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::create";
+}
+subgraph cluster_IO_Interactive {
+	label="IO::Interactive";
+	"IO::Interactive::is_interactive";
+}
+subgraph cluster_Hailo {
+	label="Hailo";
+	"Hailo::__ANON__[lib/Hailo.pm:170]";
+	"Hailo::DEMOLISH";
+}
+subgraph cluster_Scalar_Util {
+	label="Scalar::Util";
+	"Scalar::Util::BEGIN@9";
+	"Scalar::Util::refaddr";
+	"Scalar::Util::reftype";
+	"Scalar::Util::blessed";
+	"Scalar::Util::BEGIN@10";
+	"Scalar::Util::weaken";
+	"Scalar::Util::openhandle";
+}
+subgraph cluster_Hailo_Storage {
+	label="Hailo::Storage";
+	"Hailo::Storage::BEGIN@6";
+}
+subgraph cluster_MouseX_Getopt_OptionTypeMap {
+	label="MouseX::Getopt::OptionTypeMap";
+	"MouseX::Getopt::OptionTypeMap::has_option_type";
+	"MouseX::Getopt::OptionTypeMap::get_option_type";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::apply_all_roles";
+	"Mouse::Util::BEGIN@81";
+}
+"Tie::RefHash::STORE" -> "Scalar::Util::refaddr";
+"Mouse::Util::TypeConstraints::__ANON__[Mouse/Util/TypeConstraints.pm:217]" -> "Scalar::Util::blessed";
+"Mouse::Util::apply_all_roles" -> "Scalar::Util::blessed";
+"Hailo::DEMOLISH" -> "Scalar::Util::blessed";
+"Mouse::Meta::Class::add_attribute" -> "Scalar::Util::blessed";
+"MouseX::Getopt::OptionTypeMap::get_option_type" -> "Scalar::Util::blessed";
+"MouseX::Getopt::OptionTypeMap::has_option_type" -> "Scalar::Util::blessed";
+"Mouse::Util::BEGIN@81" -> "Scalar::Util::BEGIN@9";
+"IO::Interactive::is_interactive" -> "Scalar::Util::openhandle";
+"Hailo::__ANON__[lib/Hailo.pm:170]" -> "Scalar::Util::weaken";
+"Mouse::Meta::Module::create" -> "Scalar::Util::weaken";
+"Mouse::Meta::Class::add_attribute" -> "Scalar::Util::weaken";
+"Hailo::Storage::BEGIN@6" -> "Scalar::Util::weaken";
+"Sub::Install::_CODELIKE" -> "Scalar::Util::reftype";
+"Package::Stash::_valid_for_type" -> "Scalar::Util::reftype";
+"Scalar::Util::openhandle" -> "Scalar::Util::reftype";
+"Package::Stash::has_package_symbol" -> "Scalar::Util::reftype";
+"Mouse::Util::BEGIN@81" -> "Scalar::Util::BEGIN@10";
+"Scalar::Util::BEGIN@10" -> "vars::import";
+"Scalar::Util::BEGIN@9" -> "strict::import";
+}

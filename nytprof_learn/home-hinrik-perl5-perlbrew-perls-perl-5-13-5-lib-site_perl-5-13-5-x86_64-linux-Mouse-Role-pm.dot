@@ -1,0 +1,94 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::role_type";
+	"Mouse::Util::TypeConstraints::find_type_constraint";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::import";
+	"Mouse::Exporter::do_import";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::initialize";
+	"Mouse::Meta::Module::_collect_methods";
+	"Mouse::Meta::Module::add_method";
+}
+subgraph cluster_MouseX_Getopt {
+	label="MouseX::Getopt";
+	"MouseX::Getopt::BEGIN@10";
+}
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::_identity";
+}
+subgraph cluster_MouseX_Getopt_GLD {
+	label="MouseX::Getopt::GLD";
+	"MouseX::Getopt::GLD::meta";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::_install_module";
+}
+subgraph cluster_Mouse_Meta_Role {
+	label="Mouse::Meta::Role";
+	"Mouse::Meta::Role::add_around_method_modifier";
+	"Mouse::Meta::Role::add_required_methods";
+	"Mouse::Meta::Role::add_attribute";
+}
+subgraph cluster_hailo {
+	label="hailo";
+	"hailo::BEGIN@8";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::apply_all_roles";
+	"Mouse::Util::_try_load_one_class";
+}
+subgraph cluster_Mouse_Role {
+	label="Mouse::Role";
+	"Mouse::Role::BEGIN@7";
+	"Mouse::Role::requires";
+	"Mouse::Role::init_meta";
+	"Mouse::Role::with";
+	"Mouse::Role::BEGIN@6";
+	"Mouse::Role::BEGIN@2";
+	"Mouse::Role::around";
+	"Mouse::Role::BEGIN@9";
+	"Mouse::Role::has";
+}
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@6";
+"Mouse::Role::init_meta" -> "Mouse::Meta::Module::add_method";
+"Mouse::Role::BEGIN@6" -> "Exporter::import";
+"Mouse::Role::BEGIN@7" -> "Exporter::import";
+"Mouse::Util::_try_load_one_class" -> "Mouse::Role::has";
+"hailo::BEGIN@8" -> "MouseX::Getopt::GLD::meta";
+"Mouse::Role::around" -> "Mouse::Meta::Module::_collect_methods";
+"Any::Moose::_install_module" -> "Mouse::Role::with";
+"Mouse::Util::_try_load_one_class" -> "Mouse::Role::with";
+"Mouse::Role::has" -> "Mouse::Meta::Role::add_attribute";
+"Mouse::Role::requires" -> "Mouse::Meta::Role::add_required_methods";
+"Mouse::Role::with" -> "Mouse::Util::apply_all_roles";
+"Mouse::Role::init_meta" -> "Mouse::Util::TypeConstraints::find_type_constraint";
+"Mouse::Util::_try_load_one_class" -> "Mouse::Role::around";
+"Mouse::Role::BEGIN@2" -> "Mouse::Exporter::import";
+"Mouse::Role::around" -> "Mouse::Meta::Role::add_around_method_modifier";
+"Mouse::Util::_try_load_one_class" -> "Mouse::Role::requires";
+"Mouse::Exporter::do_import" -> "Mouse::Role::init_meta";
+"Mouse::Role::init_meta" -> "Mouse::Meta::TypeConstraint::_identity";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@2";
+"MouseX::Getopt::GLD::meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::Role::requires" -> "Mouse::Meta::Module::initialize";
+"Mouse::Role::has" -> "Mouse::Meta::Module::initialize";
+"Mouse::Role::init_meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::Role::around" -> "Mouse::Meta::Module::initialize";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@7";
+"Mouse::Role::init_meta" -> "Mouse::Util::TypeConstraints::role_type";
+"MouseX::Getopt::BEGIN@10" -> "Mouse::Role::BEGIN@9";
+}

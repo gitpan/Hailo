@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::VERSION = '0.57';
+  $Hailo::VERSION = '0.58';
 }
 
 use 5.010;

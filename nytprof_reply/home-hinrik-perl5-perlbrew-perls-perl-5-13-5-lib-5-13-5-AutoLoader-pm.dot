@@ -1,0 +1,31 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_base {
+	label="base";
+	"base::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+}
+subgraph cluster_AutoLoader {
+	label="AutoLoader";
+	"AutoLoader::BEGIN@138";
+	"AutoLoader::BEGIN@30";
+	"AutoLoader::BEGIN@4";
+	"AutoLoader::BEGIN@186";
+	"AutoLoader::BEGIN@3";
+	"AutoLoader::BEGIN@13";
+}
+"base::import" -> "AutoLoader::BEGIN@138";
+"base::import" -> "AutoLoader::BEGIN@3";
+"base::import" -> "AutoLoader::BEGIN@4";
+"AutoLoader::BEGIN@138" -> "strict::unimport";
+"AutoLoader::BEGIN@186" -> "strict::unimport";
+"AutoLoader::BEGIN@30" -> "strict::unimport";
+"base::import" -> "AutoLoader::BEGIN@186";
+"base::import" -> "AutoLoader::BEGIN@13";
+"AutoLoader::BEGIN@3" -> "strict::import";
+"base::import" -> "AutoLoader::BEGIN@30";
+}

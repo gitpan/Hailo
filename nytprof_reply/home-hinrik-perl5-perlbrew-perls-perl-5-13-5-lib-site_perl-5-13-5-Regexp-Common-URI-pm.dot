@@ -1,0 +1,50 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_Regexp_Common_URI {
+	label="Regexp::Common::URI";
+	"Regexp::Common::URI::register_uri";
+	"Regexp::Common::URI::BEGIN@14";
+	"Regexp::Common::URI::BEGIN@17";
+	"Regexp::Common::URI::BEGIN@5";
+	"Regexp::Common::URI::BEGIN@6";
+	"Regexp::Common::URI::BEGIN@9";
+	"Regexp::Common::URI::BEGIN@3";
+	"Regexp::Common::URI::BEGIN@19";
+	"Regexp::Common::URI::BEGIN@8";
+	"Regexp::Common::URI::BEGIN@16";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Regexp_Common {
+	label="Regexp::Common";
+	"Regexp::Common::import";
+}
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@16";
+"Regexp::Common::URI::BEGIN@14" -> "Regexp::Common::import";
+"Regexp::Common::URI::BEGIN@3" -> "Regexp::Common::import";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@3";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@9";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@8";
+"Regexp::Common::import" -> "Regexp::Common::URI::register_uri";
+"Regexp::Common::URI::BEGIN@17" -> "warnings::import";
+"Regexp::Common::URI::BEGIN@6" -> "warnings::import";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@19";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@14";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@17";
+"Regexp::Common::URI::BEGIN@9" -> "vars::import";
+"Regexp::Common::URI::BEGIN@19" -> "vars::import";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@5";
+"Regexp::Common::import" -> "Regexp::Common::URI::BEGIN@6";
+"Regexp::Common::URI::BEGIN@16" -> "strict::import";
+"Regexp::Common::URI::BEGIN@5" -> "strict::import";
+}

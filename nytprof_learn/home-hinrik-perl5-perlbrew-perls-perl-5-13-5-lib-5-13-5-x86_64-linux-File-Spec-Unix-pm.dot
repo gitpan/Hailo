@@ -1,0 +1,76 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Config {
+	label="Config";
+	"Config::FETCH";
+}
+subgraph cluster_Dir_Self {
+	label="Dir::Self";
+	"Dir::Self::BEGIN@6";
+	"Dir::Self::__DIR__";
+}
+subgraph cluster_vars {
+	label="vars";
+	"vars::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+}
+subgraph cluster_XSLoader {
+	label="XSLoader";
+	"XSLoader::load";
+}
+subgraph cluster_File_Spec_Unix {
+	label="File::Spec::Unix";
+	"File::Spec::Unix::_cwd";
+	"File::Spec::Unix::rel2abs";
+	"File::Spec::Unix::canonpath";
+	"File::Spec::Unix::CORE:match";
+	"File::Spec::Unix::BEGIN@149";
+	"File::Spec::Unix::file_name_is_absolute";
+	"File::Spec::Unix::splitpath";
+	"File::Spec::Unix::BEGIN@4";
+	"File::Spec::Unix::BEGIN@3";
+	"File::Spec::Unix::CORE:subst";
+	"File::Spec::Unix::catdir";
+}
+subgraph cluster_Cwd {
+	label="Cwd";
+	"Cwd::BEGIN@811";
+	"Cwd::BEGIN@172";
+	"Cwd::BEGIN@170";
+	"Cwd::CORE:fteexec";
+	"Cwd::BEGIN@171";
+	"Cwd::getcwd";
+	"Cwd::BEGIN@209";
+	"Cwd::CORE:regcomp";
+}
+"Dir::Self::BEGIN@6" -> "File::Spec::Unix::BEGIN@149";
+"Dir::Self::__DIR__" -> "File::Spec::Unix::splitpath";
+"File::Spec::Unix::rel2abs" -> "File::Spec::Unix::canonpath";
+"File::Spec::Unix::catdir" -> "File::Spec::Unix::canonpath";
+"Dir::Self::BEGIN@6" -> "File::Spec::Unix::BEGIN@3";
+"File::Spec::Unix::_cwd" -> "Cwd::BEGIN@209";
+"File::Spec::Unix::_cwd" -> "Cwd::CORE:fteexec";
+"File::Spec::Unix::_cwd" -> "Cwd::CORE:regcomp";
+"File::Spec::Unix::_cwd" -> "XSLoader::load";
+"File::Spec::Unix::_cwd" -> "Cwd::BEGIN@811";
+"File::Spec::Unix::file_name_is_absolute" -> "File::Spec::Unix::CORE:match";
+"File::Spec::Unix::splitpath" -> "File::Spec::Unix::CORE:match";
+"Dir::Self::__DIR__" -> "File::Spec::Unix::rel2abs";
+"File::Spec::Unix::BEGIN@149" -> "strict::unimport";
+"File::Spec::Unix::rel2abs" -> "File::Spec::Unix::_cwd";
+"File::Spec::Unix::_cwd" -> "Cwd::BEGIN@171";
+"File::Spec::Unix::_cwd" -> "Cwd::BEGIN@170";
+"File::Spec::Unix::BEGIN@4" -> "vars::import";
+"File::Spec::Unix::_cwd" -> "Cwd::getcwd";
+"File::Spec::Unix::rel2abs" -> "File::Spec::Unix::file_name_is_absolute";
+"File::Spec::Unix::_cwd" -> "Cwd::BEGIN@172";
+"File::Spec::Unix::rel2abs" -> "File::Spec::Unix::catdir";
+"File::Spec::Unix::_cwd" -> "Config::FETCH";
+"Dir::Self::BEGIN@6" -> "File::Spec::Unix::BEGIN@4";
+"File::Spec::Unix::BEGIN@3" -> "strict::import";
+"File::Spec::Unix::canonpath" -> "File::Spec::Unix::CORE:subst";
+}

@@ -1,0 +1,34 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_Class {
+	label="Mouse::Meta::Class";
+	"Mouse::Meta::Class::strict_constructor";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::_install_module";
+}
+subgraph cluster_MouseX_StrictConstructor {
+	label="MouseX::StrictConstructor";
+	"MouseX::StrictConstructor::BEGIN@3";
+	"MouseX::StrictConstructor::BEGIN@5";
+	"MouseX::StrictConstructor::init_meta";
+	"MouseX::StrictConstructor::BEGIN@4";
+}
+subgraph cluster_Mouse {
+	label="Mouse";
+	"Mouse::init_meta";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::import";
+	"Mouse::Exporter::do_import";
+}
+"MouseX::StrictConstructor::init_meta" -> "Mouse::init_meta";
+"Mouse::Exporter::do_import" -> "MouseX::StrictConstructor::init_meta";
+"MouseX::StrictConstructor::BEGIN@5" -> "Mouse::Exporter::import";
+"MouseX::StrictConstructor::init_meta" -> "Mouse::Meta::Class::strict_constructor";
+"Any::Moose::_install_module" -> "MouseX::StrictConstructor::BEGIN@4";
+"Any::Moose::_install_module" -> "MouseX::StrictConstructor::BEGIN@3";
+"Any::Moose::_install_module" -> "MouseX::StrictConstructor::BEGIN@5";
+}

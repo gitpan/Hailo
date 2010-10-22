@@ -1,0 +1,68 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Mouse_Meta_TypeConstraint {
+	label="Mouse::Meta::TypeConstraint";
+	"Mouse::Meta::TypeConstraint::_identity";
+}
+subgraph cluster_Any_Moose {
+	label="Any::Moose";
+	"Any::Moose::_install_module";
+}
+subgraph cluster_Mouse_Meta_Role {
+	label="Mouse::Meta::Role";
+	"Mouse::Meta::Role::add_required_methods";
+	"Mouse::Meta::Role::add_attribute";
+}
+subgraph cluster_Mouse_Util_TypeConstraints {
+	label="Mouse::Util::TypeConstraints";
+	"Mouse::Util::TypeConstraints::role_type";
+	"Mouse::Util::TypeConstraints::find_type_constraint";
+}
+subgraph cluster_Mouse_Util {
+	label="Mouse::Util";
+	"Mouse::Util::_try_load_one_class";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_Mouse_Role {
+	label="Mouse::Role";
+	"Mouse::Role::BEGIN@6";
+	"Mouse::Role::BEGIN@7";
+	"Mouse::Role::BEGIN@2";
+	"Mouse::Role::requires";
+	"Mouse::Role::init_meta";
+	"Mouse::Role::BEGIN@9";
+	"Mouse::Role::has";
+}
+subgraph cluster_Mouse_Exporter {
+	label="Mouse::Exporter";
+	"Mouse::Exporter::import";
+	"Mouse::Exporter::do_import";
+}
+subgraph cluster_Mouse_Meta_Module {
+	label="Mouse::Meta::Module";
+	"Mouse::Meta::Module::initialize";
+	"Mouse::Meta::Module::add_method";
+}
+"Any::Moose::_install_module" -> "Mouse::Role::BEGIN@6";
+"Mouse::Role::init_meta" -> "Mouse::Meta::Module::add_method";
+"Mouse::Role::BEGIN@6" -> "Exporter::import";
+"Mouse::Role::BEGIN@7" -> "Exporter::import";
+"Mouse::Util::_try_load_one_class" -> "Mouse::Role::has";
+"Mouse::Role::init_meta" -> "Mouse::Util::TypeConstraints::find_type_constraint";
+"Mouse::Role::BEGIN@2" -> "Mouse::Exporter::import";
+"Mouse::Util::_try_load_one_class" -> "Mouse::Role::requires";
+"Mouse::Exporter::do_import" -> "Mouse::Role::init_meta";
+"Mouse::Role::init_meta" -> "Mouse::Meta::TypeConstraint::_identity";
+"Any::Moose::_install_module" -> "Mouse::Role::BEGIN@2";
+"Mouse::Role::requires" -> "Mouse::Meta::Module::initialize";
+"Mouse::Role::has" -> "Mouse::Meta::Module::initialize";
+"Mouse::Role::init_meta" -> "Mouse::Meta::Module::initialize";
+"Mouse::Role::has" -> "Mouse::Meta::Role::add_attribute";
+"Any::Moose::_install_module" -> "Mouse::Role::BEGIN@7";
+"Mouse::Role::init_meta" -> "Mouse::Util::TypeConstraints::role_type";
+"Mouse::Role::requires" -> "Mouse::Meta::Role::add_required_methods";
+"Any::Moose::_install_module" -> "Mouse::Role::BEGIN@9";
+}

@@ -1,0 +1,65 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_Config {
+	label="Config";
+	"Config::BEGIN@38";
+	"Config::CORE:subst";
+	"Config::TIEHASH";
+	"Config::CORE:match";
+	"Config::BEGIN@5";
+	"Config::fetch_string";
+	"Config::AUTOLOAD";
+	"Config::import";
+	"Config::CORE:pack";
+	"Config::BEGIN@9";
+	"Config::launcher";
+	"Config::CORE:substcont";
+	"Config::CORE:unpack";
+	"Config::FETCH";
+}
+subgraph cluster_autodie {
+	label="autodie";
+	"autodie::BEGIN@6";
+}
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::BEGIN@25";
+}
+subgraph cluster_base {
+	label="base";
+	"base::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+	"strict::unimport";
+}
+subgraph cluster_Tie_RefHash {
+	label="Tie::RefHash";
+	"Tie::RefHash::BEGIN@96";
+	"Tie::RefHash::BEGIN@99";
+}
+subgraph cluster_Fatal {
+	label="Fatal";
+	"Fatal::BEGIN@8";
+}
+"Config::AUTOLOAD" -> "Config::CORE:match";
+"Config::AUTOLOAD" -> "Config::CORE:pack";
+"Config::FETCH" -> "Config::AUTOLOAD";
+"Config::BEGIN@38" -> "strict::unimport";
+"Config::AUTOLOAD" -> "Config::CORE:substcont";
+"Config::FETCH" -> "Config::fetch_string";
+"Config::FETCH" -> "Config::launcher";
+"Config::AUTOLOAD" -> "Config::CORE:unpack";
+"Tie::RefHash::BEGIN@99" -> "Config::TIEHASH";
+"Config::AUTOLOAD" -> "Config::BEGIN@5";
+"DynaLoader::BEGIN@25" -> "Config::import";
+"Fatal::BEGIN@8" -> "Config::import";
+"Tie::RefHash::BEGIN@99" -> "Config::BEGIN@9";
+"Tie::RefHash::BEGIN@99" -> "Config::BEGIN@38";
+"autodie::BEGIN@6" -> "Config::FETCH";
+"Tie::RefHash::BEGIN@96" -> "Config::FETCH";
+"base::import" -> "Config::FETCH";
+"Config::AUTOLOAD" -> "Config::CORE:subst";
+"Config::BEGIN@9" -> "strict::import";
+}

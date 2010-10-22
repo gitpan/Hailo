@@ -1,0 +1,94 @@
+digraph {
+graph [overlap=false]
+subgraph cluster_DynaLoader {
+	label="DynaLoader";
+	"DynaLoader::bootstrap";
+}
+subgraph cluster_warnings {
+	label="warnings";
+	"warnings::import";
+}
+subgraph cluster_strict {
+	label="strict";
+	"strict::import";
+}
+subgraph cluster_Exporter {
+	label="Exporter";
+	"Exporter::import";
+}
+subgraph cluster_Term_Sk {
+	label="Term::Sk";
+	"Term::Sk::BEGIN@4";
+	"Term::Sk::BEGIN@7";
+	"Term::Sk::commify";
+	"Term::Sk::BEGIN@3";
+	"Term::Sk::DESTROY";
+	"Term::Sk::close";
+	"Term::Sk::BEGIN@6";
+	"Term::Sk::CORE:match";
+	"Term::Sk::new";
+	"Term::Sk::up";
+	"Term::Sk::CORE:print";
+	"Term::Sk::show";
+	"Term::Sk::show_maybe";
+}
+subgraph cluster_Fcntl {
+	label="Fcntl";
+	"Fcntl::BEGIN@62";
+	"Fcntl::BEGIN@214";
+	"Fcntl::BEGIN@58";
+	"Fcntl::BEGIN@64";
+	"Fcntl::BEGIN@239";
+}
+subgraph cluster_Encode_utf8 {
+	label="Encode::utf8";
+	"Encode::utf8::encode_xs";
+}
+subgraph cluster_Time_HiRes {
+	label="Time::HiRes";
+	"Time::HiRes::BEGIN@42";
+	"Time::HiRes::BEGIN@4";
+	"Time::HiRes::BEGIN@3";
+	"Time::HiRes::import";
+	"Time::HiRes::time";
+}
+subgraph cluster_Hailo_Command {
+	label="Hailo::Command";
+	"Hailo::Command::__ANON__[lib/Hailo/Command.pm:325]";
+	"Hailo::Command::__ANON__[lib/Hailo/Command.pm:307]";
+	"Hailo::Command::train_progress";
+}
+"Hailo::Command::train_progress" -> "Term::Sk::close";
+"Term::Sk::DESTROY" -> "Term::Sk::close";
+"Term::Sk::new" -> "Term::Sk::CORE:match";
+"Term::Sk::BEGIN@6" -> "Time::HiRes::BEGIN@4";
+"Term::Sk::BEGIN@7" -> "Fcntl::BEGIN@214";
+"Term::Sk::BEGIN@7" -> "Exporter::import";
+"Term::Sk::BEGIN@6" -> "DynaLoader::bootstrap";
+"Term::Sk::CORE:print" -> "Encode::utf8::encode_xs";
+"Term::Sk::BEGIN@7" -> "Fcntl::BEGIN@64";
+"Term::Sk::BEGIN@7" -> "Fcntl::BEGIN@58";
+"Term::Sk::show" -> "Term::Sk::commify";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:307]" -> "Term::Sk::BEGIN@7";
+"Term::Sk::BEGIN@6" -> "Time::HiRes::BEGIN@42";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:307]" -> "Term::Sk::BEGIN@3";
+"Term::Sk::BEGIN@7" -> "Fcntl::BEGIN@239";
+"Term::Sk::BEGIN@6" -> "Time::HiRes::import";
+"Term::Sk::show" -> "Term::Sk::CORE:print";
+"Term::Sk::new" -> "Term::Sk::show";
+"Term::Sk::show_maybe" -> "Term::Sk::show";
+"Term::Sk::close" -> "Term::Sk::show";
+"Term::Sk::BEGIN@4" -> "warnings::import";
+"Hailo::Command::train_progress" -> "Term::Sk::up";
+"Term::Sk::up" -> "Term::Sk::show_maybe";
+"Hailo::Command::train_progress" -> "Term::Sk::DESTROY";
+"Term::Sk::BEGIN@7" -> "Fcntl::BEGIN@62";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:307]" -> "Term::Sk::BEGIN@4";
+"Term::Sk::commify" -> "Hailo::Command::__ANON__[lib/Hailo/Command.pm:325]";
+"Hailo::Command::__ANON__[lib/Hailo/Command.pm:307]" -> "Term::Sk::BEGIN@6";
+"Term::Sk::new" -> "Time::HiRes::time";
+"Term::Sk::show_maybe" -> "Time::HiRes::time";
+"Term::Sk::BEGIN@6" -> "Time::HiRes::BEGIN@3";
+"Hailo::Command::train_progress" -> "Term::Sk::new";
+"Term::Sk::BEGIN@3" -> "strict::import";
+}
