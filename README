@@ -119,7 +119,7 @@ ATTRIBUTES
     save at "DEMOLISH" time.
 
     See "in_memory" in Hailo::Storage::SQLite for how the SQLite backend
-    uses this option in conjunction with its "in_memory" option.
+    uses this option.
 
   "order"
     The Markov order (chain length) you want to use for an empty brain. The

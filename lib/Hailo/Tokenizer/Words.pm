@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.58';
+  $Hailo::Tokenizer::Words::VERSION = '0.59';
 }
 
 use 5.010;
@@ -16,14 +16,17 @@ use namespace::clean -except => 'meta';
 with qw(Hailo::Role::Arguments
         Hailo::Role::Tokenizer);
 
+# [[:alpha:]] doesn't match combining characters on Perl >=5.12
+my $ALPHA      = qr/(?![_\d])\w/;
+
 # tokenization
 my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’´]/;
-my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
+my $APOST_WORD = qr/$ALPHA+(?:$APOSTROPHE$ALPHA+)+/;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
-my $NON_WORD   = qr/[^_\d[:alpha:]]+/;
-my $PLAIN_WORD = qr/[_[:alpha:]]+/;
+my $NON_WORD   = qr/\W+/;
+my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
 my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
 my $WORD_TYPES = qr/$NUMBER|$ALPHA_WORD/;
 my $WORD       = qr/$WORD_TYPES(?:-$WORD_TYPES)*/;
@@ -199,7 +202,7 @@ sub make_output {
     $reply =~ s/(?: |^)$OPEN_QUOTE?$SPLIT_WORD$CLOSE_QUOTE?\K$/./o;
 
     # capitalize I'm, I've...
-    $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE(?:[[:alpha:]]))}{I}go;
+    $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHA)}{I}go;
 
     return $reply;
 }
@@ -211,7 +214,7 @@ __PACKAGE__->meta->make_immutable;
 =head1 NAME
 
 Hailo::Tokenizer::Words - A tokenizer for L<Hailo|Hailo> which splits
-on whitespace, mostly.
+on whitespace and word boundaries, mostly.
 
 =head1 DESCRIPTION
 

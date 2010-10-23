@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::VERSION = '0.58';
+  $Hailo::Storage::VERSION = '0.59';
 }
 
 use 5.010;
@@ -278,7 +278,7 @@ Hailo::Storage - A base class for L<Hailo> L<storage|Hailo::Role::Storage> backe
 
 =head1 METHODS
 
-The following methods must to be implemented by subclasses:
+The following two methods must to be implemented by subclasses:
 
 =head2 C<_build_dbd>
 
@@ -295,10 +295,6 @@ Subclasses can override this method to add options of their own. E.g:
             sqlite_unicode => 1,
         };
     };
-
-=head2 C<initialized>
-
-Should return a true value if the database has already been created.
 
 =head1 Comparison of backends
 
@@ -344,7 +340,7 @@ with SQLite, dump that database and then import it with L<psql(1)>,
 see L<failo's README|http://github.com/hinrik/failo> for how to do
 that.
 
-However when replying with an existing database (using
+However, replying with an existing database (using
 F<utils/hailo-benchmark-replies>) yields different results. SQLite can
 reply really quickly without being warmed up (which is the typical
 usecase for chatbots) but once PostgreSQL and MySQL are warmed up they

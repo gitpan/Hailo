@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::VERSION = '0.58';
+  $Hailo::VERSION = '0.59';
 }
 
 use 5.010;
@@ -491,7 +491,7 @@ its object gets destroyed. This defaults to true and will simply call
 L<save|/save> at C<DEMOLISH> time.
 
 See L<Hailo::Storage::SQLite/"in_memory"> for how the SQLite backend
-uses this option in conjunction with its C<in_memory> option.
+uses this option.
 
 =head2 C<order>
 
