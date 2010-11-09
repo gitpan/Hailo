@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::MySQL::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::MySQL::VERSION = '0.59';
+  $Hailo::Storage::MySQL::VERSION = '0.60';
 }
 
 use 5.010;

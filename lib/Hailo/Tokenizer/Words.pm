@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.59';
+  $Hailo::Tokenizer::Words::VERSION = '0.60';
 }
 
 use 5.010;
@@ -24,6 +24,8 @@ my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’´]/;
 my $APOST_WORD = qr/$ALPHA+(?:$APOSTROPHE$ALPHA+)+/;
+my $ELLIPSIS   = qr/\.{2,}|…/;
+my $EMAIL      = qr/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $NON_WORD   = qr/\W+/;
 my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
@@ -70,7 +72,7 @@ sub make_tokens {
             $ascii =~ s/[^[:ascii:]]/a/g;
 
             # URIs
-            if ($ascii =~ / ^ $RE{URI} /xo) {
+            if (!$got_word && $ascii =~ / ^ $RE{URI} /xo) {
                 my $uri_end = $+[0];
                 my $uri = substr $chunk, 0, $uri_end;
                 $chunk =~ s/^\Q$uri//;
@@ -79,12 +81,17 @@ sub make_tokens {
                 $got_word = 1;
             }
             # ssh:// (and foo+ssh://) URIs
-            elsif ($chunk =~ s{ ^ (?<uri> (?:\w+\+) ssh:// \S+ ) }{}xo) {
+            elsif (!$got_word && $chunk =~ s{ ^ (?<uri> (?:\w+\+) ssh:// \S+ ) }{}xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{uri}];
                 $got_word = 1;
             }
+            # email addresses
+            elsif (!$got_word && $chunk =~ s/ ^ (?<email> $EMAIL ) //xo) {
+                push @tokens, [$self->{_spacing_normal}, $+{email}];
+                $got_word = 1;
+            }
             # Twitter names
-            elsif ($chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //xo) {
+            elsif (!$got_word && $chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //xo) {
                 # Names on Twitter/Identi.ca can only match
                 # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
                 # names.
@@ -187,7 +194,7 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\b)/\u$1/o;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\s|$))/\u$1/o;
 
     # capitalize the second word
     $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/o;
