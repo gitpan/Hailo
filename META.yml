@@ -36,6 +36,7 @@ recommends:
   DBD::mysql: 4.013
 requires:
   Any::Moose: 0.13
+  Class::Load: 0.06
   DBD::SQLite: 1.29
   Data::Dump: 1.17
   Dir::Self: 0.10
@@ -63,5 +64,5 @@ resources:
   homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hailo/hailo.git
-version: 0.60
+version: 0.61
 x_authority: cpan:AVAR

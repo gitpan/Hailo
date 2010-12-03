@@ -1,5 +1,11 @@
 Revision history for Hailo
 
+0.61 2010-12-03 06:47:22
+
+    - Use Class::Load instead of Class::MOP::load_class and eval'd require()
+
+    - Fix rare test failure in t/command/shell.t
+
 0.60 2010-11-09 01:35:49
 
     - Match email addresses and don't capitalize them

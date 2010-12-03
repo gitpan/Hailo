@@ -3,13 +3,14 @@ BEGIN {
   $Hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::VERSION = '0.60';
+  $Hailo::VERSION = '0.61';
 }
 
 use 5.010;
 use autodie qw(open close);
 use Any::Moose;
 use Any::Moose 'X::StrictConstructor';
+use Class::Load qw(try_load_class);
 use Scalar::Util qw(blessed);
 use List::Util qw(first);
 use namespace::clean -except => 'meta';
@@ -196,13 +197,8 @@ sub _new_class {
         }
     }
 
-    if (Any::Moose::moose_is_preferred()) {
-        require Class::MOP;
-        eval { Class::MOP::load_class($pkg) };
-    } else {
-        eval qq[require $pkg];
-    }
-    die $@ if $@;
+    my ($success, $error) = try_load_class($pkg);
+    die $error if !$success;
 
     return $pkg->new(%$args);
 }

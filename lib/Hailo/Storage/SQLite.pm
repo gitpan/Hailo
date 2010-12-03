@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::SQLite::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::SQLite::VERSION = '0.60';
+  $Hailo::Storage::SQLite::VERSION = '0.61';
 }
 
 use 5.010;

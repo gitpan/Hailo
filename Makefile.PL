@@ -33,6 +33,7 @@ my %WriteMakefileArgs = (
   'NAME' => 'Hailo',
   'PREREQ_PM' => {
     'Any::Moose' => '0.13',
+    'Class::Load' => '0.06',
     'DBD::SQLite' => '1.29',
     'Data::Dump' => '1.17',
     'Dir::Self' => '0.10',
@@ -55,7 +56,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.18'
   },
-  'VERSION' => '0.60',
+  'VERSION' => '0.61',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }
