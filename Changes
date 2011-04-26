@@ -1,5 +1,24 @@
 Revision history for Hailo
 
+0.65 2011-04-26 19:28:27
+
+    - Expand "~" and such in the brain filename argument.
+
+    - Word tokenizer:
+        Recognize "e.g." and other abbreviations as single tokens.
+        Recognize '–' as a word-separating dash.
+        Put a full stop after words separated by dots, like "sources.list".
+        Fix capitalization problems caused by "..."
+        Capitalize "foo!" and "foo."
+        Preserve casing of words such as "POE-Component-IRC"
+        Catch "Acme::POE::Tree" as one word, and preserve its casing
+        Catch "rollin'" as one word when it makes sense
+        Catch 'foo-" as one word when it makes sense, and capitalize at
+        start of a sentence
+        Capitalize quoted words at the start of a line
+
+    - The --help option didn't work with Moose >=1.25 (RT #67548). Fixed.
+
 0.64 2010-12-10 11:09:08
 
     - Say "X lines of Y" instead of "X of Y" when training with

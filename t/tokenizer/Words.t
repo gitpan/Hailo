@@ -79,7 +79,7 @@ subtest make_output => sub {
     my @tokens = (
         [
             ' " why hello there. «yes». "foo is a bar", e.g. bla ... yes',
-            [qw<" why hello there . « yes ». " foo is a bar>, '",', qw<e . g . bla ... yes>],
+            [qw<" why hello there . « yes ». " foo is a bar>, '",', qw<e.g. bla ... yes>],
             '" Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
         ],
         [
@@ -259,7 +259,7 @@ subtest make_output => sub {
         ],
         [
             'við vorum þar. í norður- eða vesturhlutanum',
-            [qw<við vorum þar . í norður - eða vesturhlutanum>],
+            [qw<við vorum þar . í norður- eða vesturhlutanum>],
             'Við vorum þar. Í norður- eða vesturhlutanum.'
         ],
         [
@@ -270,12 +270,12 @@ subtest make_output => sub {
         [
             "But..what about me? but...no",
             [qw<but .. what about me ? but ... no>],
-            "But..what about me? But...no",
+            "But..what about me? But...no.",
         ],
         [
-            "For foo'345",
-            [qw<for foo ' 345>],
-            "For foo'345",
+            "For foo'345 'foo' bar",
+            [qw<for foo ' 345 ' foo ' bar>],
+            "For foo'345 'foo' bar.",
         ],
         [
             "loves2spooge",
@@ -356,6 +356,61 @@ subtest make_output => sub {
             'tumi@foo',
             [qw<tumi @ foo>],
             'tumi@foo',
+        ],
+        [
+            'e.g. the river',
+            [qw<e.g. the river>],
+            'E.g. the river.',
+        ],
+        [
+            'dong–licking is a really valuable book.',
+            [qw<dong–licking is a really valuable book .>],
+            'Dong–licking is a really valuable book.',
+        ],
+        [
+            'taka úr sources.list',
+            [qw<taka úr sources . list>],
+            'Taka úr sources.list.',
+        ],
+        [
+            'Huh? what? i mean what is your wife a...goer...eh? know what a dude last night...',
+            [qw<huh ? what ? i mean what is your wife a ... goer ... eh ? know what a dude last night ...>],
+            'Huh? What? I mean what is your wife a...goer...eh? Know what a dude last night...',
+        ],
+        [
+            'neeeigh!',
+            [qw<neeeigh !>],
+            'Neeeigh!',
+        ],
+        [
+            'neeeigh.',
+            [qw<neeeigh .>],
+            'Neeeigh.',
+        ],
+        [
+            'odin-: foo-- # blah. odin-: yes',
+            [qw<odin- : foo -->, '#', qw<blah . odin- : yes>],
+            'Odin-: Foo-- # blah. Odin-: Yes.',
+        ],
+        [
+            "struttin' that nigga",
+            [qw<struttin' that nigga>],
+            "Struttin' that nigga.",
+        ],
+        [
+            '"maybe" and A better deal. "would" still need my coffee with tea.',
+            [qw<" maybe " and A better deal . " would " still need my coffee with tea .>],
+            '"Maybe" and A better deal. "Would" still need my coffee with tea.',
+        ],
+        [
+            "This Acme::POE::Tree module is neat. Acme::POE::Tree",
+            [qw<this Acme::POE::Tree module is neat . Acme::POE::Tree>],
+            "This Acme::POE::Tree module is neat. Acme::POE::Tree",
+        ],
+        [
+            "I use POE-Component-IRC",
+            [qw<I use POE-Component-IRC>],
+            "I use POE-Component-IRC.",
         ],
     );
 

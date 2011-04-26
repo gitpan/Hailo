@@ -5,7 +5,7 @@
       "\u00c3\u0086var Arnfj\u00c3\u00b6r\u00c3\u00b0 Bjarmason <avar@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.102345, CPAN::Meta::Converter version 2.102400",
+   "generated_by" : "Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.110440",
    "license" : [
       "perl_5"
    ],
@@ -46,7 +46,7 @@
             "IPC::System::Simple" : "1.21",
             "List::MoreUtils" : "0.22",
             "Moose" : "1.08",
-            "MooseX::Getopt" : "0.31",
+            "MooseX::Getopt" : "0.37",
             "MooseX::StrictConstructor" : "0.10",
             "Mouse" : "0.62",
             "MouseX::Getopt" : "0.2601",
@@ -93,7 +93,7 @@
          "web" : "http://github.com/hailo/hailo"
       }
    },
-   "version" : "0.64",
+   "version" : "0.65",
    "x_authority" : "cpan:AVAR"
 }
 

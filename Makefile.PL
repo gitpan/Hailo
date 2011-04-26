@@ -44,7 +44,7 @@ my %WriteMakefileArgs = (
     'IPC::System::Simple' => '1.21',
     'List::MoreUtils' => '0.22',
     'Moose' => '1.08',
-    'MooseX::Getopt' => '0.31',
+    'MooseX::Getopt' => '0.37',
     'MooseX::StrictConstructor' => '0.10',
     'Mouse' => '0.62',
     'MouseX::Getopt' => '0.2601',
@@ -56,7 +56,7 @@ my %WriteMakefileArgs = (
     'autodie' => '2.08',
     'namespace::clean' => '0.18'
   },
-  'VERSION' => '0.64',
+  'VERSION' => '0.65',
   'test' => {
     'TESTS' => 't/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t'
   }
@@ -68,7 +68,7 @@ unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
   my $pp = $WriteMakefileArgs{PREREQ_PM};
   for my $mod ( keys %$br ) {
     if ( exists $pp->{$mod} ) {
-      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod}; 
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
     }
     else {
       $pp->{$mod} = $br->{$mod};

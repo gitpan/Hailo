@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.64';
+  $Hailo::Tokenizer::Words::VERSION = '0.65';
 }
 
 use 5.010;
@@ -20,6 +20,7 @@ with qw(Hailo::Role::Arguments
 my $ALPHA      = qr/(?![_\d])\w/;
 
 # tokenization
+my $DASH       = qr/[–-]/;
 my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’´]/;
@@ -30,10 +31,11 @@ my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $NON_WORD   = qr/\W+/;
 my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
 my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
-my $WORD_TYPES = qr/$NUMBER|$ALPHA_WORD/;
-my $WORD       = qr/$WORD_TYPES(?:-$WORD_TYPES)*/;
+my $WORD_TYPES = qr/$NUMBER|$PLAIN_WORD\.(?:$PLAIN_WORD\.)+|$ALPHA_WORD/;
+my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHA|$NUMBER)/;
+my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
-my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
+my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ (?: \p{Upper}* \p{Lower} ) /x;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -45,9 +47,10 @@ my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/(?:$NUMBER|$APOST_WORD|\w+)(?:-(?:$NUMBER|$APOST_WORD|\w+))*/;
+my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
+my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|\w+(?:$DASH(?:$WORD_TYPES|\w+)*||$APOSTROPHE(?!$ALPHA|$NUMBER|$APOSTROPHE))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
+my $SEPARATOR   = qr/\s+|$ELLIPSIS/;
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
@@ -62,6 +65,7 @@ sub make_tokens {
     my @chunks = split /\s+/, $line;
 
     # process all whitespace-delimited chunks
+    my $prev_chunk;
     for my $chunk (@chunks) {
         my $got_word;
 
@@ -78,6 +82,11 @@ sub make_tokens {
                 $chunk =~ s/^\Q$uri//;
 
                 push @tokens, [$self->{_spacing_normal}, $uri];
+                $got_word = 1;
+            }
+            # Perl class names
+            if (!$got_word && $chunk =~ s/ ^ (?<class> \w+ (?:::\w+)+ (?:::)? )//xo) {
+                push @tokens, [$self->{_spacing_normal}, $+{class}];
                 $got_word = 1;
             }
             # ssh:// (and foo+ssh://) URIs
@@ -100,9 +109,18 @@ sub make_tokens {
             }
             # normal words
             elsif ($chunk =~ / ^ $WORD /xo) {
-                # there's probably a simpler way to accomplish this
                 my @words;
-                while (1) {
+
+                # special case to allow matching q{ridin'} as one word, even when
+                # it appears as q{"ridin'"}, but not as q{'ridin'}
+                my $last_char = @tokens ? substr $tokens[-1][1], -1, 1 : '';
+                if (!@tokens && $chunk =~ s/ ^ (?<word>$WORD_APOST) //xo
+                    || $last_char =~ / ^ $APOSTROPHE $ /xo
+                    && $chunk =~ s/ ^ (?<word>$WORD_APOST) (?<! $last_char ) //xo) {
+                    push @words, $+{word};
+                }
+
+                while (length $chunk) {
                     last if $chunk !~ s/^($WORD)//o;
                     push @words, $1;
                 }
@@ -194,22 +212,22 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\s|$))/\u$1/o;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$CLOSE_QUOTE|$TERMINATOR|$ADDRESS|$PUNCTUATION+)?(?:\s|$)))/\u$1/o;
 
     # capitalize the second word
     $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/o;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
+    $reply =~ s/$SEPARATOR$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
     $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
     $reply =~ s/\x1B//go;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/(?: |^)$OPEN_QUOTE?$SPLIT_WORD$CLOSE_QUOTE?\K$/./o;
+    $reply =~ s/(?:$SEPARATOR|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
 
     # capitalize I'm, I've...
-    $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHA)}{I}go;
+    $reply =~ s{(?:$SEPARATOR|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHA)}{I}go;
 
     return $reply;
 }

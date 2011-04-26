@@ -19,7 +19,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.31
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.102345, CPAN::Meta::Converter version 2.102400'
+generated_by: 'Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.110440'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -47,7 +47,7 @@ requires:
   IPC::System::Simple: 1.21
   List::MoreUtils: 0.22
   Moose: 1.08
-  MooseX::Getopt: 0.31
+  MooseX::Getopt: 0.37
   MooseX::StrictConstructor: 0.10
   Mouse: 0.62
   MouseX::Getopt: 0.2601
@@ -64,5 +64,5 @@ resources:
   homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hailo/hailo.git
-version: 0.64
+version: 0.65
 x_authority: cpan:AVAR

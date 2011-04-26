@@ -1,7 +1,10 @@
 #!/usr/bin/env perl
 package hailo;
 BEGIN {
-  $hailo::VERSION = '0.64';
+  $hailo::AUTHORITY = 'cpan:AVAR';
+}
+BEGIN {
+  $hailo::VERSION = '0.65';
 }
 use 5.010;
 use open qw< :encoding(utf8) :std >;
