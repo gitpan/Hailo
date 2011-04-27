@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.66';
+  $Hailo::Tokenizer::Words::VERSION = '0.67';
 }
 
 use 5.010;
@@ -17,25 +17,27 @@ with qw(Hailo::Role::Arguments
         Hailo::Role::Tokenizer);
 
 # [[:alpha:]] doesn't match combining characters on Perl >=5.12
-my $ALPHA      = qr/(?![_\d])\w/;
+my $ALPHABET   = qr/(?![_\d])\w/;
 
 # tokenization
 my $DASH       = qr/[–-]/;
 my $DECIMAL    = qr/[.,]/;
-my $NUMBER     = qr/$DECIMAL\d+(?:$DECIMAL\d+)*|\d+(?:$DECIMAL\d+)+\w*/;
 my $APOSTROPHE = qr/['’´]/;
-my $APOST_WORD = qr/$ALPHA+(?:$APOSTROPHE$ALPHA+)+/;
 my $ELLIPSIS   = qr/\.{2,}|…/;
-my $EMAIL      = qr/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i;
-my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $NON_WORD   = qr/\W+/;
-my $PLAIN_WORD = qr/\w+/;
-my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
-my $WORD_TYPES = qr/$NUMBER|$PLAIN_WORD\.(?:$PLAIN_WORD\.)+|$ALPHA_WORD/;
-my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHA|$NUMBER)/;
+my $BARE_WORD  = qr/\w+/;
+my $NUMBER     = qr/$DECIMAL\d+(?:$DECIMAL\d+)*|\d+(?:$DECIMAL\d+)+\w*/;
+my $APOST_WORD = qr/$ALPHABET+(?:$APOSTROPHE$ALPHABET+)+/;
+my $NORM_WORD  = qr/$APOST_WORD|$BARE_WORD/;
+my $WORD_TYPES = qr/$NUMBER|$BARE_WORD\.(?:$BARE_WORD\.)+|$NORM_WORD/;
+my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHABET|$NUMBER)/;
 my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
 my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ (?: \p{Upper}* \p{Lower} ) /x;
+my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
+my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ \. [A-Z]{2,4} /xi;
+my $PERL_CLASS = qr/ (?: :: \w+ (?: :: \w+ )* | \w+ (?: :: \w+ )+ ) (?: :: )? | \w+ :: /x;
+my $EXTRA_URI  = qr{ (?: \w+ \+ ) ssh:// \S+ }x;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -48,7 +50,7 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|$PLAIN_WORD(?:$DASH(?:$WORD_TYPES|$PLAIN_WORD)*||$APOSTROPHE(?!$ALPHA|$NUMBER|$APOSTROPHE))*/;
+my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)*||$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 my $SEPARATOR   = qr/\s+|$ELLIPSIS/;
 
@@ -65,7 +67,6 @@ sub make_tokens {
     my @chunks = split /\s+/, $line;
 
     # process all whitespace-delimited chunks
-    my $prev_chunk;
     for my $chunk (@chunks) {
         my $got_word;
 
@@ -85,12 +86,12 @@ sub make_tokens {
                 $got_word = 1;
             }
             # Perl class names
-            if (!$got_word && $chunk =~ s/ ^ (?<class> \w+ (?:::\w+)+ (?:::)? )//xo) {
+            elsif (!$got_word && $chunk =~ s/ ^ (?<class> $PERL_CLASS )//xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{class}];
                 $got_word = 1;
             }
             # ssh:// (and foo+ssh://) URIs
-            elsif (!$got_word && $chunk =~ s{ ^ (?<uri> (?:\w+\+) ssh:// \S+ ) }{}xo) {
+            elsif (!$got_word && $chunk =~ s{ ^ (?<uri> $EXTRA_URI ) }{}xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{uri}];
                 $got_word = 1;
             }
@@ -109,7 +110,7 @@ sub make_tokens {
             }
             # normal words
             elsif ($chunk =~ / ^ $WORD /xo) {
-                my @words;
+                my $word;
 
                 # special case to allow matching q{ridin'} as one word, even when
                 # it appears as q{"ridin'"}, but not as q{'ridin'}
@@ -117,51 +118,22 @@ sub make_tokens {
                 if (!@tokens && $chunk =~ s/ ^ (?<word>$WORD_APOST) //xo
                     || $last_char =~ / ^ $APOSTROPHE $ /xo
                     && $chunk =~ s/ ^ (?<word>$WORD_APOST) (?<! $last_char ) //xo) {
-                    push @words, $+{word};
-                }
-
-                while (length $chunk) {
-                    last if $chunk !~ s/^($WORD)//o;
-                    push @words, $1;
-                }
-
-                for my $word (@words) {
-                    # Maybe preserve the casing of this word
-                    $word = lc $word
-                        if $word ne uc $word
-                        # Mixed-case words like "WoW"
-                        and $word !~ $MIXED_CASE
-                        # Words that are upper case followed by a non-word character.
-                        # {2,} so it doesn't match I'm
-                        and $word !~ $UPPER_NONW;
-                }
-
-                if (@words == 1) {
-                    push @tokens, [$self->{_spacing_normal}, $words[0]];
-                }
-                elsif (@words == 2) {
-                    # When there are two words joined together, we need to
-                    # decide if it's normal+postfix (e.g. "4.1GB") or
-                    # prefix+normal (e.g. "v2.3")
-
-                    if ($words[0] =~ /$NUMBER/ && $words[1] =~ /$ALPHA_WORD/) {
-                        push @tokens, [$self->{_spacing_normal}, $words[0]];
-                        push @tokens, [$self->{_spacing_postfix}, $words[1]];
-                    }
-                    elsif ($words[0] =~ /$ALPHA_WORD/ && $words[1] =~ /$NUMBER/) {
-                        push @tokens, [$self->{_spacing_prefix}, $words[0]];
-                        push @tokens, [$self->{_spacing_normal}, $words[1]];
-                    }
+                    $word = $+{word};
                 }
                 else {
-                    # When 3 or more words are together, (e.g. "800x600"),
-                    # we treat them as two normal tokens surrounding one or
-                    # more infix tokens
-                    push @tokens, [$self->{_spacing_normal}, $_] for $words[0];
-                    push @tokens, [$self->{_spacing_infix},  $_] for @words[1..$#words-1];
-                    push @tokens, [$self->{_spacing_normal}, $_] for $words[-1];
+                    $chunk =~ s/^($WORD)//o and $word = $1;
                 }
 
+                # Maybe preserve the casing of this word
+                $word = lc $word
+                    if $word ne uc $word
+                    # Mixed-case words like "WoW"
+                    and $word !~ $MIXED_CASE
+                    # Words that are upper case followed by a non-word character.
+                    # {2,} so it doesn't match I'm
+                    and $word !~ $UPPER_NONW;
+
+                push @tokens, [$self->{_spacing_normal}, $word];
                 $got_word = 1;
             }
             # everything else
@@ -227,7 +199,7 @@ sub make_output {
     $reply =~ s/(?:$SEPARATOR|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
 
     # capitalize I'm, I've...
-    $reply =~ s{(?:$SEPARATOR|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHA)}{I}go;
+    $reply =~ s{(?:$SEPARATOR|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHABET)}{I}go;
 
     return $reply;
 }

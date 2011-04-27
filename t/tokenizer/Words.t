@@ -414,13 +414,18 @@ subtest make_output => sub {
         ],
         [
             "You know, 4-3 equals 1",
-            [qw<you know , 4-3 equals 1>],
+            [qw<you know> ,',', qw<4-3 equals 1>],
             "You know, 4-3 equals 1.",
         ],
         [
             "moo-5 moo-5-moo moo_5",
             [qw<moo-5 moo-5-moo moo_5>],
             "Moo-5 moo-5-moo moo_5.",
+        ],
+        [
+            "::Class Class:: ::Foo::Bar Foo::Bar:: Foo::Bar",
+            [qw<::Class Class:: ::Foo::Bar Foo::Bar:: Foo::Bar>],
+            "::Class Class:: ::Foo::Bar Foo::Bar:: Foo::Bar",
         ],
     );
 

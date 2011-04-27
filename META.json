@@ -47,7 +47,7 @@
             "List::MoreUtils" : "0.22",
             "Moose" : "1.08",
             "MooseX::Getopt" : "0.37",
-            "MooseX::StrictConstructor" : "0.10",
+            "MooseX::StrictConstructor" : "0.16",
             "Mouse" : "0.62",
             "MouseX::Getopt" : "0.2601",
             "MouseX::StrictConstructor" : "0.02",
@@ -93,7 +93,7 @@
          "web" : "http://github.com/hailo/hailo"
       }
    },
-   "version" : "0.66",
+   "version" : "0.67",
    "x_authority" : "cpan:AVAR"
 }
 
