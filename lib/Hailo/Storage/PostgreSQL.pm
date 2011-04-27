@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Storage::PostgreSQL::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Storage::PostgreSQL::VERSION = '0.65';
+  $Hailo::Storage::PostgreSQL::VERSION = '0.66';
 }
 
 use 5.010;

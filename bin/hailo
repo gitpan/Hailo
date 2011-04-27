@@ -4,7 +4,7 @@ BEGIN {
   $hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $hailo::VERSION = '0.65';
+  $hailo::VERSION = '0.66';
 }
 use 5.010;
 use open qw< :encoding(utf8) :std >;
