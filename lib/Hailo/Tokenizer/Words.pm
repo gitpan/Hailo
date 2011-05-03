@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.67';
+  $Hailo::Tokenizer::Words::VERSION = '0.68';
 }
 
 use 5.010;
@@ -21,19 +21,21 @@ my $ALPHABET   = qr/(?![_\d])\w/;
 
 # tokenization
 my $DASH       = qr/[–-]/;
-my $DECIMAL    = qr/[.,]/;
+my $POINT      = qr/[.,]/;
 my $APOSTROPHE = qr/['’´]/;
 my $ELLIPSIS   = qr/\.{2,}|…/;
 my $NON_WORD   = qr/\W+/;
 my $BARE_WORD  = qr/\w+/;
-my $NUMBER     = qr/$DECIMAL\d+(?:$DECIMAL\d+)*|\d+(?:$DECIMAL\d+)+\w*/;
+my $NUMBER     = qr/$POINT\d+(?:$POINT\d+)*|\d+(?:$POINT\d+)+\w*/;
 my $APOST_WORD = qr/$ALPHABET+(?:$APOSTROPHE$ALPHABET+)+/;
 my $NORM_WORD  = qr/$APOST_WORD|$BARE_WORD/;
 my $WORD_TYPES = qr/$NUMBER|$BARE_WORD\.(?:$BARE_WORD\.)+|$NORM_WORD/;
 my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHABET|$NUMBER)/;
 my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
-my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ (?: \p{Upper}* \p{Lower} ) /x;
+my $UPPER_NONW = qr/^ (?:\p{Upper}+ \W+)(?<!I') (?: \p{Upper}* \p{Lower} ) /x;
+
+# special tokens
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ \. [A-Z]{2,4} /xi;
 my $PERL_CLASS = qr/ (?: :: \w+ (?: :: \w+ )* | \w+ (?: :: \w+ )+ ) (?: :: )? | \w+ :: /x;
@@ -49,22 +51,23 @@ my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)*||$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE))*/;
-my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
-my $SEPARATOR   = qr/\s+|$ELLIPSIS/;
+my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
+my $LOOSE_WORD  = qr/$WORD_TYPES|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
+my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?:\s+|$)|$CLOSE_QUOTE|$TERMINATOR|\s+|$)};
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
-my $DOTTED_STRICT = qr/$LOOSE_WORD(?:$DECIMAL(?:\d+|\w{2,}))?/;
+my $DOTTED_STRICT = qr/$LOOSE_WORD(?:$POINT(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
 sub make_tokens {
-    my ($self, $line) = @_;
+    my ($self, $input) = @_;
 
     my @tokens;
-    my @chunks = split /\s+/, $line;
+    $input =~ s/$DASH\K\s*\n+\s*//;
+    $input =~ s/\s*\n+\s*/ /gm;
+    my @chunks = split /\s+/, $input;
 
     # process all whitespace-delimited chunks
     for my $chunk (@chunks) {
@@ -130,7 +133,6 @@ sub make_tokens {
                     # Mixed-case words like "WoW"
                     and $word !~ $MIXED_CASE
                     # Words that are upper case followed by a non-word character.
-                    # {2,} so it doesn't match I'm
                     and $word !~ $UPPER_NONW;
 
                 push @tokens, [$self->{_spacing_normal}, $word];
@@ -191,15 +193,15 @@ sub make_output {
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/$SEPARATOR$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
+    $reply =~ s/(?:$ELLIPSIS|\s+)$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
     $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
     $reply =~ s/\x1B//go;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/(?:$SEPARATOR|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
+    $reply =~ s/(?:$ELLIPSIS|\s+|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)\K($CLOSE_QUOTE?)$/.$1/o;
 
     # capitalize I'm, I've...
-    $reply =~ s{(?:$SEPARATOR|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHABET)}{I}go;
+    $reply =~ s{(?:(?:$ELLIPSIS|\s+)|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHABET)}{I}go;
 
     return $reply;
 }

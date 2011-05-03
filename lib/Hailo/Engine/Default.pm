@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Engine::Default::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Engine::Default::VERSION = '0.67';
+  $Hailo::Engine::Default::VERSION = '0.68';
 }
 
 use 5.010;
@@ -45,49 +45,85 @@ sub reply {
     my $self = shift;
     my $tokens = shift // [];
 
-    # we will favor these tokens when making the reply> shuffle them
+    # we will favor these tokens when making the reply. Shuffle them
     # and discard half.
     my @key_tokens = do {
         my $i = 0;
         grep { $i++ % 2 == 0 } shuffle(@$tokens);
     };
 
-    my (@key_ids, %token_cache);
-    for my $token_info (@key_tokens) {
-        my $text = $token_info->[1];
-        my $info = $self->_token_similar($text);
-        next unless defined $info;
-        my ($id, $spacing) = @$info;
-        next unless defined $id;
-        push @key_ids, $id;
-        next if exists $token_cache{$id};
-        $token_cache{$id} = [$spacing, $text];
-    }
+    my $token_cache = $self->_resolve_input_tokens($tokens);
+    my @key_ids = keys %$token_cache;
 
     # sort the rest by rareness
     @key_ids = $self->_find_rare_tokens(\@key_ids, 2);
 
     # get the middle expression
-    my $seed_token_id = shift @key_ids;
-    my ($orig_expr_id, @token_ids) = $self->_random_expr($seed_token_id);
-    return unless defined $orig_expr_id; # we don't know any expressions yet
+    my $pivot_token_id = shift @key_ids;
+    my ($pivot_expr_id, @token_ids) = $self->_random_expr($pivot_token_id);
+    return unless defined $pivot_expr_id; # we don't know any expressions yet
 
     # remove key tokens we're already using
     @key_ids = grep { my $used = $_; !first { $_ == $used } @token_ids } @key_ids;
 
-    my $expr_id = $orig_expr_id;
+    my %expr_cache;
 
     # construct the end of the reply
-    $self->_construct_reply('next', $expr_id, \@token_ids, \@key_ids);
+    $self->_construct_reply('next', $pivot_expr_id, \@token_ids, \%expr_cache, \@key_ids);
 
     # construct the beginning of the reply
-    $self->_construct_reply('prev', $expr_id, \@token_ids, \@key_ids);
+    $self->_construct_reply('prev', $pivot_expr_id, \@token_ids, \%expr_cache, \@key_ids);
 
     # translate token ids to token spacing/text
-    my @reply = map {
-        $token_cache{$_} // ($token_cache{$_} = $self->_token_info($_))
+    my @output = map {
+        $token_cache->{$_} // ($token_cache->{$_} = $self->_token_info($_))
     } @token_ids;
-    return \@reply;
+    return \@output;
+}
+
+sub _resolve_input_tokens {
+    my ($self, $tokens) = @_;
+    my %token_cache;
+
+    if (@$tokens == 1) {
+        my ($spacing, $text) = @{ $tokens->[0] };
+        my $token_info = $self->_token_resolve($spacing, $text);
+
+        if (defined $token_info) {
+            my ($id, $count) = @$token_info;
+            $token_cache{$id} = [$spacing, $text, $count];
+        }
+        else {
+            # when there's just one token, it could be ';' for example,
+            # which will have normal spacing when it appears alone, but
+            # suffix spacing in a sentence like "those things; foo, bar",
+            # so we'll be a bit more lax here by also looking for any
+            # token that has the same text
+            $token_info = $self->_token_similar($text);
+            if (defined $token_info) {
+                my ($id, $spacing, $count) = @$token_info;
+                $token_cache{$id} = [$spacing, $text, $count];
+            }
+        }
+    }
+    else {
+        for my $token (@$tokens) {
+            my ($spacing, $text) = @$token;
+            my $token_info = $self->_token_resolve($spacing, $text);
+            next if !defined $token_info;
+            my ($id, $count) = @$token_info;
+            $token_cache{$id} = [$spacing, $text, $count];
+        }
+    }
+
+    return \%token_cache;
+}
+
+sub _token_resolve {
+    my ($self, $spacing, $text) = @_;
+
+    $self->{_sth_token_resolve}->execute($spacing, $text);
+    return $self->{_sth_token_resolve}->fetchrow_arrayref;
 }
 
 sub _token_info {
@@ -105,43 +141,119 @@ sub learn {
     # only learn from inputs which are long enough
     return if @$tokens < $order;
 
-    my %token_cache;
+    my (%token_cache, %expr_cache);
 
+    # resolve/add tokens and update their counter
     for my $token (@$tokens) {
-        my $key = join '', @$token;
-        next if exists $token_cache{$key};
-        $token_cache{$key} = $self->_token_id_add($token);
+        my $key = join '', @$token; # the key is "$spacing$text"
+        if (!exists $token_cache{$key}) {
+            $token_cache{$key} = $self->_token_id_add($token);
+        }
+        $self->{_sth_inc_token_count}->execute(1, $token_cache{$key});
     }
 
     # process every expression of length $order
     for my $i (0 .. @$tokens - $order) {
         my @expr = map { $token_cache{ join('', @{ $tokens->[$_] }) } } $i .. $i+$order-1;
-        my $expr_id = $self->_expr_id(\@expr);
+        my $key = join('_', @expr);
 
-        if (!defined $expr_id) {
-            $expr_id = $self->_add_expr(\@expr);
-            $self->{_sth_inc_token_count}->execute($_) for uniq(@expr);
+        if (!defined $expr_cache{$key}) {
+            $expr_cache{$key} = $self->_expr_id_add(\@expr);
         }
+        my $expr_id = $expr_cache{$key};
 
         # add link to next token for this expression, if any
         if ($i < @$tokens - $order) {
             my $next_id = $token_cache{ join('', @{ $tokens->[$i+$order] }) };
-            $self->_inc_link('next_token', $expr_id, $next_id);
+            $self->_inc_link('next_token', $expr_id, $next_id, 1);
         }
 
         # add link to previous token for this expression, if any
         if ($i > 0) {
             my $prev_id = $token_cache{ join('', @{ $tokens->[$i-1] }) };
-            $self->_inc_link('prev_token', $expr_id, $prev_id);
+            $self->_inc_link('prev_token', $expr_id, $prev_id, 1);
         }
 
         # add links to boundary token if appropriate
         my $b = $self->storage->_boundary_token_id;
-        $self->_inc_link('prev_token', $expr_id, $b) if $i == 0;
-        $self->_inc_link('next_token', $expr_id, $b) if $i == @$tokens-$order;
+        $self->_inc_link('prev_token', $expr_id, $b, 1) if $i == 0;
+        $self->_inc_link('next_token', $expr_id, $b, 1) if $i == @$tokens-$order;
     }
 
     return;
+}
+
+sub learn_cached {
+    my ($self, $tokens) = @_;
+    my $order = $self->order;
+
+    # only learn from inputs which are long enough
+    return if @$tokens < $order;
+
+    my (%token_cache, %expr_cache);
+
+    # resolve/add tokens and update their counter
+    for my $token (@$tokens) {
+        my $key = join '', @$token; # the key is "$spacing$text"
+        if (!exists $token_cache{$key}) {
+            my $token_id = $self->_token_id_add($token);
+            $token_cache{$key} = $token_id;
+            $self->{_updates}{token_count}{$token_id}++;
+        }
+    }
+
+    # process every expression of length $order
+    for my $i (0 .. @$tokens - $order) {
+        my @expr = map { $token_cache{ join('', @{ $tokens->[$_] }) } } $i .. $i+$order-1;
+        my $key = join('_', @expr);
+
+        if (!defined $expr_cache{$key}) {
+            $expr_cache{$key} = $self->_expr_id_add(\@expr);
+        }
+        my $expr_id = $expr_cache{$key};
+
+        # add link to next token for this expression, if any
+        if ($i < @$tokens - $order) {
+            my $next_id = $token_cache{ join('', @{ $tokens->[$i+$order] }) };
+            $self->{_updates}{next_token}{$expr_id}{$next_id}++;
+        }
+
+        # add link to previous token for this expression, if any
+        if ($i > 0) {
+            my $prev_id = $token_cache{ join('', @{ $tokens->[$i-1] }) };
+            $self->{_updates}{prev_token}{$expr_id}{$prev_id}++;
+        }
+
+        # add links to boundary token if appropriate
+        my $b = $self->storage->_boundary_token_id;
+        $self->{_updates}{prev_token}{$expr_id}{$b}++ if $i == 0;
+        $self->{_updates}{next_token}{$expr_id}{$b}++ if $i == @$tokens-$order;
+    }
+
+    return;
+}
+
+sub flush_cache {
+    my ($self) = @_;
+
+    my $updates = $self->{_updates};
+    return if !$updates;
+
+    while (my ($token_id, $count) = each %{ $updates->{token_count} }) {
+        $self->{_sth_inc_token_count}->execute($count, $token_id);
+    }
+
+    while (my ($expr_id, $links) = each %{ $updates->{next_token} }) {
+        while (my ($next_token_id, $count) = each %$links) {
+            $self->_inc_link('next_token', $expr_id, $next_token_id, $count);
+        }
+    }
+
+    while (my ($expr_id, $links) = each %{ $updates->{prev_token} }) {
+        while (my ($prev_token_id, $count) = each %$links) {
+            $self->_inc_link('prev_token', $expr_id, $prev_token_id, $count);
+        }
+    }
 }
 
 # sort token ids based on how rare they are
@@ -166,35 +278,26 @@ sub _find_rare_tokens {
 
 # increase the link weight between an expression and a token
 sub _inc_link {
-    my ($self, $type, $expr_id, $token_id) = @_;
+    my ($self, $type, $expr_id, $token_id, $count) = @_;
 
-    $self->{"_sth_${type}_count"}->execute($expr_id, $token_id);
-    my $count = $self->{"_sth_${type}_count"}->fetchrow_array;
-
-    if (defined $count) {
-        $self->{"_sth_${type}_inc"}->execute($expr_id, $token_id);
-    }
-    else {
-        $self->{"_sth_${type}_add"}->execute($expr_id, $token_id);
+    $self->{"_sth_${type}_inc"}->execute($count, $expr_id, $token_id);
+    if (!$self->{"_sth_${type}_inc"}->rows) {
+        $self->{"_sth_${type}_add"}->execute($expr_id, $token_id, $count);
     }
 
     return;
 }
 
-# add new expression to the database
-sub _add_expr {
+# look up/add an expression id based on tokens
+sub _expr_id_add {
     my ($self, $token_ids) = @_;
 
-    # add the expression
+    $self->{_sth_expr_id}->execute(@$token_ids);
+    my $expr_id = $self->{_sth_expr_id}->fetchrow_array();
+    return $expr_id if defined $expr_id;
+
     $self->{_sth_add_expr}->execute(@$token_ids);
     return $self->storage->dbh->last_insert_id(undef, undef, "expr", undef);
-}
-
-# look up an expression id based on tokens
-sub _expr_id {
-    my ($self, $tokens) = @_;
-    $self->{_sth_expr_id}->execute(@$tokens);
-    return $self->{_sth_expr_id}->fetchrow_array();
 }
 
 # return token id if the token exists
@@ -282,7 +385,7 @@ sub _pos_token {
 }
 
 sub _construct_reply {
-    my ($self, $what, $expr_id, $token_ids, $key_ids) = @_;
+    my ($self, $what, $expr_id, $token_ids, $expr_cache, $key_ids) = @_;
     my $order          = $self->order;
     my $repeat_limit   = $self->repeat_limit;
     my $boundary_token = $self->storage->_boundary_token_id;
@@ -296,18 +399,25 @@ sub _construct_reply {
         }
 
         my $id = $self->_pos_token($what, $expr_id, $key_ids);
-        last if $id eq $boundary_token;
+        last if $id == $boundary_token;
 
+        my @ids;
         given ($what) {
             when ('next') {
                 push @$token_ids, $id;
-                $expr_id = $self->_expr_id([@$token_ids[-$order..-1]]);
+                @ids = @$token_ids[-$order..-1];
             }
             when ('prev') {
                 unshift @$token_ids, $id;
-                $expr_id = $self->_expr_id([@$token_ids[0..$order-1]]);
+                @ids = @$token_ids[0..$order-1];
             }
         }
+
+        my $key = join '_', @ids;
+        if (!defined $expr_cache->{$key}) {
+            $expr_cache->{$key} = $self->_expr_id_add(\@ids);
+        }
+        $expr_id = $expr_cache->{$key};
     } continue {
         $i++;
     }
@@ -328,6 +438,11 @@ Hailo::Engine::Default - The default engine backend for L<Hailo|Hailo>
 This backend implements the logic of replying to and learning from
 input using the resources given to the L<engine
 roles|Hailo::Role::Engine>.
+
+It generates the reply in one go, while favoring some of the tokens in the
+input, and returns it. It is fast and the replies are decent, but you can
+get better replies (at the cost of speed) with the
+L<Scored|Hailo::Engine::Scored> engine.
 
 =head1 AUTHORS
 

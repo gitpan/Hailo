@@ -162,6 +162,10 @@ METHODS
     Unlike "learn", this method sacrifices some safety (disables the
     database journal, fsyncs, etc) for speed while learning.
 
+    You can prove a second parameter which, if true, will use aggressive
+    caching while training, which will speed things up considerably for
+    large inputs, but will take up quite a bit of memory.
+
   "reply"
     Takes an optional line of text and generates a reply that might be
     relevant.

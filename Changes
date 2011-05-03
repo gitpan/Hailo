@@ -1,9 +1,35 @@
 Revision history for Hailo
 
+0.68 2011-05-03 13:16:05
+
+    - Speed up the learning of repetitive sentences by caching more
+
+    - Added Hailo::Engine::Scored, which generates multiple replies (limited
+      by time or number of iterations) and returns the best one. Based on
+      code from Peter Teichman's Cobe project.
+
+    - Fixed a bug which caused the tokenizer to be very slow at capitalizing
+      replies which contain things like "script/osm-to-tilenumbers.pl"
+
+    - Speed up learning quite a bit (up to 25%) by using more efficient SQL.
+
+    - Add --train-fast to speed up learning by up to an additional 45% on
+      large brains by using aggressive caching. This uses a lot of memory.
+      Almost 600MB with SQLite on a 64bit machine for a brain which
+      eventually takes 134MB on disk (trained from a 350k line IRC log).
+
+    - Word tokenizer:
+        * Preserve casing of Emacs key sequences like "C-u"
+        * Don't capitalize words after ellipses (e.g. "Wait... what?")
+        * When adding a full stop to paragraphs which end with a quoted word,
+          add it inside the quotes (e.g. "I heard him say 'hello there.'")
+        * Make it work correctly when the input has newlines
+
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names
-    - Require MooseX::StrictConstructor 0.16 for Moose 2.0 compatability
+
+    - Require MooseX::StrictConstructor 0.16 for Moose 2.0 compatibility
 
 0.66 2011-04-27 07:37:45
 
@@ -18,17 +44,17 @@ Revision history for Hailo
     - Expand "~" and such in the brain filename argument.
 
     - Word tokenizer:
-        Recognize "e.g." and other abbreviations as single tokens.
-        Recognize '–' as a word-separating dash.
-        Put a full stop after words separated by dots, like "sources.list".
-        Fix capitalization problems caused by "..."
-        Capitalize "foo!" and "foo."
-        Preserve casing of words such as "POE-Component-IRC"
-        Catch "Acme::POE::Tree" as one word, and preserve its casing
-        Catch "rollin'" as one word when it makes sense
-        Catch 'foo-" as one word when it makes sense, and capitalize at
-        start of a sentence
-        Capitalize quoted words at the start of a line
+        * Recognize "e.g." and other abbreviations as single tokens.
+        * Recognize '–' as a word-separating dash.
+        * Put a full stop after words separated by dots, like "sources.list".
+        * Fix capitalization problems caused by "..."
+        * Capitalize "foo!" and "foo."
+        * Preserve casing of words such as "POE-Component-IRC"
+        * Catch "Acme::POE::Tree" as one word, and preserve its casing
+        * Catch "rollin'" as one word when it makes sense
+        * Catch 'foo-" as one word when it makes sense, and capitalize at
+          start of a sentence
+        * Capitalize quoted words at the start of a line
 
     - The --help option didn't work with Moose >=1.25 (RT #67548). Fixed.
 

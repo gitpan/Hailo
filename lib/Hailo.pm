@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::VERSION = '0.67';
+  $Hailo::VERSION = '0.68';
 }
 
 use 5.010;
@@ -18,6 +18,7 @@ use namespace::clean -except => 'meta';
 
 use constant PLUGINS => [ qw[
     Hailo::Engine::Default
+    Hailo::Engine::Scored
     Hailo::Storage::MySQL
     Hailo::Storage::PostgreSQL
     Hailo::Storage::SQLite
@@ -219,7 +220,7 @@ sub save {
 }
 
 sub train {
-    my ($self, $input) = @_;
+    my ($self, $input, $fast) = @_;
 
     $self->_storage->start_training();
 
@@ -227,20 +228,24 @@ sub train {
         # With STDIN
         when (not ref and defined and $_ eq '-') {
             die "You must provide STDIN when training from '-'" if $self->_is_interactive(*STDIN);
-            $self->_train_fh(*STDIN);
+            $self->_train_fh(*STDIN, $fast);
         }
         # With a filehandle
         when (ref eq 'GLOB') {
-            $self->_train_fh($input);
+            $self->_train_fh($input, $fast);
         }
         # With a file
         when (not ref) {
             open my $fh, '<:encoding(utf8)', $input;
-            $self->_train_fh($fh, $input);
+            $self->_train_fh($fh, $fast, $input);
         }
         # With an Array
         when (ref eq 'ARRAY') {
-            $self->_learn_one($_) for @$input;
+            for my $line (@$input) {
+                $self->_learn_one($line, $fast);
+                $self->_engine->flush_cache if !$fast;
+            }
+            $self->_engine->flush_cache if $fast;
         }
         # With something naughty
         default {
@@ -254,12 +259,14 @@ sub train {
 }
 
 sub _train_fh {
-    my ($self, $fh, $filename) = @_;
+    my ($self, $fh, $fast) = @_;
 
     while (my $line = <$fh>) {
         chomp $line;
-        $self->_learn_one($line);
+        $self->_learn_one($line, $fast);
+        $self->_engine->flush_cache if !$fast;
     }
+    $self->_engine->flush_cache if $fast;
 
     return;
 }
@@ -293,11 +300,11 @@ sub learn {
 }
 
 sub _learn_one {
-    my ($self, $input) = @_;
+    my ($self, $input, $fast) = @_;
     my $engine  = $self->_engine;
 
     my $tokens = $self->_tokenizer->make_tokens($input);
-    $engine->learn($tokens);
+    $fast ? $engine->learn_cached($tokens) : $engine->learn($tokens);
 
     return;
 }
@@ -551,6 +558,10 @@ Takes a filename, filehandle or array reference and learns from all its
 lines. If a filename is passed, the file is assumed to be UTF-8 encoded.
 Unlike L<C<learn>|/learn>, this method sacrifices some safety (disables
 the database journal, fsyncs, etc) for speed while learning.
+
+You can prove a second parameter which, if true, will use aggressive
+caching while training, which will speed things up considerably for large
+inputs, but will take up quite a bit of memory.
 
 =head2 C<reply>
 

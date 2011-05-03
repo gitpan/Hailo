@@ -64,5 +64,5 @@ resources:
   homepage: http://hailo.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/hailo/hailo.git
-version: 0.67
+version: 0.68
 x_authority: cpan:AVAR
