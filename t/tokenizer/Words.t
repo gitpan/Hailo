@@ -115,7 +115,7 @@ subtest make_output => sub {
         ],
         [
             'on example.com? yes',
-            [qw<on example . com ? yes>],
+            [qw<on example.com ? yes>],
             "On example.com? Yes.",
         ],
         [
@@ -255,7 +255,7 @@ subtest make_output => sub {
         ],
         [
             '.com bubble',
-            [qw<. com bubble>],
+            [qw<.com bubble>],
             '.com bubble.'
         ],
         [
@@ -370,7 +370,7 @@ subtest make_output => sub {
         ],
         [
             'taka úr sources.list',
-            [qw<taka úr sources . list>],
+            [qw<taka úr sources.list>],
             'Taka úr sources.list.',
         ],
         [
@@ -452,6 +452,56 @@ subtest make_output => sub {
             "I use POE-Component- \n IRC",
             [qw<I use POE-Component-IRC>],
             "I use POE-Component-IRC.",
+        ],
+        [
+            "I wrote theres_no_place_like_home.ly. And then some.",
+            [qw<I wrote theres_no_place_like_home.ly . and then some .>],
+            "I wrote theres_no_place_like_home.ly. And then some.",
+        ],
+        [
+            "The file is /hlagh/bar/foo.txt. Just read it.",
+            [qw<the file is /hlagh/bar/foo.txt . just read it .>],
+            "The file is /hlagh/bar/foo.txt. Just read it.",
+        ],
+        [
+            "The file is C:\\hlagh\\bar\\foo.txt. Just read it.",
+            [qw<the file is C:\\hlagh\\bar\\foo.txt . just read it .>],
+            "The file is C:\\hlagh\\bar\\foo.txt. Just read it.",
+        ],
+        [
+            "2011-05-05 22:55 22:55Z 2011-05-05T22:55Z 2011-W18-4 2011-125 12:00±05:00 22:55 PM",
+            [qw<2011-05-05 22:55 22:55Z 2011-05-05T22:55Z 2011-W18-4 2011-125 12:00±05:00>, '22:55 PM'],
+            "2011-05-05 22:55 22:55Z 2011-05-05T22:55Z 2011-W18-4 2011-125 12:00±05:00 22:55 PM.",
+        ],
+        [
+            '<@literal> oh hi < literal> what is going on?',
+            [qw{<@literal> oh hi}, '< literal>', qw<what is going on ?>],
+            '<@literal> oh hi < literal> what is going on?',
+        ],
+        [
+            'It costs $.50, no, wait, it cost $2.50... or 50¢',
+            [qw<it costs $.50>, ',', 'no', ',', 'wait', ',', qw<it cost $2.50 ... or 50¢>],
+            'It costs $.50, no, wait, it cost $2.50... or 50¢.',
+        ],
+        [
+            '10pt or 12em or 15cm',
+            [qw<10pt or 12em or 15cm>],
+            '10pt or 12em or 15cm.',
+        ],
+        [
+            'failo is #1',
+            [qw<failo is>, '#1'],
+            'Failo is #1.',
+        ],
+        [
+            'We are in #perl',
+            [qw<we are in>, '#perl'],
+            'We are in #perl.',
+        ],
+        [
+            '</foo>',
+            [qw{</foo>}],
+            '</foo>',
         ],
     );
 

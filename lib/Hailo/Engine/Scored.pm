@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Engine::Scored::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Engine::Scored::VERSION = '0.68';
+  $Hailo::Engine::Scored::VERSION = '0.69';
 }
 
 use 5.010;
@@ -33,19 +33,12 @@ sub reply {
     my @input_token_ids = keys %$token_cache;
     my @token_counts;
 
-    # let's select potential pivot tokens
+    # let's select potential pivot tokens from the input
     if (keys %$token_cache) {
-        # we got some known tokens, let's prefer the ones with normal
-        # spacing, i.e. words instead of things like ',' or '('.
+        # we only want the ones with normal spacing (usually normal words)
         @token_counts = map {
             $token_cache->{$_}[0] == 0 ? [$_, $token_cache->{$_}[2]] : ()
         } keys %$token_cache;
-
-        if (!@token_counts) {
-            # no known words in the input, so we'll settle for the rest
-            @token_counts = map { [$_, $token_cache->{$_}[2]] } keys %$token_cache;
-        }
-
     }
 
     my $token_probs = $self->_get_pivot_probabilites(\@token_counts);
@@ -174,7 +167,7 @@ sub _evaluate_reply {
 
         if (any { $_ == $prev_token_id } @$input_token_ids) {
             my @expr = @$reply_token_ids[$idx+1 .. $idx+$order];
-            my $key = join('_', @expr)."-$prev_token_id";
+            my $key = "$prev_token_id-".join('_', @expr);
 
             if (!defined $cache->{$key}) {
                 $cache->{$key} = $self->_expr_token_probability('prev', \@expr, $prev_token_id);
@@ -183,6 +176,16 @@ sub _evaluate_reply {
                 $score -= log($cache->{$key})/log(2);
             }
         }
+    }
+
+    # Prefer shorter replies. This behavior is present but not
+    # documented in recent MegaHAL.
+    my $score_divider = 1;
+    if (@$reply_token_ids >= 8) {
+        $score /= sqrt(@$reply_token_ids - 1);
+    }
+    elsif (@$reply_token_ids >= 16) {
+        $score /= @$reply_token_ids;
     }
 
     return $score;

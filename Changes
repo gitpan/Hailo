@@ -1,5 +1,20 @@
 Revision history for Hailo
 
+0.69 2011-05-07 04:02:38
+
+    - Scored engine: Prefer shorter replies, like MegaHAL/cobe do
+
+    - Word tokenizer:
+        * Improve matching/capitalization of filenames and domain names
+        * Match timestamps as single tokens
+        * Match IRC nicks (<foobar>, <@foobar>, etc) as single tokens
+        * Match IRC channel names (#foo, &bar, +baz)
+        * Match various prefixes and postfixes with numbers
+        * Match "#1" and "#1234" as single tokens
+        * Match </foo> as a single token
+
+    - Depend on MouseX::Getopt 0.33 to fix test failures
+
 0.68 2011-05-03 13:16:05
 
     - Speed up the learning of repetitive sentences by caching more
