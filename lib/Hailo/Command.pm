@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Command::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Command::VERSION = '0.69';
+  $Hailo::Command::VERSION = '0.70';
 }
 
 use 5.010;
@@ -331,7 +331,7 @@ sub train_progress {
         target => $lines,
         # Every 0.1 seconds for long files
         freq => ($lines < 10_000 ? 10 : 'd'),
-        # Override Term::Sk's default 100_100 to 100,000
+        # Override Term::Sk's default 100_000 to 100,000
         commify => sub {
             my $int = shift;
             $int = reverse $int;
@@ -355,8 +355,10 @@ sub train_progress {
     $progress->close;
 
     if ($fast) {
-        print "Flushing cache (this may take a while for large inputs)\n";
+        my $msg = "Flushing cache (this may take a while for large inputs)";
+        syswrite STDOUT, $msg;
         $self->_engine->flush_cache;
+        print "\010" x length $msg;
     }
 
     my $elapsed = tv_interval($start_time);

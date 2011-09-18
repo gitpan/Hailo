@@ -1,5 +1,16 @@
 Revision history for Hailo
 
+0.70 2011-09-18 19:15:17
+
+    - When using --train-fast, remove the "flushing cache" message when done
+
+    - Word tokenizer:
+        * Improve tokenization of email addresses
+        * Use backspace instead of escape as a magic character when
+          capitalizing text in multiple passes, since it's less likely to
+          appear in tokens.
+        * Preserve casing of words like "ATMs"
+
 0.69 2011-05-07 04:02:38
 
     - Scored engine: Prefer shorter replies, like MegaHAL/cobe do

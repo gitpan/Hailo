@@ -355,8 +355,13 @@ subtest make_output => sub {
         ],
         [
             'tumi@foo',
-            [qw<tumi @ foo>],
+            [qw<tumi@foo>],
             'tumi@foo',
+        ],
+        [
+            'tumi@foo.co.uk',
+            [qw<tumi@foo.co.uk>],
+            'tumi@foo.co.uk',
         ],
         [
             'e.g. the river',
@@ -502,6 +507,11 @@ subtest make_output => sub {
             '</foo>',
             [qw{</foo>}],
             '</foo>',
+        ],
+        [
+            'ATMs in Baltimore',
+            [qw{ATMs in baltimore}],
+            'ATMs in baltimore.',
         ],
     );
 

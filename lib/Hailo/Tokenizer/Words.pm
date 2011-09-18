@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Tokenizer::Words::AUTHORITY = 'cpan:AVAR';
 }
 BEGIN {
-  $Hailo::Tokenizer::Words::VERSION = '0.69';
+  $Hailo::Tokenizer::Words::VERSION = '0.70';
 }
 
 use 5.010;
@@ -36,12 +36,12 @@ my $DOTTED     = qr/$BARE_WORD?\.$BARE_WORD(?:\.$BARE_WORD)*/;
 my $WORD_TYPES = qr/$NUMBER|$ABBREV|$DOTTED|$APOST_WORD|$BARE_WORD/;
 my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHABET|$NUMBER)/;
 my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
-my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
+my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} | \p{Upper}{2,} \p{Lower} /x;
 my $UPPER_NONW = qr/^ (?:\p{Upper}+ \W+)(?<!I') (?: \p{Upper}* \p{Lower} ) /x;
 
 # special tokens
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
-my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ \. [A-Z]{2,4} /xi;
+my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ (?: \. [A-Z]{2,4} )* /xi;
 my $PERL_CLASS = qr/ (?: :: \w+ (?: :: \w+ )* | \w+ (?: :: \w+ )+ ) (?: :: )? | \w+ :: /x;
 my $EXTRA_URI  = qr{ (?: \w+ \+ ) ssh:// $NONSPACE+ }x;
 my $ESC_SPACE  = qr/(?:\\ )+/;
@@ -53,7 +53,7 @@ my $PATH       = qr/$UNIX_PATH|$WIN_PATH/;
 my $DATE       = qr/[0-9]{4}-W?[0-9]{1,2}-[0-9]{1,2}/i;
 my $TIME       = qr/[0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?(?:Z| ?[AP]M|[-+±][0-9]{2}(?::?[0-9]{2})?)?/i;
 my $DATETIME   = qr/${DATE}T$TIME/;
-my $IRC_NICK   = qr/<[ @%+~&]?[A-Za-z_`\-^\|\\\{}\[\]][A-Za-z_0-9`\-^\|\\\{}\[\]]+>/;
+my $IRC_NICK   = qr/<(?: |[&~]?[@%+~&])?[A-Za-z_`\-^\|\\\{}\[\]][A-Za-z_0-9`\-^\|\\\{}\[\]]+>/;
 my $IRC_CHAN   = qr/[#&+][^ \a\0\012\015,:]{1,199}/;
 my $NUMERO     = qr/#[0-9]+/;
 my $CLOSE_TAG  = qr{</[-\w]+>};
@@ -78,6 +78,12 @@ my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?:\s+|$)|$CLOSE
 # or "You mean 3.2?", but not "Yes, e.g."
 my $DOTTED_STRICT = qr/$LOOSE_WORD(?:$POINT(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
+
+# This string is added to (and later removed from) the output string when
+# capitalizing it in multiple passes. We use backspace, because that is
+# unlikely to be in the input. This dirty approach can probably be replaced
+# with regex grammars, but I haven't bothered to learn to use those.
+my $SEPARATOR     = "\x08";
 
 # input -> tokens
 sub make_tokens {
@@ -131,7 +137,7 @@ sub make_tokens {
                 # Maybe preserve the casing of this word
                 $word = lc $word
                     if $word ne uc $word
-                    # Mixed-case words like "WoW"
+                    # Mixed-case words like "WoW" or "ATMs"
                     and $word !~ $MIXED_CASE
                     # Words that are upper case followed by a non-word character.
                     and $word !~ $UPPER_NONW;
@@ -195,9 +201,9 @@ sub make_output {
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/(?:$ELLIPSIS|\s+)$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
-    $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
-    $reply =~ s/\x1B//go;
+    $reply =~ s/(?:$ELLIPSIS|\s+)$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/$SEPARATOR\u$1$SEPARATOR/go;
+    $reply =~ s/$SEPARATOR$WORD_STRICT$SEPARATOR$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
+    $reply =~ s/$SEPARATOR//go;
 
     # end paragraphs with a period when it makes sense
     $reply =~ s/(?:$ELLIPSIS|\s+|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)\K($CLOSE_QUOTE?)$/.$1/o;

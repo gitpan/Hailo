@@ -205,11 +205,8 @@ SEE ALSO
         hailo-ui-web <http://github.com/avar/hailo-ui-web> on GitHub
         <http://github.com>
 
-    *   HALBot - Another Catalyst Dojo powered web interface to Hailo
-        available at bifurcat.es <http://bifurcat.es/> and as
-        halbot-on-the-web
-        <http://gitorious.org/halbot-on-the-web/halbot-on-the-web> at
-        gitorious <http://gitorious.org>
+    *   tweetmix <http://www.tweetmix.me/>, a random tweet generator powered
+        by Hailo
 
     *   <http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL
         "inspired by the success of Hailo"
