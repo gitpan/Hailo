@@ -3,8 +3,8 @@ package hailo;
 BEGIN {
   $hailo::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $hailo::VERSION = '0.70';
+{
+  $hailo::VERSION = '0.71';
 }
 use 5.010;
 use open qw< :encoding(utf8) :std >;

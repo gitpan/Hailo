@@ -2,8 +2,8 @@ package Hailo::Engine::Scored;
 BEGIN {
   $Hailo::Engine::Scored::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $Hailo::Engine::Scored::VERSION = '0.70';
+{
+  $Hailo::Engine::Scored::VERSION = '0.71';
 }
 
 use 5.010;

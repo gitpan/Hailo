@@ -2,8 +2,8 @@ package Hailo::Storage::SQLite;
 BEGIN {
   $Hailo::Storage::SQLite::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $Hailo::Storage::SQLite::VERSION = '0.70';
+{
+  $Hailo::Storage::SQLite::VERSION = '0.71';
 }
 
 use 5.010;

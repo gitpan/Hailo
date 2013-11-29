@@ -2,8 +2,8 @@ package Hailo::UI::ReadLine;
 BEGIN {
   $Hailo::UI::ReadLine::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $Hailo::UI::ReadLine::VERSION = '0.70';
+{
+  $Hailo::UI::ReadLine::VERSION = '0.71';
 }
 
 use 5.010;

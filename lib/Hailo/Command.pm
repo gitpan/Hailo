@@ -2,8 +2,8 @@ package Hailo::Command;
 BEGIN {
   $Hailo::Command::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $Hailo::Command::VERSION = '0.70';
+{
+  $Hailo::Command::VERSION = '0.71';
 }
 
 use 5.010;

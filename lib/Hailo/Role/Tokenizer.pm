@@ -2,8 +2,8 @@ package Hailo::Role::Tokenizer;
 BEGIN {
   $Hailo::Role::Tokenizer::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $Hailo::Role::Tokenizer::VERSION = '0.70';
+{
+  $Hailo::Role::Tokenizer::VERSION = '0.71';
 }
 
 use 5.010;

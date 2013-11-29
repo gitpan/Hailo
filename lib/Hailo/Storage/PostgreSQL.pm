@@ -2,8 +2,8 @@ package Hailo::Storage::PostgreSQL;
 BEGIN {
   $Hailo::Storage::PostgreSQL::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $Hailo::Storage::PostgreSQL::VERSION = '0.70';
+{
+  $Hailo::Storage::PostgreSQL::VERSION = '0.71';
 }
 
 use 5.010;

@@ -2,8 +2,8 @@ package Hailo::Storage::Schema;
 BEGIN {
   $Hailo::Storage::Schema::AUTHORITY = 'cpan:AVAR';
 }
-BEGIN {
-  $Hailo::Storage::Schema::VERSION = '0.70';
+{
+  $Hailo::Storage::Schema::VERSION = '0.71';
 }
 
 use 5.010;
