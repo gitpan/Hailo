@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Engine::Default::AUTHORITY = 'cpan:AVAR';
 }
 {
-  $Hailo::Engine::Default::VERSION = '0.71';
+  $Hailo::Engine::Default::VERSION = '0.72';
 }
 
 use 5.010;
@@ -402,15 +402,14 @@ sub _construct_reply {
         last if $id == $boundary_token;
 
         my @ids;
-        given ($what) {
-            when ('next') {
-                push @$token_ids, $id;
-                @ids = @$token_ids[-$order..-1];
-            }
-            when ('prev') {
-                unshift @$token_ids, $id;
-                @ids = @$token_ids[0..$order-1];
-            }
+        if ($what eq 'next') {
+            push @$token_ids, $id;
+            @ids = @$token_ids[-$order..-1];
+        } elsif ($what eq 'prev') {
+            unshift @$token_ids, $id;
+            @ids = @$token_ids[0..$order-1];
+        } else {
+            die "PANIC: Internal Error: Don't know what the '$what' argument means";
         }
 
         my $key = join '_', @ids;

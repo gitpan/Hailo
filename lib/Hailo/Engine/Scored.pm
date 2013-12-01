@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Engine::Scored::AUTHORITY = 'cpan:AVAR';
 }
 {
-  $Hailo::Engine::Scored::VERSION = '0.71';
+  $Hailo::Engine::Scored::VERSION = '0.72';
 }
 
 use 5.010;

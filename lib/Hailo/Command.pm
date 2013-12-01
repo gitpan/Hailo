@@ -3,7 +3,7 @@ BEGIN {
   $Hailo::Command::AUTHORITY = 'cpan:AVAR';
 }
 {
-  $Hailo::Command::VERSION = '0.71';
+  $Hailo::Command::VERSION = '0.72';
 }
 
 use 5.010;
@@ -421,7 +421,7 @@ USAGE
 
     # Hack: We can't get at our object from here so we have to inspect
     # @ARGV directly.
-    say "\n", $synopsis if "@ARGV" ~~ /--examples/;
+    say "\n", $synopsis if "@ARGV" =~ /--examples/;
 
     exit 1;
 }

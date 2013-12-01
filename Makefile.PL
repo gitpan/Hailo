@@ -13,7 +13,7 @@ use ExtUtils::MakeMaker 6.30;
 
 my %WriteMakefileArgs = (
   "ABSTRACT" => "A pluggable Markov engine analogous to MegaHAL",
-  "AUTHOR" => "Hinrik \303\226rn Sigur\303\260sson <hinrik.sig\@gmail.com>, \303\206var Arnfj\303\266r\303\260 Bjarmason <avar\@cpan.org>",
+  "AUTHOR" => "Hinrik \x{d6}rn Sigur\x{f0}sson <hinrik.sig\@gmail.com>, \x{c6}var Arnfj\x{f6}r\x{f0} Bjarmason <avar\@cpan.org>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
@@ -63,7 +63,7 @@ my %WriteMakefileArgs = (
     "Test::Script::Run" => "0.04",
     "Test::Synopsis" => "0.06"
   },
-  "VERSION" => "0.71",
+  "VERSION" => "0.72",
   "test" => {
     "TESTS" => "t/*.t t/command/*.t t/command/ui/*.t t/hailo/*.t t/hailo/methods/*.t t/storage/*.t t/storage/001_meta/*.t t/storage/SQLite/*.t t/storage/SQLite/memory/*.t t/tokenizer/*.t t/tokenizer/Words/*.t t/ui/*.t"
   }

@@ -1,11 +1,11 @@
 {
    "abstract" : "A pluggable Markov engine analogous to MegaHAL",
    "author" : [
-      "Hinrik \u00c3\u0096rn Sigur\u00c3\u00b0sson <hinrik.sig@gmail.com>",
-      "\u00c3\u0086var Arnfj\u00c3\u00b6r\u00c3\u00b0 Bjarmason <avar@cpan.org>"
+      "Hinrik \u00d6rn Sigur\u00f0sson <hinrik.sig@gmail.com>",
+      "\u00c6var Arnfj\u00f6r\u00f0 Bjarmason <avar@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300040, CPAN::Meta::Converter version 2.132830",
+   "generated_by" : "Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.132830",
    "license" : [
       "perl_5"
    ],
@@ -98,7 +98,7 @@
          "web" : "http://github.com/hailo/hailo"
       }
    },
-   "version" : "0.71",
+   "version" : "0.72",
    "x_authority" : "cpan:AVAR"
 }
 
